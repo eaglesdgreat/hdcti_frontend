@@ -20,3 +20,13 @@ import csv
 
 base_date_time = datetime.now()
 now = (datetime.strftime(base_date_time, "%Y-%m-%d %H:%M"))
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def logged_in_user(request):
+    user_email = request.user.email
+    loggedInUser = get_object_or_404(User, email=user_email)
+    
+    loggedInUserSerial = LoggedInUserSerializer(instance=loggedInUser)
+    return Response(data=loggedInUserSerial.data, status=status.HTTP_200_OK)
