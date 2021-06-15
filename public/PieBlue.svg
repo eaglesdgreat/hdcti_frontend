@@ -1,0 +1,10 @@
+<svg width="206" height="206" viewBox="0 0 206 206" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="206" height="206" rx="103" fill="#FF5C00"/>
+<g style="mix-blend-mode:overlay">
+<path d="M103 103H206C206 131.363 194.268 157.041 175.628 175.628L103 103Z" fill="#ACB9FF"/>
+</g>
+<g opacity="0.4">
+<path d="M103 103H206C206 74.6369 194.268 48.959 175.628 30.3718L103 103Z" fill="black"/>
+</g>
+<path d="M103 103V0C131.363 0 157.041 11.7325 175.628 30.3718L103 103Z" fill="black"/>
+</svg>
