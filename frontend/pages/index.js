@@ -240,10 +240,7 @@ export default function Index() {
       setLoading(true); 
 
       try {
-        const response = await axios.post(url, body, {headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }})
+        const response = await axios.post(url, body)
 
         setMessages({ ...messages, success: response.data.success.message });
         setState(initialState)
@@ -252,7 +249,7 @@ export default function Index() {
 
         if (response.data) {
           authenticate(response.data, () => {
-            // return router.push('/products')
+            return router.push('/dashboard')
             return
           })
           setLoading(false); 
