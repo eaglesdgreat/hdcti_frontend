@@ -241,37 +241,39 @@ export default function Index() {
 
       try {
         const response = await axios.post(url, body, {headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
         }})
 
-        // setMessages({ ...messages, success: response.data.success.message });
-        // setState(initialState)
+        setMessages({ ...messages, success: response.data.success.message });
+        setState(initialState)
         
         console.log(response)
 
-        // if (response.data) {
-        //   authenticate(response.data, () => {
-        //     // return router.push('/products')
-        //     return
-        //   })
+        if (response.data) {
+          authenticate(response.data, () => {
+            // return router.push('/products')
+            return
+          })
+          setLoading(false); 
 
-        //   enqueueSnackbar(
-        //     `${response.data.success}. You are being redirected to your dashboard`,
-        //     {
-        //       variant: "success",
-        //     }
-        //   );
-        // }
+          enqueueSnackbar(
+            `${response.data.success}. You are being redirected to your dashboard`,
+            {
+              variant: "success",
+            }
+          );
+        }
       } catch (e) {
         if (e.response) {
           console.log(e.response)
           setLoading(false); 
 
-          // setMessages({ ...messages, failure: e.response.data.errors.message })
-          // enqueueSnackbar(`${e.response.data.errors.message}. Try again`, {
-          //   variant: 'error',
-          // });
-          // setState(initialState)
+          setMessages({ ...messages, failure: e.response.data.errors.message })
+          enqueueSnackbar(`${e.response.data.errors.message}. Try again`, {
+            variant: 'error',
+          });
+          setState(initialState)
         }
       }
     }
