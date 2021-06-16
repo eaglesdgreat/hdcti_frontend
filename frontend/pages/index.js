@@ -314,7 +314,7 @@ export default function Index() {
                   noValidate
                   onSubmit={handleSubmit}
                 >
-                  <Grid container spacing={8}>
+                  <Grid container spacing={6}>
                     <Grid item xs={12} sm={12}>
                       <Typography
                         className={classes.typography}
