@@ -24,11 +24,11 @@ export default function MyApp(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>Admin - Vasiti</title>
+        <title>HCDTI</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
 
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <ThemeProvider theme={theme}>
           <SnackbarProvider maxSnack={3}
             anchorOrigin={{
@@ -43,7 +43,7 @@ export default function MyApp(props) {
             </StateProvider>
           </SnackbarProvider>
         </ThemeProvider>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </React.Fragment>
   );
 }
