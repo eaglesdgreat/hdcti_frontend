@@ -12,13 +12,21 @@ module.exports = {
     ACCESSKEYID: process.env.ACCESSKEYID,
     SECRETACCESS: process.env.SECRETACCESS
   },
-  async redirects() {
-    return [
-      {
-        source: '/products',
-        destination: '/products/stats',
-        permanent: true,
-      },
-    ]
-  },
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/dashboard',
+  //       destination: '/dashboard/all',
+  //       permanent: true,
+  //     },
+  //   ]
+  // },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/account/:path*',
+  //       destination: 'https://hcdti.savitechnig.com/:path*',
+  //     },
+  //   ]
+  // },
 }

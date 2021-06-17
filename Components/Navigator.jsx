@@ -20,71 +20,55 @@ import { isAuthenticated } from '../lib/auth.helper'
 
 const categories = [
   {
-    id: 'Dashboard',
-    icon: <img src="/home.svg" alt="home" />,
-    activeIcon: <img src="/homeActive.svg" alt="home" />,
-    path: "/dashboard"
+    id: 1,
+    head: "Loan Applications",
+    body1: {
+      id: "Create New",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/create_application",
+    },
+    body2: {
+      id: "View Applications",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/applications",
+    },
   },
+
   {
-    id: 'Orders',
-    icon: <img src="/clipboardorder.svg" alt="orders" />,
-    activeIcon: <img src="/clipboardActive.svg" alt="orders" />,
-    path: "/orders"
+    id: 2,
+    head: "Groups",
+    body1: {
+      id: "Create New",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/create_group",
+    },
+    body2: {
+      id: "View Groups",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/groups",
+    },
   },
+
   {
-    id: 'Products',
-    icon: <img src="/box.svg" alt="products" />,
-    activeIcon: <img src="/boxActive.svg" alt="products" />,
-    path: "/products"
+    id: 3,
+    head: "Users",
+    body1: {
+      id: "Create New",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/create_user",
+    },
+    body2: {
+      id: "View Users",
+      icon: <img src="/home.svg" alt="home" />,
+      activeIcon: <img src="/home.svg" alt="home" />,
+      path: "/users",
+    },
   },
-  {
-    id: 'Services',
-    icon: <img src="/tool.svg" alt="services" />,
-    activeIcon: <img src="/toolActive.svg" alt="services" />,
-    path: "/services"
-  },
-  {
-    id: 'Campus Reps',
-    icon: <img src="/users.svg" alt="users" />,
-    activeIcon: <img src="/usersActive.svg" alt="users" />,
-    path: "/campusreps"
-  },
-  {
-    id: 'Influencers',
-    icon: <img src="/influencer.svg" alt="influencers" />,
-    activeIcon: <img src="/influencerActive.svg" alt="influencers" />,
-    path: "/influencers"
-  },
-  {
-    id: 'Users',
-    icon: <img src="/user.svg" alt="user" />,
-    activeIcon: <img src="/userActive.svg" alt="user" />,
-    path: "/users"
-  },
-  {
-    id: 'Central Wallet',
-    icon: <img src="/dollar-sign.svg" alt="coupons" />,
-    activeIcon: <img src="/dollarSignActive.svg" alt="coupons" />,
-    path: "/centralwallet"
-  },
-  {
-    id: 'Coupons',
-    icon: <img src="/coupon.svg" alt="coupons" />,
-    activeIcon: <img src="/couponActive.svg" alt="coupons" />,
-    path: "/coupons"
-  },
-  {
-    id: 'Send Mail',
-    icon: <img src="/mail.svg" alt="mail" />,
-    activeIcon: <img src="/mailActive.svg" alt="mail" />,
-    path: "/sendmail"
-  },
-  // {
-  //     id: 'Searches', 
-  //     icon: <img src="/search.svg" alt="search" />,
-  //     activeIcon: <img src="/searchActive.svg" alt="search" />,
-  //     path: "/search"
-  // },
 ];
 
 const styles = (theme) => ({
@@ -92,31 +76,75 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(1),
     marginBottom: theme.spacing(4),
   },
+  drawer: {
+    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
+    background: "#FFFFFF 0% 0% no-repeat padding-box",
+    opacity: "1",
+    paddingLeft:'27px'
+  },
   item: {
-    fontfamily: 'Roboto',
-    fontStyle: 'normal',
-    fontWeight: '400',
-    fontSize: '16px',
-    lineHeight: '18.75px',
-    color: '#687282',
-    '&:hover,&:focus': {
-      backgroundColor: '#F8F8F8',
-    },
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) 15px/20px var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-362d73)",
+    textAlign: "left",
+    font: "normal normal medium 15px/20px Poppins;",
+    letterSpacing: "0px",
+    color: "#362D73",
+    opacity: "1",
+    // fontfamily: 'Roboto',
+    // fontStyle: 'normal',
+    // fontWeight: '400',
+    // fontSize: '16px',
+    // lineHeight: '18.75px',
+    // color: '#687282',
+    // '&:hover,&:focus': {
+    //   backgroundColor: '#F8F8F8',
+    // },
   },
   itemActiveItem: {
-    color: '#FF5C00',
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) 15px/20px var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-362d73)",
+    textAlign: "left",
+    font: "normal normal medium 15px/20px Poppins;",
+    letterSpacing: "0px",
+    color: "#362D73",
+    opacity: "1",
   },
   itemIcon: {
-    minWidth: 'auto',
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+    // minWidth: "auto",
+    marginLeft: '-15px',
+    // marginRight: theme.spacing(2),
+  },
+  button: {
+    background: "#DAF2B6 0% 0% no-repeat padding-box",
+    borderRadius: " 2px 0px 0px 2px",
+    opacity: "1",
+    width:204,
+    height:39,
+    "&:hover,&:focus": {
+      background: "#DAF2B6 0% 0% no-repeat padding-box",
+      borderRadius: " 2px 0px 0px 2px",
+      opacity: "1",
+    },
   },
   logout: {
     // margin: 'auto',
-    display: 'flex',
-    justifyContent: 'flex-start',
+    display: "flex",
+    justifyContent: "flex-start",
     paddingRight: 10,
-  }
+  },
+  head: {
+    font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)',
+    letterSpacing: 'var(--unnamed-character-spacing-0)',
+    color: 'var(--unnamed-color-0d0d0d)',
+    textAlign: 'center',
+    font: 'normal normal normal 12px/14px Helvetica Neue',
+    letterSpacing: '0px',
+    color: '#0D0D0D',
+    textTransform: 'uppercase',
+    opacity: '0.63',
+  },
 });
 
 function Navigator(props) {
@@ -134,46 +162,155 @@ function Navigator(props) {
   }
 
   return (
-    <Drawer variant="permanent" {...other}>
+    <Drawer classes={{ paper: classes.drawer }} variant="permanent" {...other}>
       <Box
-        display='flex'
+        display="flex"
         style={{
           // margin: 'auto',
           // border: '1px solid red',
-          marginTop: '30px'
+          marginTop: "30px",
         }}
       >
         <List disablePadding>
           <ListItem className={clsx(classes.header)}>
-            <img width="100%" src="/VasitiLogoblack.svg" alt="vasiti Logo" />
+            <img width="100%" src="" alt="Hcdti Logo" />
           </ListItem>
-          {categories.map(({ id, icon, path, activeIcon }) => (
+
+          <Box
+            display="flex"
+            flexDirection="column"
+            style={{
+              paddingBottom: "30px",
+            }}
+          >
+            <Link href={"/dashboard"}>
+              <Button varaint="contained" className={classes.button}>
+                <ListItem>
+                  <ListItemIcon className={classes.itemIcon}>
+                    {"/dashboard" === `/${checkPath}` ? (
+                      <img src="/home.svg" alt="home" />
+                    ) : (
+                      <img src="/home.svg" alt="home" />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography
+                      className={clsx(
+                        classes.item,
+                        router.pathname === props.path,
+                        "/dashboard" === `/${checkPath}` &&
+                          classes.itemActiveItem
+                      )}
+                      style={{
+                        fontSize:'14px',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {"Home"}
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+              </Button>
+            </Link>
+          </Box>
+
+          {categories.map(({ id, head, body1, body2 }) => (
             <React.Fragment key={id}>
-              <Link href={path}>
-                <a style={{ textDecoration: 'none' }}>
-                  <ListItem >
-                    <ListItemIcon className={classes.itemIcon}>
-                      {path === `/${checkPath}` ? activeIcon : icon}
-                    </ListItemIcon>
-                    <ListItemText>
-                      <Typography
-                        className={
-                          clsx(classes.item, router.pathname === props.path,
-                            path === `/${checkPath}` && classes.itemActiveItem)
-                        }
-                      >
-                        {id}
-                      </Typography>
-                    </ListItemText>
-                  </ListItem>
-                </a>
-              </Link>
+              <Box
+                display="flex"
+                flexDirection="column"
+                style={{
+                  paddingBottom: "30px",
+                }}
+              >
+                <Box
+                  display="flex"
+                  style={{
+                    paddingBottom: "10px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <Typography className={classes.head}>{head}</Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  style={{
+                    paddingBottom: "10px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <Link href={body1.path}>
+                    <Button varaint="contained" className={classes.button}>
+                      <ListItem>
+                        <ListItemIcon className={classes.itemIcon}>
+                          {body1.path === `/${checkPath}`
+                            ? body1.activeIcon
+                            : body1.icon}
+                        </ListItemIcon>
+                        <ListItemText>
+                          <Typography
+                            className={clsx(
+                              classes.item,
+                              router.pathname === props.path,
+                              body1.path === `/${checkPath}` &&
+                                classes.itemActiveItem
+                            )}
+                            style={{
+                              fontSize:'14px',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {body1.id}
+                          </Typography>
+                        </ListItemText>
+                      </ListItem>
+                    </Button>
+                  </Link>
+                </Box>
+
+                <Box
+                  display="flex"
+                  style={{
+                    paddingBottom: "10px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <Link href={body2.path}>
+                    <Button varaint="contained" className={classes.button}>
+                      <ListItem>
+                        <ListItemIcon className={classes.itemIcon}>
+                          {body2.path === `/${checkPath}`
+                            ? body2.activeIcon
+                            : body2.icon}
+                        </ListItemIcon>
+                        <ListItemText>
+                          <Typography
+                            className={clsx(
+                              classes.item,
+                              router.pathname === props.path,
+                              body2.path === `/${checkPath}` &&
+                                classes.itemActiveItem
+                            )}
+                            style={{
+                              fontWeight: 600,
+                              fontSize:'14px',
+                            }}
+                          >
+                            {body2.id}
+                          </Typography>
+                        </ListItemText>
+                      </ListItem>
+                    </Button>
+                  </Link>
+                </Box>
+              </Box>
             </React.Fragment>
           ))}
         </List>
       </Box>
 
-      <Box
+      {/* <Box
         display="flex"
         style={{
           paddingTop: 45,
@@ -184,23 +321,23 @@ function Navigator(props) {
           varaint="contained"
           onClick={handleLogout}
           style={{
-            backgroundColor: '#687282',
-            borderRadius: '6px',
-            fontfamily: 'Roboto',
-            fontStyle: 'normal',
-            fontWeight: 'normal',
-            fontSize: '16px',
-            color: '#FFFFFF',
-            width: '80%',
-            margin: 'auto'
+            backgroundColor: "#687282",
+            borderRadius: "6px",
+            fontfamily: "Roboto",
+            fontStyle: "normal",
+            fontWeight: "normal",
+            fontSize: "16px",
+            color: "#FFFFFF",
+            width: "80%",
+            margin: "auto",
           }}
         >
           <span className={classes.logout}>
             <img src="/logout.svg" alt="logout" />
           </span>
-          {token === false ? 'LOGIN' : 'LOGOUT'}
+          {token === false ? "LOGIN" : "LOGOUT"}
         </Button>
-      </Box>
+      </Box> */}
     </Drawer>
   );
 }

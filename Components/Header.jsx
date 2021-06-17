@@ -71,11 +71,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 function Header(props) {
-  const router = useRouter()
-  const classes = useStyles()
+  const router = useRouter();
+  const classes = useStyles();
   const { onDrawerToggle } = props;
-  const headName = isAuthenticated().user.firstName
-
+  // const headName = isAuthenticated().user.firstName
+  const headName = ''
 
   const [anchorEl2, setAnchorEl2] = useState(null);
 
@@ -85,21 +85,21 @@ function Header(props) {
 
   const handleClose2 = () => {
     setAnchorEl2(null);
-  }
+  };
 
   const handleLogout = () => {
     logout(() => {
       setAnchorEl2(null);
-      router.push('/')
-    })
-  }
+      router.push("/");
+    });
+  };
 
   return (
     <React.Fragment>
       <Box
         display="flex"
         style={{
-          width: '100%',
+          width: "100%",
           // paddingTop: '1.5%',
           // paddingBottom: '1.5%',
         }}
@@ -113,9 +113,9 @@ function Header(props) {
                     color="inherit"
                     aria-label="open drawer"
                     onClick={onDrawerToggle}
-                  // className={classes.menuButton}
+                    // className={classes.menuButton}
                   >
-                    <MenuIcon style={{ backgroundColor: '#FF5C00' }} />
+                    <MenuIcon style={{ backgroundColor: "#FF5C00" }} />
                   </IconButton>
                 </Grid>
               </Hidden>
@@ -131,33 +131,37 @@ function Header(props) {
               </Grid>
 
               <Grid item>
-                <IconButton color="inherit"
+                <IconButton
+                  color="inherit"
                   disableRipple
-                  style={{ marginRight: '70px' }}>
-                  <Avatar className={classes.avatar}>{(headName ? headName : 'User').split('')[0]}</Avatar>
+                  style={{ marginRight: "70px" }}
+                >
+                  <Avatar className={classes.avatar}>
+                    {(headName ? headName : "User").split("")[0]}
+                  </Avatar>
                   {/* <img src="/Ellipse.svg" alt="ellipse" /> */}
                 </IconButton>
               </Grid>
 
               <Grid item>
-                <Box
-                  display="flex"
-                >
+                <Box display="flex">
                   <Typography
                     className={classes.typography}
                     style={{
-                      fontWeight: '500',
-                      fontSize: '15px',
-                      lineHeight: '17.58px',
-                      color: '#242120',
-                      marginLeft: '-80px',
-                      marginRight: '5px'
+                      fontWeight: "500",
+                      fontSize: "15px",
+                      lineHeight: "17.58px",
+                      color: "#242120",
+                      marginLeft: "-80px",
+                      marginRight: "5px",
                     }}
                   >
-                    Hello, {headName ? headName : 'User'}
+                    Hello, {headName ? headName : "User"}
                   </Typography>
 
-                  <img src="/profile.svg" alt="menu"
+                  <img
+                    src="/profile.svg"
+                    alt="menu"
                     aria-controls="avatar-menu"
                     aria-haspopup="true"
                     onClick={handleClick2}
@@ -171,26 +175,26 @@ function Header(props) {
                     onClose={handleClose2}
                     PaperProps={{
                       style: {
-                        borderRadius: '8px',
-                        margin: '40px 0px 0px -53px',
-                        boxShadow: '0px 12px 24px rgba(0, 0, 0, 0.08)',
-                        backgroundColor: '#FFFFFF',
-                        width: '172px',
-                        height: '153px',
-                        paddingTop: '2.5%',
-                        paddingBottom: '1%',
-                        paddingLeft: '1%',
-                      }
+                        borderRadius: "8px",
+                        margin: "40px 0px 0px -53px",
+                        boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.08)",
+                        backgroundColor: "#FFFFFF",
+                        width: "172px",
+                        height: "153px",
+                        paddingTop: "2.5%",
+                        paddingBottom: "1%",
+                        paddingLeft: "1%",
+                      },
                     }}
                   >
                     <MenuItem>
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: '400',
-                          fontSize: '15px',
-                          lineHeight: '17.58px',
-                          color: '#242120',
+                          fontWeight: "400",
+                          fontSize: "15px",
+                          lineHeight: "17.58px",
+                          color: "#242120",
                         }}
                       >
                         Profile
@@ -201,26 +205,24 @@ function Header(props) {
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: '400',
-                          fontSize: '15px',
-                          lineHeight: '17.58px',
-                          color: '#242120',
+                          fontWeight: "400",
+                          fontSize: "15px",
+                          lineHeight: "17.58px",
+                          color: "#242120",
                         }}
                       >
                         Settings
                       </Typography>
                     </MenuItem>
 
-                    <MenuItem
-                      onClick={handleLogout}
-                    >
+                    <MenuItem onClick={handleLogout}>
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: '400',
-                          fontSize: '15px',
-                          lineHeight: '17.58px',
-                          color: '#242120',
+                          fontWeight: "400",
+                          fontSize: "15px",
+                          lineHeight: "17.58px",
+                          color: "#242120",
                         }}
                       >
                         Logout
