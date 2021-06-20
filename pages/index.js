@@ -230,7 +230,6 @@ export default function Index() {
     const body = {
       email: state.email || null,
       password: state.password || null,
-      pageFrom: 'vendor',
     }
 
 
@@ -245,7 +244,7 @@ export default function Index() {
         setMessages({ ...messages, success: response.data.success.message });
         setState(initialState)
         
-        console.log(response)
+        // console.log(response)
 
         if (response.data) {
           authenticate(response.data, () => {
