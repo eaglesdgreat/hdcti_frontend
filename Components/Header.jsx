@@ -25,13 +25,15 @@ import AddAdmin from './AddAdmin'
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
-    backgroundColor: '#FFFFFF',
+    background: '#EFEFEF 0% 0% no-repeat padding-box;',
     paddingRight: '4%',
     paddingBottom: '1%',
     paddingTop: '1%',
+    height: "60px",
+    opacity: "1",
   },
   avatar: {
-    color: '#FF5C00',
+    color: '#362D73',
     backgroundColor: '#FAEAE1',
     width: '30px',
     height: '30px',
@@ -48,12 +50,21 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   typography: {
-    fontFamily: 'Roboto',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 'i8px',
-    lineHeight: '21px',
-    color: '#171616',
+    // fontFamily: 'Roboto',
+    // fontStyle: 'normal',
+    // fontWeight: 'bold',
+    // fontSize: 'i8px',
+    // lineHeight: '21px',
+    // color: '#171616',
+    font: "var(--unnamed-font-style-normal) normal 900 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-16) Avenir",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-03658c)",
+    textAlign: "right",
+    font: "normal normal 900 14px/16px Avenir",
+    letterSpacing: "0px",
+    color: "#03658C",
+    opacity: "1",
+    
   },
   button: {
     '&:hover,&:focus': {
@@ -104,7 +115,7 @@ function Header(props) {
           // paddingBottom: '1.5%',
         }}
       >
-        <AppBar className={classes.appbar} position="sticky" elevation={0}>
+        <AppBar className={classes.appbar} position="sticky" elevation={1}>
           <Toolbar>
             <Grid container spacing={1} alignItems="center">
               <Hidden smUp>
@@ -115,52 +126,68 @@ function Header(props) {
                     onClick={onDrawerToggle}
                     // className={classes.menuButton}
                   >
-                    <MenuIcon style={{ backgroundColor: "#FF5C00" }} />
+                    <MenuIcon style={{ backgroundColor: "#362D73" }} />
                   </IconButton>
                 </Grid>
               </Hidden>
 
               <Grid item xs />
 
-              <Grid item>
+              {/* <Grid item>
                 <AddAdmin />
-              </Grid>
+              </Grid> */}
 
               <Grid item>
                 <Notifications />
               </Grid>
 
-              <Grid item>
+              {/* <Grid item>
                 <IconButton
                   color="inherit"
                   disableRipple
                   style={{ marginRight: "70px" }}
                 >
-                  <Avatar className={classes.avatar}>
+                  <Avatar className={classes.avatar} >
                     {(headName ? headName : "User").split("")[0]}
                   </Avatar>
-                  {/* <img src="/Ellipse.svg" alt="ellipse" /> */}
                 </IconButton>
-              </Grid>
+              </Grid> */}
 
               <Grid item>
-                <Box display="flex">
-                  <Typography
-                    className={classes.typography}
-                    style={{
-                      fontWeight: "500",
-                      fontSize: "15px",
-                      lineHeight: "17.58px",
-                      color: "#242120",
-                      marginLeft: "-80px",
-                      marginRight: "5px",
-                    }}
+                <Box 
+                  display="flex"
+                  aria-controls="avatar-menu"
+                  aria-haspopup="true"
+                  style={{alignItems:"center"}}
+                >
+                  <IconButton
+                    color="inherit"
+                    disableRipple
+                    style={{ marginRight: "70px" }}
                   >
-                    Hello, {headName ? headName : "User"}
-                  </Typography>
+                    <Avatar className={classes.avatar} />
+                      {/* {(headName ? headName : "User").split("")[0]}
+                    </Avatar> */}
+                  </IconButton>
+                  
+                  <Box component="span" dsplay="flex">
+                    <Typography
+                      className={classes.typography}
+                      style={{
+                        // fontWeight: "500",
+                        // fontSize: "15px",
+                        // lineHeight: "17.58px",
+                        // color: "#242120",
+                        marginLeft: "-70px",
+                        marginRight: "5px",
+                      }}
+                    >
+                      Hello, {headName ? headName : "User"}
+                    </Typography>
+                  </Box>
 
                   <img
-                    src="/profile.svg"
+                    src="/right-arro.svg"
                     alt="menu"
                     aria-controls="avatar-menu"
                     aria-haspopup="true"
@@ -191,10 +218,10 @@ function Header(props) {
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: "400",
-                          fontSize: "15px",
-                          lineHeight: "17.58px",
-                          color: "#242120",
+                          // fontWeight: "400",
+                          // fontSize: "15px",
+                          // lineHeight: "17.58px",
+                          // color: "#242120",
                         }}
                       >
                         Profile
@@ -205,10 +232,10 @@ function Header(props) {
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: "400",
-                          fontSize: "15px",
-                          lineHeight: "17.58px",
-                          color: "#242120",
+                          // fontWeight: "400",
+                          // fontSize: "15px",
+                          // lineHeight: "17.58px",
+                          // color: "#242120",
                         }}
                       >
                         Settings
@@ -219,10 +246,10 @@ function Header(props) {
                       <Typography
                         className={classes.typography}
                         style={{
-                          fontWeight: "400",
-                          fontSize: "15px",
-                          lineHeight: "17.58px",
-                          color: "#242120",
+                          // fontWeight: "400",
+                          // fontSize: "15px",
+                          // lineHeight: "17.58px",
+                          // color: "#242120",
                         }}
                       >
                         Logout

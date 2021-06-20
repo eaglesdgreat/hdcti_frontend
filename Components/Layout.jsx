@@ -154,7 +154,10 @@ const styles = {
     main: {
         flex: 1,
         padding: theme.spacing(6, 4),
-        background: '#FFFFFF',
+        // background: '#FFFFFF',
+        background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
+        background: "#ECF1F2 0% 0% no-repeat padding-box",
+        opacity: "1"
     },
     // footer: {
     //     padding: theme.spacing(2),
