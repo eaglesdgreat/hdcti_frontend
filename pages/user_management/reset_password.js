@@ -14,8 +14,8 @@ import { useRouter } from "next/router";
 import { PieChart } from "react-minimal-pie-chart";
 
 // import { useStateValue } from '../../StateProviders';
-import TableLayout from "./../Components/Tables";
-import Layout from "./../Components/Layout";
+import TableLayout from "./../../Components/Tables";
+import Layout from "./../../Components/Layout";
 // import { isAuthenticated } from "./../../lib/auth.helper";
 // import PrivateRoute from "./../../Components/PrivateRoute";
 
