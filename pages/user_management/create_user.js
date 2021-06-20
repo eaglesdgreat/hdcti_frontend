@@ -7,9 +7,13 @@ import {
   TextField,
   CircularProgress,
   Divider,
-  Button
+  Button,
+  Select,
+  MenuItem,
+  InputBase,
+  FormControl,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import useSWR from "swr";
 import ReactLoading from "react-loading";
@@ -23,6 +27,43 @@ import Layout from "./../../Components/Layout";
 // import PrivateRoute from "./../../Components/PrivateRoute";
 
 
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
+    // border: "1px solid var(--unnamed-color-e0e0e0)",
+    background: "#FFFFFF 0% 0% no-repeat padding-box",
+    // border: "1px solid #E0E0E0",
+    borderRadius: "5px",
+    opacity: "1",
+    // color: "#182C51",
+    fontSize: "16px",
+    // fontWeight: "bold",
+    fontFamily: "Source Sans Pro",
+    fontStyle: "normal",
+    lineHeight: "20px",
+
+    borderRadius: '5px',
+    position: 'relative',
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #ced4da',
+    lineHeight: '18px',
+    padding: '10px 0px 10px 12px',
+    // transition: theme.transitions.create(['border-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    '&:focus': {
+      borderRadius: '5px',
+      borderColor: '#ced4da',
+      backgroundColor: theme.palette.background.paper,
+    },
+  },
+}))(InputBase);
+
+
 const useStyles = makeStyles((theme) => ({
     root: {
       width: "100%",
@@ -33,6 +74,10 @@ const useStyles = makeStyles((theme) => ({
       background: "#ECF1F2 0% 0% no-repeat padding-box",
       background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
       opacity: "1",
+    },
+    formControl: {
+      marginTop: theme.spacing(2),
+      // minWidth: 175,
     },
     card: {
       width: "529px",
@@ -98,10 +143,15 @@ const useStyles = makeStyles((theme) => ({
       opacity: "1",
     },
     form: {
-      width: "89%", // Fix IE 11 issue.
+      width: "85%", // Fix IE 11 issue.
       marginTop: theme.spacing(4),
+      paddingTop:'90px',
       // fontSize: "14px",
-      margin:'auto'
+      margin:'auto',
+      [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(0),
+      paddingTop:'45px',
+      }
     },
     submit: {
       // margin: theme.spacing(3, 0, 2),
@@ -124,6 +174,9 @@ const useStyles = makeStyles((theme) => ({
         background: "#ffffff00",
       },
     },
+    itemGrid: {
+      width:'100%'
+    },
     createBox: {
         background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
         border: "1px solid var(--unnamed-color-e0e0e0)",
@@ -133,6 +186,18 @@ const useStyles = makeStyles((theme) => ({
         opacity: "1",
         height: "562px",
         width:"98%",
+    },
+    menuPlaceholder: {
+      fontSize: "12px",
+      fontWeight: "500",
+      font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
+      letterSpacing: "var(--unnamed-character-spacing-0)",
+      color: "var(--unnamed-color-868d96)",
+      textAlign: "left",
+      font: "normal normal normal 14px/23px Poppins",
+      letterSpacing: "0px",
+      color: "#868D96",
+      opacity: "1",
     }
   }));
 
@@ -273,7 +338,7 @@ export default function Home() {
                 onSubmit={handleSubmit}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={6} sm={6}>
+                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
                     <Typography
                       className={classes.typography}
                       style={{
@@ -304,7 +369,7 @@ export default function Home() {
                     )}
                   </Grid>
 
-                  <Grid item xs={6} sm={6}>
+                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
                     <Typography
                       className={classes.typography}
                       style={{
@@ -335,7 +400,7 @@ export default function Home() {
                     )}
                   </Grid>
 
-                  <Grid item xs={6} sm={6}>
+                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
                     <Typography
                       className={classes.typography}
                       style={{
@@ -390,10 +455,68 @@ export default function Home() {
                       </div>
                     </Box>
                   </Grid>
-                  <Grid item></Grid>
+                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                  <Typography
+                      className={classes.typography}
+                      style={{
+                        marginBottom: "-11px",
+                      }}
+                    >
+                      Role
+                    </Typography>
+                    <FormControl variant="outlined" style={{ width: '100%' }} className={classes.formControl}>
+                      <Select
+                        id="role"
+                        value={state.role}
+                        name="role"
+                        displayEmpty={true}
+                        native={false}
+                        renderValue={(value) => value}
+                        onChange={handleChange}
+                        input={<BootstrapInput />}
+                      >
+                        <MenuItem value="">
+                          <Typography
+                            noWrap
+                            className={classes.menuPlaceholder}
+                          >
+                            Select Role
+                          </Typography>
+                        </MenuItem>
+
+                        <MenuItem value={'Super User'}>
+                          <Typography
+                            noWrap
+                            className={classes.typography}
+                            style={{
+                              // fontSize: '15px',
+                              // lineHeight: '18px',
+                              // color: '#242120'
+                            }}
+                          >
+                            Super User
+                          </Typography>
+                        </MenuItem>
+
+                        <MenuItem value={'User'}>
+                          <Typography
+                            noWrap
+                            className={classes.typography}
+                            style={{
+                              // fontSize: '15px',
+                              // lineHeight: '18px',
+                              // color: '#242120'
+                            }}
+                          >
+                            User
+                          </Typography>
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                 </Grid>
 
-                <Box display="flex" justifyContent="flex-end">
+                <Box display="flex" justifyContent="flex-end" style={{paddingRight:'16px'}}>
                   <Button
                     type="submit"
                     fullWidth
@@ -427,7 +550,7 @@ export default function Home() {
                           }
                         }
                       >
-                        Login
+                        Next
                       </Typography>
                     )}
                   </Button>

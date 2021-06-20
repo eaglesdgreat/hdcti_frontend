@@ -231,6 +231,7 @@ export default function Index() {
       email: state.email || null,
       password: state.password || null,
     }
+    // console.log(body)
 
 
     const url = `${process.env.BACKEND_URL}/account/token/login`;
@@ -241,20 +242,19 @@ export default function Index() {
       try {
         const response = await axios.post(url, body)
 
-        setMessages({ ...messages, success: response.data.success.message });
+        // setMessages({ ...messages, success: response.data.success.message });
         setState(initialState)
         
-        // console.log(response)
+        console.log(response)
 
         if (response.data) {
           authenticate(response.data, () => {
             return router.push('/dashboard')
-            return
           })
           setLoading(false); 
 
           enqueueSnackbar(
-            `${response.data.success}. You are being redirected to your dashboard`,
+            `You are being redirected to your dashboard page.`,
             {
               variant: "success",
             }
@@ -265,8 +265,8 @@ export default function Index() {
           console.log(e.response)
           setLoading(false); 
 
-          setMessages({ ...messages, failure: e.response.data.errors.message })
-          enqueueSnackbar(`${e.response.data.errors.message}. Try again`, {
+          // setMessages({ ...messages, failure: e.response.data.errors.message })
+          enqueueSnackbar(`Error while logining. Try again`, {
             variant: 'error',
           });
           setState(initialState)

@@ -82,8 +82,8 @@ const categories = [
 
 const styles = (theme) => ({
   header: {
-    marginLeft: theme.spacing(1),
-    marginBottom: theme.spacing(4),
+    marginLeft: '-20px',
+    marginBottom: '6px',
   },
   drawer: {
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
@@ -190,20 +190,20 @@ function Navigator(props) {
         style={{
           // margin: 'auto',
           // border: '1px solid red',
-          marginTop: "30px",
+          marginTop: "4px",
           width:"100%"
         }}
       >
         <List disablePadding style={{paddingLeft:"33px", overflowX:"hidden", width:"100%"}}>
           <ListItem className={clsx(classes.header)}>
-            <img width="100%" src="" alt="Hcdti Logo" />
+            <img width="100%" src="/logo.png" alt="Hcdti Logo" />
           </ListItem>
 
           <Box
             display="flex"
             flexDirection="column"
             style={{
-              paddingBottom: "30px",
+              paddingBottom: "25px",
             }}
           >
             <Link href={"/dashboard"}>
@@ -252,7 +252,7 @@ function Navigator(props) {
                 display="flex"
                 flexDirection="column"
                 style={{
-                  paddingBottom: "30px",
+                  paddingBottom: "25px",
                 }}
               >
                 <Box
