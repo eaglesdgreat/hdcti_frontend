@@ -170,8 +170,9 @@ function Header(props) {
                     </Avatar> */}
                   </IconButton>
                   
-                  <Box component="span" dsplay="flex">
+                  <Box component="span" dsplay="flex" style={{width: '100%'}}>
                     <Typography
+                      noWrap
                       className={classes.typography}
                       style={{
                         // fontWeight: "500",

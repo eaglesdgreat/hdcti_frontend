@@ -257,6 +257,22 @@ export default function Home() {
           isValid = false;
         }
       }
+
+      if (isValid) {
+        const validate = validations(state.username, 'Username');
+        if (validate.status) {
+          setMessages({ ...messages, username: validate.message });
+          isValid = false;
+        }
+      }
+
+      if (isValid) {
+        const validate = validations(state.role, 'Role');
+        if (validate.status) {
+          setMessages({ ...messages, role: validate.message });
+          isValid = false;
+        }
+      }
   
       if (isValid) {
         const validatePass = validations(state.password, 'password');
@@ -269,6 +285,8 @@ export default function Home() {
       const body = {
         email: state.email || null,
         password: state.password || null,
+        username: state.username || null,
+        role: state.role || null,
       }
   
   
