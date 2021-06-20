@@ -17,6 +17,7 @@ import { Menu, MenuItem } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider'
 import clsx from 'clsx';
 import { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
 import Link from 'next/link'
 
 import { logout, isAuthenticated } from '../lib/auth.helper'
@@ -84,9 +85,11 @@ const useStyles = makeStyles((theme) => ({
 function Header(props) {
   const router = useRouter();
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const { onDrawerToggle } = props;
   // const headName = isAuthenticated().user.firstName
   const headName = ''
+  const token = isAuthenticated().auth_token
 
   const [anchorEl2, setAnchorEl2] = useState(null);
 
@@ -98,11 +101,49 @@ function Header(props) {
     setAnchorEl2(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const url = `https://hcdti.savitechnig.com/account/token/logout`;
+
     logout(() => {
       setAnchorEl2(null);
       router.push("/");
     });
+
+    enqueueSnackbar(
+      `You have successfully logout`,
+      {
+        variant: "success",
+      }
+    );
+    
+    // try {
+    //   const response = await axios.post(url, {headers: {Authorization: `Token ${token}`}})
+    //   console.log('yes')
+      
+    //   console.log(response)
+
+    //   if (response) {
+    //     logout(() => {
+    //       setAnchorEl2(null);
+    //       router.push("/");
+    //     });
+
+    //     enqueueSnackbar(
+    //       `You have successfully logout`,
+    //       {
+    //         variant: "success",
+    //       }
+    //     );
+    //   }
+    // } catch (e) {
+    //   if (e.response) {
+    //     console.log(e.response)
+
+    //     enqueueSnackbar(`Error while loging out. Try again`, {
+    //       variant: 'error',
+    //     });
+    //   }
+    // }
   };
 
   return (
@@ -204,26 +245,21 @@ function Header(props) {
                     PaperProps={{
                       style: {
                         borderRadius: "8px",
-                        margin: "40px 0px 0px -53px",
+                        margin: "25px 0px 0px -23px",
                         boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.08)",
                         backgroundColor: "#FFFFFF",
-                        width: "172px",
-                        height: "153px",
-                        paddingTop: "2.5%",
-                        paddingBottom: "1%",
-                        paddingLeft: "1%",
+                        width: "100px",
+                        height: "60px",
+                        paddingTop: "4px",
+                        paddingBottom: "4px",
+                        // paddingLeft: "5px",
+                        overflow:'hidden'
                       },
                     }}
                   >
-                    <MenuItem>
+                    {/* <MenuItem>
                       <Typography
                         className={classes.typography}
-                        style={{
-                          // fontWeight: "400",
-                          // fontSize: "15px",
-                          // lineHeight: "17.58px",
-                          // color: "#242120",
-                        }}
                       >
                         Profile
                       </Typography>
@@ -232,26 +268,14 @@ function Header(props) {
                     <MenuItem>
                       <Typography
                         className={classes.typography}
-                        style={{
-                          // fontWeight: "400",
-                          // fontSize: "15px",
-                          // lineHeight: "17.58px",
-                          // color: "#242120",
-                        }}
                       >
                         Settings
                       </Typography>
-                    </MenuItem>
+                    </MenuItem> */}
 
                     <MenuItem onClick={handleLogout}>
                       <Typography
                         className={classes.typography}
-                        style={{
-                          // fontWeight: "400",
-                          // fontSize: "15px",
-                          // lineHeight: "17.58px",
-                          // color: "#242120",
-                        }}
                       >
                         Logout
                       </Typography>
