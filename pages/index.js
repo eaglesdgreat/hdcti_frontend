@@ -234,7 +234,8 @@ export default function Index() {
     // console.log(body)
 
 
-    const url = `${process.env.BACKEND_URL}/account/token/login`;
+    // const url = `${process.env.BACKEND_URL}/account/token/login`;
+    const url = `https://hcdti.savitechnig.com/account/token/login`;
 
     if (isValid) {
       setLoading(true); 
