@@ -13,13 +13,17 @@ import {
   InputBase,
   FormControl,
   Table,
-  Paper,
-  TableRow,
-  TableCell,
-  TableBody,
   TablePagination,
+  TableBody,
+  TableHead,
+  TableCell,
   TableContainer,
-  TableFooter
+  TableRow,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import axios from "axios";

@@ -379,7 +379,18 @@ export default function Index() {
             <Card className={classes.card}>
               <CardContent style={{ padding: "0px" }}>
                 {isLoading ? (
-                  <Box display="flex" justifyContent="center">
+                  <Box 
+                    display="flex" 
+                    justifyContent="center"
+                    style={{
+                      width: '100%',
+                      margin: 'auto',
+                      paddingLeft: 100,
+                      paddingRight: 100,
+                      paddingTop: 150,
+                      paddingBottom: 150,
+                    }}
+                  >
                     <CircularProgress size="3em" style={{ color: "#362D73" }} />
                   </Box>
                 ) : (
