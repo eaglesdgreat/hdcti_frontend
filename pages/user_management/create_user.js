@@ -150,8 +150,8 @@ const useStyles = makeStyles((theme) => ({
       // fontSize: "14px",
       margin:'auto',
       [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(0),
-      paddingTop:'45px',
+        marginTop: theme.spacing(0),
+        paddingTop:'45px',
       }
     },
     submit: {

@@ -67,14 +67,17 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "100%",
     margin: "auto",
-    // paddingTop: 100,
+    paddingTop: 50,
     // paddingBottom: 250,
     background: "#ECF1F2 0% 0% no-repeat padding-box",
     background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
     opacity: "1",
+    [theme.breakpoints.down("sm")]: {
+      marginTop: -70,
+    },
   },
   card: {
-    width: "529px",
+    width: "100%",
     height: "421px",
     // paddingTop: '5%',
     // paddingBottom: '5%',
@@ -375,190 +378,209 @@ export default function Index() {
           <Box display="flex" className={classes.box}>
             <Card className={classes.card}>
               <CardContent style={{ padding: "0px" }}>
-                <Typography
-                  className={classes.typography}
-                  style={{
-                    padding: "16px",
-                    paddingLeft: "30px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Reset Password
-                </Typography>
-
-                <Divider light />
-
-                {/* {messages.failure && (
-                  <span style={errorMessageStyle}>{messages.failure}</span>
-                )} */}
-
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  className={classes.box}
-                  // style={{ width: '60%' }}
-                >
-                  <form
-                    className={classes.form}
-                    noValidate
-                    onSubmit={handleSubmit}
-                  >
-                    <Grid container spacing={6}>
-                      <Grid item xs={12} sm={12}>
-                        <Typography
-                          className={classes.typography}
-                          style={
-                            {
-                              // marginBottom: "-11px",
-                            }
-                          }
-                        >
-                          Users
-                        </Typography>
-                        <FormControl
-                          variant="outlined"
-                          style={{ width: "100%" }}
-                          className={classes.formControl}
-                        >
-                          <Select
-                            id="user"
-                            value={state.user}
-                            name="user"
-                            displayEmpty
-                            // native={false}
-                            // renderValue={(value) => value}
-                            onChange={handleChange}
-                            input={<BootstrapInput />}
-                          >
-                            <MenuItem disabled={users.users.length > 0} value="">
-                              <Typography
-                                noWrap
-                                className={classes.menuPlaceholder}
-                              >
-                                Select User
-                              </Typography>
-                            </MenuItem>
-                            {users.users.map((user) => (
-                              <MenuItem key={user.id} value={user.email}>
-                                <Typography
-                                  noWrap
-                                  className={classes.typography}
-                                  style={
-                                    {
-                                      // fontSize: '15px',
-                                      // lineHeight: '18px',
-                                      // color: '#242120'
-                                    }
-                                  }
-                                >
-                                  {user.staffname}
-                                </Typography>
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </Grid>
-
-                      <Grid item xs={12} sm={12}>
-                        <Typography
-                          className={classes.typography}
-                          style={{
-                            marginBottom: "-11px",
-                          }}
-                        >
-                          New Password
-                        </Typography>
-                        <TextField
-                          className={classes.textField}
-                          type={newType}
-                          placeholder="Enter your password"
-                          id="password"
-                          name="password"
-                          variant="outlined"
-                          size="small"
-                          autoFocus
-                          required
-                          fullWidth
-                          margin="normal"
-                          value={state.password}
-                          onChange={handleChange}
-                          // onKeyUp={''}
-                        />
-                        <Box display="flex" justifyContent="space-between">
-                          <div
-                            style={{
-                              width: "50%",
-                            }}
-                          >
-                            {messages.password && (
-                              <span style={errorMessageStyle}>
-                                {messages.password}
-                              </span>
-                            )}
-                          </div>
-
-                          <div
-                            style={{
-                              width: "50%",
-                              display: "flex",
-                              justifyContent: "flex-end",
-                            }}
-                          >
-                            <Button
-                              onClick={changeType}
-                              className={classes.showPass}
-                              style={{ fontSize: "10px", marginTop: "-11px" }}
-                            >
-                              Show password
-                            </Button>
-                          </div>
-                        </Box>
-                      </Grid>
-                    </Grid>
-
-                    <Box display="flex" justifyContent="flex-start">
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
+                {isLoading ? (
+                  <Box display="flex" justifyContent="center">
+                    <CircularProgress size="3em" style={{ color: "#362D73" }} />
+                  </Box>
+                ) : (
+                  users && (
+                    <>
+                      <Typography
+                        className={classes.typography}
                         style={{
-                          backgroundColor: "#72A624",
-                          color: "white",
-                          width: "70px",
-                          height: "40px",
-                          opacity: "1",
+                          padding: "16px",
+                          paddingLeft: "30px",
+                          fontWeight: 600,
                         }}
-                        className={classes.submit}
                       >
-                        {loading ? (
-                          <CircularProgress
-                            size="2em"
-                            style={{ color: "#fff" }}
-                          />
-                        ) : (
-                          // "Login"
-                          <Typography
-                            // className={classes.typography}
-                            style={{
-                              font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                              letterSpacing:
-                                "var(--unnamed-character-spacing-0)",
-                              color: "var(--unnamed-color-ffffff)",
-                              textAlign: "center",
-                              font: "normal normal 600 14px/21px Poppins",
-                              letterSpacing: "0px",
-                              color: "#FFFFFF",
-                              opacity: "1",
-                              textTransform: "capitalize",
-                            }}
-                          >
-                            Submit
-                          </Typography>
-                        )}
-                      </Button>
-                    </Box>
-                  </form>
-                </Box>
+                        Reset Password
+                      </Typography>
+
+                      <Divider light />
+
+                      {/* {messages.failure && (
+                        <span style={errorMessageStyle}>{messages.failure}</span>
+                      )} */}
+
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        className={classes.box}
+                        // style={{ width: '60%' }}
+                      >
+                        <form
+                          className={classes.form}
+                          noValidate
+                          onSubmit={handleSubmit}
+                        >
+                          <Grid container spacing={6}>
+                            <Grid item xs={12} sm={12}>
+                              <Typography
+                                className={classes.typography}
+                                style={
+                                  {
+                                    // marginBottom: "-11px",
+                                  }
+                                }
+                              >
+                                Users
+                              </Typography>
+                              <FormControl
+                                variant="outlined"
+                                style={{ width: "100%" }}
+                                className={classes.formControl}
+                              >
+                                <Select
+                                  id="user"
+                                  value={state.user}
+                                  name="user"
+                                  displayEmpty
+                                  // native={false}
+                                  // renderValue={(value) => value}
+                                  onChange={handleChange}
+                                  input={<BootstrapInput />}
+                                >
+                                  <MenuItem
+                                    disabled={users.users.length > 0}
+                                    value=""
+                                  >
+                                    <Typography
+                                      noWrap
+                                      className={classes.menuPlaceholder}
+                                    >
+                                      Select User
+                                    </Typography>
+                                  </MenuItem>
+                                  {users.users.map((user) => (
+                                    <MenuItem key={user.id} value={user.email}>
+                                      <Typography
+                                        noWrap
+                                        className={classes.typography}
+                                        style={
+                                          {
+                                            // fontSize: '15px',
+                                            // lineHeight: '18px',
+                                            // color: '#242120'
+                                          }
+                                        }
+                                      >
+                                        {user.staffname}
+                                      </Typography>
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} sm={12}>
+                              <Typography
+                                className={classes.typography}
+                                style={{
+                                  marginBottom: "-11px",
+                                }}
+                              >
+                                New Password
+                              </Typography>
+                              <TextField
+                                className={classes.textField}
+                                type={newType}
+                                placeholder="Enter your password"
+                                id="password"
+                                name="password"
+                                variant="outlined"
+                                size="small"
+                                autoFocus
+                                required
+                                fullWidth
+                                margin="normal"
+                                value={state.password}
+                                onChange={handleChange}
+                                // onKeyUp={''}
+                              />
+                              <Box
+                                display="flex"
+                                justifyContent="space-between"
+                              >
+                                <div
+                                  style={{
+                                    width: "50%",
+                                  }}
+                                >
+                                  {messages.password && (
+                                    <span style={errorMessageStyle}>
+                                      {messages.password}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div
+                                  style={{
+                                    width: "50%",
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                  }}
+                                >
+                                  <Button
+                                    onClick={changeType}
+                                    className={classes.showPass}
+                                    style={{
+                                      fontSize: "10px",
+                                      marginTop: "-11px",
+                                    }}
+                                  >
+                                    Show password
+                                  </Button>
+                                </div>
+                              </Box>
+                            </Grid>
+                          </Grid>
+
+                          <Box display="flex" justifyContent="flex-start">
+                            <Button
+                              type="submit"
+                              fullWidth
+                              variant="contained"
+                              style={{
+                                backgroundColor: "#72A624",
+                                color: "white",
+                                width: "70px",
+                                height: "40px",
+                                opacity: "1",
+                              }}
+                              className={classes.submit}
+                            >
+                              {loading ? (
+                                <CircularProgress
+                                  size="2em"
+                                  style={{ color: "#fff" }}
+                                />
+                              ) : (
+                                // "Login"
+                                <Typography
+                                  // className={classes.typography}
+                                  style={{
+                                    font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                                    letterSpacing:
+                                      "var(--unnamed-character-spacing-0)",
+                                    color: "var(--unnamed-color-ffffff)",
+                                    textAlign: "center",
+                                    font: "normal normal 600 14px/21px Poppins",
+                                    letterSpacing: "0px",
+                                    color: "#FFFFFF",
+                                    opacity: "1",
+                                    textTransform: "capitalize",
+                                  }}
+                                >
+                                  Submit
+                                </Typography>
+                              )}
+                            </Button>
+                          </Box>
+                        </form>
+                      </Box>
+                    </>
+                  )
+                )}
               </CardContent>
             </Card>
           </Box>
