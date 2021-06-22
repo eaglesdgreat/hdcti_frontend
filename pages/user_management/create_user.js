@@ -23,6 +23,7 @@ import { PieChart } from "react-minimal-pie-chart";
 // import { useStateValue } from '../../StateProviders';
 import TableLayout from "./../../Components/Tables";
 import Layout from "./../../Components/Layout";
+import validations from './../../lib/validations'
 // import { isAuthenticated } from "./../../lib/auth.helper";
 // import PrivateRoute from "./../../Components/PrivateRoute";
 
@@ -275,7 +276,7 @@ export default function Home() {
       }
   
       if (isValid) {
-        const validatePass = validations(state.password, 'password');
+        const validatePass = validations(state.password, 'Password');
         if (validatePass.status) {
           setMessages({ ...messages, password: validatePass.message });
           isValid = false;
@@ -288,9 +289,11 @@ export default function Home() {
         username: state.username || null,
         role: state.role || null,
       }
+      console.log(body)
   
   
-      const url = `${process.env.BACKEND_URL}/account/token/login`;
+      // const url = `${process.env.BACKEND_URL}/account/create_user`;
+      const url = `https://hcdti.savitechnig.com/account/create_user`;
   
       if (isValid) {
         setLoading(true); 
@@ -413,7 +416,7 @@ export default function Home() {
                       onChange={handleChange}
                       // onKeyUp={''}
                     />
-                    {messages.email && (
+                    {messages.username && (
                       <span style={errorMessageStyle}>{messages.username}</span>
                     )}
                   </Grid>
@@ -474,7 +477,7 @@ export default function Home() {
                     </Box>
                   </Grid>
                   <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                  <Typography
+                    <Typography
                       className={classes.typography}
                       style={{
                         marginBottom: "-11px",
@@ -531,10 +534,13 @@ export default function Home() {
                         </MenuItem>
                       </Select>
                     </FormControl>
+                    {messages.role && (
+                      <span style={errorMessageStyle}>{messages.role}</span>
+                    )}
                   </Grid>
                 </Grid>
 
-                <Box display="flex" justifyContent="flex-end" style={{paddingRight:'16px'}}>
+                <Box display="flex" justifyContent="flex-end">
                   <Button
                     type="submit"
                     fullWidth
@@ -568,7 +574,7 @@ export default function Home() {
                           }
                         }
                       >
-                        Next
+                        Submit
                       </Typography>
                     )}
                   </Button>

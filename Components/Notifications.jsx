@@ -111,19 +111,18 @@ const fetcher = async (...arg) => {
 }
 
 
-const productData = () => {
-  const url = `${process.env.BACKEND_URL}/api/all-products`
-  // const url = 'http://localhost:8000/api/all-products'
-  const token = isAuthenticated().authToken
+// const productData = () => {
+//   const url = `${process.env.BACKEND_URL}/api/all-products`
+//   const token = isAuthenticated().authToken
 
-  const { data, error } = useSWR([url, token], fetcher, { shouldRetryOnError: false })
+//   const { data, error } = useSWR([url, token], fetcher, { shouldRetryOnError: false })
 
-  return {
-    products: data,
-    isLoading: !error && !data,
-    isError: error
-  }
-}
+//   return {
+//     products: data,
+//     isLoading: !error && !data,
+//     isError: error
+//   }
+// }
 
 
 
@@ -132,7 +131,7 @@ function Notifications() {
   const classes = useStyles()
 
   // Fetching data from backend with SWR
-  const { products, isLoading, isError } = productData()
+  // const { products, isLoading, isError } = productData()
 
   const note = []
   for (let id = 1; id <= 100; id++)

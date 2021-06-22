@@ -220,7 +220,7 @@ export default function Index() {
     }
 
     if (isValid) {
-      const validatePass = validations(state.password, 'password');
+      const validatePass = validations(state.password, 'Password');
       if (validatePass.status) {
         setMessages({ ...messages, password: validatePass.message });
         isValid = false;
