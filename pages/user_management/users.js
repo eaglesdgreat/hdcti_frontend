@@ -21,10 +21,10 @@ import { useSnackbar } from 'notistack'
 import { PieChart } from "react-minimal-pie-chart";
 
 // import { useStateValue } from '../../StateProviders';
-import TableLayout from "./../../Components/Tables";
-import Layout from "./../../Components/Layout";
-import validations from './../../lib/validations'
-import { isAuthenticated } from "./../../lib/auth.helper";
+import TableLayout from "../../Components/Tables";
+import Layout from "../../Components/Layout";
+import validations from '../../lib/validations'
+import { isAuthenticated } from "../../lib/auth.helper";
 // import PrivateRoute from "./../../Components/PrivateRoute";
 
 
@@ -214,7 +214,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function Home() {
-    const path = '/create_user'
+    const path = '/users'
     const classes = useStyles()
     const { enqueueSnackbar } = useSnackbar();
     const router = useRouter();
@@ -350,227 +350,7 @@ export default function Home() {
 
     return (
       <Layout path={path}>
-        <Box display="flex" style={{ width: "100%" }}>
-          <Box className={classes.createBox}>
-            <Typography
-              className={classes.typography}
-              style={{
-                padding: "16px",
-                paddingLeft: "30px",
-                fontWeight: 600,
-              }}
-            >
-              Create New User
-            </Typography>
-
-            <Divider light />
-
-            <Box>
-              <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                <Grid container spacing={4}>
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={classes.typography}
-                      style={{
-                        marginBottom: "-11px",
-                      }}
-                    >
-                      Email
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      // type="email"
-                      placeholder="Enter the email address of the user"
-                      id="email"
-                      name="email"
-                      type="email"
-                      variant="outlined"
-                      size="small"
-                      autoFocus
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.email}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    {messages.email && (
-                      <span style={errorMessageStyle}>{messages.email}</span>
-                    )}
-                  </Grid>
-
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={classes.typography}
-                      style={{
-                        marginBottom: "-11px",
-                      }}
-                    >
-                      Username
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      // type="email"
-                      placeholder="Enter a username for the user"
-                      id="username"
-                      name="username"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      autoFocus
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.username}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    {messages.username && (
-                      <span style={errorMessageStyle}>{messages.username}</span>
-                    )}
-                  </Grid>
-
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={classes.typography}
-                      style={{
-                        marginBottom: "-11px",
-                      }}
-                    >
-                      Password
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      type={newType}
-                      placeholder="Enter your password"
-                      id="password"
-                      name="password"
-                      variant="outlined"
-                      size="small"
-                      autoFocus
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.password}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    <Box display="flex" justifyContent="space-between">
-                      <div
-                        style={{
-                          width: "50%",
-                        }}
-                      >
-                        {messages.password && (
-                          <span style={errorMessageStyle}>
-                            {messages.password}
-                          </span>
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          width: "50%",
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <Button
-                          onClick={changeType}
-                          className={classes.showPass}
-                          style={{ fontSize: "10px", marginTop: "-11px" }}
-                        >
-                          Show password
-                        </Button>
-                      </div>
-                    </Box>
-                  </Grid>
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={classes.typography}
-                      style={{
-                        marginBottom: "-11px",
-                      }}
-                    >
-                      Role
-                    </Typography>
-                    <FormControl
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      className={classes.formControl}
-                    >
-                      <Select
-                        id="role"
-                        value={state.role}
-                        name="role"
-                        displayEmpty
-                        // native={false}
-                        // renderValue={(value) => value}
-                        onChange={handleChange}
-                        input={<BootstrapInput />}
-                      >
-                        <MenuItem disabled={ roles.length > 0 } value="">
-                          <Typography
-                            noWrap
-                            className={classes.menuPlaceholder}
-                          >
-                            Select Role
-                          </Typography>
-                        </MenuItem>
-
-                        {roles.map((role) => (
-                          <MenuItem key={role.id} value={role.value}>
-                            <Typography noWrap className={classes.typography}>
-                              {role.name}
-                            </Typography>
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#72A624",
-                      color: "white",
-                      width: "70px",
-                      height: "40px",
-                      opacity: "1",
-                    }}
-                    className={classes.submit}
-                  >
-                    {loading ? (
-                      <CircularProgress size="2em" style={{ color: "#fff" }} />
-                    ) : (
-                      // "Login"
-                      <Typography
-                        // className={classes.typography}
-                        style={{
-                          font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                          letterSpacing: "var(--unnamed-character-spacing-0)",
-                          color: "var(--unnamed-color-ffffff)",
-                          textAlign: "center",
-                          font: "normal normal 600 14px/21px Poppins",
-                          letterSpacing: "0px",
-                          color: "#FFFFFF",
-                          opacity: "1",
-                          textTransform: "capitalize",
-                        }}
-                      >
-                        Submit
-                      </Typography>
-                    )}
-                  </Button>
-                </Box>
-              </form>
-            </Box>
-          </Box>
-        </Box>
+      
       </Layout>
     );
 }

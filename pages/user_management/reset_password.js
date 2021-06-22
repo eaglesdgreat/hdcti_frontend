@@ -66,9 +66,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "100%",
-    // margin: 'auto',
-    paddingTop: 100,
-    paddingBottom: 250,
+    margin: "auto",
+    // paddingTop: 100,
+    // paddingBottom: 250,
     background: "#ECF1F2 0% 0% no-repeat padding-box",
     background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
     opacity: "1",
@@ -138,9 +138,9 @@ const useStyles = makeStyles((theme) => ({
     },
 
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    border: "1px solid var(--unnamed-color-e0e0e0)",
+    // border: "1px solid var(--unnamed-color-e0e0e0)",
     background: "#FFFFFF 0% 0% no-repeat padding-box",
-    border: "1px solid #E0E0E0",
+    // border: "1px solid #E0E0E0",
     borderRadius: "5px",
     opacity: "1",
   },
@@ -169,6 +169,22 @@ const useStyles = makeStyles((theme) => ({
     "&:hover,&:focus": {
       background: "#ffffff00",
     },
+  },
+  menuPlaceholder: {
+    fontSize: "12px",
+    fontWeight: "500",
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-868d96)",
+    textAlign: "left",
+    font: "normal normal normal 14px/23px Poppins",
+    letterSpacing: "0px",
+    color: "#868D96",
+    opacity: "1",
+  },
+  formControl: {
+    marginTop: theme.spacing(2),
+    // minWidth: 175,
   },
 }));
 
@@ -200,10 +216,12 @@ const validations = (value, name, required = true, type, secondValue) => {
 const fetcher = async (...arg) => {
   const [url, token] = arg
 
-  const response = await axios.get(
-    url,
-    { headers: { authenticate: token } }
-  )
+  const response = await axios.get(url, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Token ${token}`,
+    },
+  });
 
   return response.data
 }
@@ -228,12 +246,13 @@ export default function Index() {
   const router = useRouter()
   const path = '/reset_password'
   const { enqueueSnackbar } = useSnackbar();
+  const authToken = isAuthenticated().auth_token
   // const [{ basket }, dispatch] = useStateValue();
 
   // Fetching data from backend with SWR
   const { users, isLoading, isError } = usersData()
 
-  // console.log(users)
+  // console.log(users.users)
 
   // const addToBasket = () => {
   //   dispatch({
@@ -281,12 +300,12 @@ export default function Index() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    let isValid = true
+    let isValid = true;
 
     if (isValid) {
-      const validate = validations(state.user, 'User');
+      const validate = validations(state.user, "User");
       if (validate.status) {
         setMessages({ ...messages, user: validate.message });
         isValid = false;
@@ -294,7 +313,7 @@ export default function Index() {
     }
 
     if (isValid) {
-      const validatePass = validations(state.password, 'Password');
+      const validatePass = validations(state.password, "Password");
       if (validatePass.status) {
         setMessages({ ...messages, password: validatePass.message });
         isValid = false;
@@ -302,46 +321,47 @@ export default function Index() {
     }
 
     const body = {
-      user: state.user || null,
-      password: state.password || null,
-    }
-    console.log(body)
+      email: state.user || null,
+      password: state.password || null, ///
+    };
+    console.log(body);
 
-
-    // const url = `${process.env.BACKEND_URL}/account/token/login`;
+    // const url = `${process.env.BACKEND_URL}/account/reset_password_otp`;
     const url = `https://hcdti.savitechnig.com/account/reset_password_otp`;
 
     if (isValid) {
-      setLoading(true); 
+      setLoading(true);
 
       try {
-        const response = await axios.post(url, body)
+        const response = await axios.post(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${authToken}`,
+          },
+        });
 
-        // setMessages({ ...messages, success: response.data.success.message });
-        setState(initialState)
-        
-        // console.log(response)
+
+        // console.log(response);
 
         if (response.data) {
-          setLoading(false); 
+          setLoading(false);
 
-          enqueueSnackbar(
-            `You are being redirected to your dashboard page.`,
-            {
-              variant: "success",
-            }
-          );
+          enqueueSnackbar(`${response.data.reason}`, {
+            variant: "success",
+          });
+
+          setState(initialState);
         }
       } catch (e) {
         if (e.response) {
-          console.log(e.response)
-          setLoading(false); 
+          // console.log(e.response);
+          setLoading(false);
 
-          // setMessages({ ...messages, failure: e.response.data.errors.message })
-          enqueueSnackbar(`Error while logining. Try again`, {
-            variant: 'error',
+          enqueueSnackbar(`${e.response.data.reason} Try again`, {
+            variant: "error",
           });
-          setState(initialState)
+
+          setState(initialState);
         }
       }
     }
@@ -385,66 +405,58 @@ export default function Index() {
                   >
                     <Grid container spacing={6}>
                       <Grid item xs={12} sm={12}>
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          // marginBottom: "-11px",
-                        }}
-                      >
-                        Users
-                      </Typography>
-                      <FormControl variant="outlined" style={{ width: '100%' }} className={classes.formControl}>
-                        <Select
-                          id="role"
-                          value={state.role}
-                          name="role"
-                          displayEmpty={true}
-                          native={false}
-                          renderValue={(value) => value}
-                          onChange={handleChange}
-                          input={<BootstrapInput />}
+                        <Typography
+                          className={classes.typography}
+                          style={
+                            {
+                              // marginBottom: "-11px",
+                            }
+                          }
                         >
-                          <MenuItem value="">
-                            <Typography
-                              noWrap
-                              className={classes.menuPlaceholder}
-                            >
-                              Select Role
-                            </Typography>
-                          </MenuItem>
-
-                          <MenuItem value={'Super User'}>
-                            <Typography
-                              noWrap
-                              className={classes.typography}
-                              style={{
-                                // fontSize: '15px',
-                                // lineHeight: '18px',
-                                // color: '#242120'
-                              }}
-                            >
-                              Super User
-                            </Typography>
-                          </MenuItem>
-
-                          <MenuItem value={'User'}>
-                            <Typography
-                              noWrap
-                              className={classes.typography}
-                              style={{
-                                // fontSize: '15px',
-                                // lineHeight: '18px',
-                                // color: '#242120'
-                              }}
-                            >
-                              User
-                            </Typography>
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                      {messages.role && (
-                        <span style={errorMessageStyle}>{messages.role}</span>
-                      )}
+                          Users
+                        </Typography>
+                        <FormControl
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          className={classes.formControl}
+                        >
+                          <Select
+                            id="user"
+                            value={state.user}
+                            name="user"
+                            displayEmpty
+                            // native={false}
+                            // renderValue={(value) => value}
+                            onChange={handleChange}
+                            input={<BootstrapInput />}
+                          >
+                            <MenuItem disabled={users.users.length > 0} value="">
+                              <Typography
+                                noWrap
+                                className={classes.menuPlaceholder}
+                              >
+                                Select User
+                              </Typography>
+                            </MenuItem>
+                            {users.users.map((user) => (
+                              <MenuItem key={user.id} value={user.email}>
+                                <Typography
+                                  noWrap
+                                  className={classes.typography}
+                                  style={
+                                    {
+                                      // fontSize: '15px',
+                                      // lineHeight: '18px',
+                                      // color: '#242120'
+                                    }
+                                  }
+                                >
+                                  {user.staffname}
+                                </Typography>
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
 
                       <Grid item xs={12} sm={12}>
@@ -454,7 +466,7 @@ export default function Index() {
                             marginBottom: "-11px",
                           }}
                         >
-                          Password
+                          New Password
                         </Typography>
                         <TextField
                           className={classes.textField}
@@ -519,24 +531,26 @@ export default function Index() {
                         className={classes.submit}
                       >
                         {loading ? (
-                          <CircularProgress size="2em" style={{ color: "#fff" }} />
+                          <CircularProgress
+                            size="2em"
+                            style={{ color: "#fff" }}
+                          />
                         ) : (
                           // "Login"
                           <Typography
                             // className={classes.typography}
-                            style={
-                              {
-                                font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
-                                letterSpacing: 'var(--unnamed-character-spacing-0)',
-                                color: 'var(--unnamed-color-ffffff)',
-                                textAlign: 'center',
-                                font: 'normal normal 600 14px/21px Poppins',
-                                letterSpacing: '0px',
-                                color: '#FFFFFF',
-                                opacity: '1',
-                                textTransform:'capitalize',
-                              }
-                            }
+                            style={{
+                              font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                              letterSpacing:
+                                "var(--unnamed-character-spacing-0)",
+                              color: "var(--unnamed-color-ffffff)",
+                              textAlign: "center",
+                              font: "normal normal 600 14px/21px Poppins",
+                              letterSpacing: "0px",
+                              color: "#FFFFFF",
+                              opacity: "1",
+                              textTransform: "capitalize",
+                            }}
                           >
                             Submit
                           </Typography>

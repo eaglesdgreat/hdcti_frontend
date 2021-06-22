@@ -19,6 +19,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import Link from 'next/link'
+import axios from 'axios'
 
 import { logout, isAuthenticated } from '../lib/auth.helper'
 import Notifications from './Notifications'
@@ -90,6 +91,7 @@ function Header(props) {
   // const headName = isAuthenticated().user.firstName
   const headName = ''
   const token = isAuthenticated().auth_token
+  // console.log(token)
 
   const [anchorEl2, setAnchorEl2] = useState(null);
 
@@ -104,46 +106,47 @@ function Header(props) {
   const handleLogout = async () => {
     const url = `https://hcdti.savitechnig.com/account/token/logout`;
 
-    logout(() => {
-      setAnchorEl2(null);
-      router.push("/");
-    });
+    // logout(() => {
+    //   setAnchorEl2(null);
+    //   router.push("/");
+    // });
 
-    enqueueSnackbar(
-      `You have successfully logout`,
-      {
-        variant: "success",
-      }
-    );
+    // enqueueSnackbar(
+    //   `You have successfully logout`,
+    //   {
+    //     variant: "success",
+    //   }
+    // );
     
-    // try {
-    //   const response = await axios.post(url, {headers: {Authorization: `Token ${token}`}})
-    //   console.log('yes')
+    try {
+      const response = await axios.post(url, {
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Token ${token}`,
+        },
+      });
+      console.log('yes')
       
-    //   console.log(response)
+      // console.log(response)
 
-    //   if (response) {
-    //     logout(() => {
-    //       setAnchorEl2(null);
-    //       router.push("/");
-    //     });
+      logout(() => {
+        setAnchorEl2(null);
+        router.push("/");
+      });
 
-    //     enqueueSnackbar(
-    //       `You have successfully logout`,
-    //       {
-    //         variant: "success",
-    //       }
-    //     );
-    //   }
-    // } catch (e) {
-    //   if (e.response) {
-    //     console.log(e.response)
+      enqueueSnackbar(
+        `You have successfully logout`,
+        {
+          variant: "success",
+        }
+      );
+    } catch (e) {
+      console.log(e)
 
-    //     enqueueSnackbar(`Error while loging out. Try again`, {
-    //       variant: 'error',
-    //     });
-    //   }
-    // }
+      enqueueSnackbar(`Error while loging out. Try again`, {
+        variant: 'error',
+      });
+    }
   };
 
   return (
