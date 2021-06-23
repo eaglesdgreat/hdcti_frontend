@@ -103,8 +103,9 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid var(--unnamed-color-e0e0e0)",
     background: "#FFFFFF 0% 0% no-repeat padding-box",
     border: "1px solid #E0E0E0",
-    borderRadius: "5px",
+    // borderRadius: "5px",
     opacity: "1",
+    padding: '10px',
   },
   box: {
     paddingTop: "50px",
@@ -352,44 +353,47 @@ export default function Home() {
     return (
       <Layout path={path}>
         <Box className={classes.box}>
-          <Box display="flex" flexDirection="column" className={classes.topBox}>
-            <Box display="flex" style={{ width: "100%" }}>
-              <Box
-                display="flex"
-                // justifyContent="flex-start"
-                style={{
-                  width: "50%",
-                  paddingLeft: "20px",
-                  paddingTop: "10px",
-                }}
-              >
-                <Typography className={classes.typography3}>Users</Typography>
+          <Paper className={classes.tContainer}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              className={classes.topBox}
+            >
+              <Box display="flex" style={{ width: "100%" }}>
+                <Box
+                  display="flex"
+                  // justifyContent="flex-start"
+                  style={{
+                    width: "50%",
+                    paddingLeft: "20px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <Typography className={classes.typography3}>Users</Typography>
+                </Box>
+
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                  style={{
+                    width: "50%",
+                    paddingRight: "40px",
+                    paddingTop: "10px",
+                  }}
+                >
+                  <Typography className={classes.typography4}>
+                    {users ? users.users.length : 0} users
+                  </Typography>
+                </Box>
               </Box>
 
-              <Box
-                display="flex"
-                // justifyContent="flex-end"
-                style={{
-                  width: "50%",
-                  paddingRight: "40px",
-                  paddingTop: "10px",
-                }}
-              >
-                <Typography
-                  className={classes.typography4}
-                >
-                  {users ? users.users.length : 0} users
-                </Typography>
-              </Box>
+              {/* <Divider light />
+
+              <Box>
+
+              </Box> */}
             </Box>
 
-            {/* <Divider light />
-
-            <Box>
-
-            </Box> */}
-          </Box>
-          <Paper className={classes.tContainer}>
             {isError ? (
               <Box
                 display="flex"
@@ -439,33 +443,25 @@ export default function Home() {
                         size="small"
                         className={classes.tableCell}
                       >
-                        <Typography
-                          className={classes.typography}
-                        >
+                        <Typography className={classes.typography}>
                           Name
                         </Typography>
                       </TableCell>
 
                       <TableCell size="small" className={classes.tableCell}>
-                        <Typography
-                          className={classes.typography}
-                        >
+                        <Typography className={classes.typography}>
                           Email
                         </Typography>
                       </TableCell>
 
                       <TableCell size="small" className={classes.tableCell}>
-                        <Typography
-                          className={classes.typography}
-                        >
+                        <Typography className={classes.typography}>
                           Role
                         </Typography>
                       </TableCell>
 
                       <TableCell size="small" className={classes.tableCell}>
-                        <Typography
-                          className={classes.typography}
-                        >
+                        <Typography className={classes.typography}>
                           Actions
                         </Typography>
                       </TableCell>
