@@ -383,11 +383,11 @@ export default function Home() {
               </Box>
             </Box>
 
-            <Divider light />
+            {/* <Divider light />
 
             <Box>
 
-            </Box>
+            </Box> */}
           </Box>
           <Paper className={classes.tContainer}>
             {isError ? (
