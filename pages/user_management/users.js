@@ -32,6 +32,9 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useSnackbar } from 'notistack'
 import { PieChart } from "react-minimal-pie-chart";
+// import { DeleteOutlinedIcon } from "@material-ui/icons";
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditIcon from "@material-ui/icons/Edit";
 
 // import { useStateValue } from '../../StateProviders';
 import TableLayout from "../../Components/Tables";
@@ -43,7 +46,7 @@ import { isAuthenticated } from "../../lib/auth.helper";
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
-    'label + &': {
+    "label + &": {
       marginTop: theme.spacing(3),
     },
   },
@@ -59,20 +62,33 @@ const BootstrapInput = withStyles((theme) => ({
     // fontWeight: "bold",
     fontFamily: "Source Sans Pro",
     fontStyle: "normal",
+    height: "11px",
     lineHeight: "20px",
 
-    borderRadius: '5px',
-    position: 'relative',
+    borderRadius: "5px",
+    position: "relative",
     backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
+    border: "1px solid #ced4da",
+    lineHeight: "18px",
+    padding: "10px 0px 10px 12px",
     // transition: theme.transitions.create(['border-color', 'box-shadow']),
     // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
+    "&:focus": {
+      borderRadius: "5px",
+      borderColor: "#ced4da",
       backgroundColor: theme.palette.background.paper,
+    },
+    "& ::placeholder": {
+      fontSize: "12px",
+      fontWeight: "500",
+      font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
+      letterSpacing: "var(--unnamed-character-spacing-0)",
+      color: "var(--unnamed-color-868d96)",
+      textAlign: "left",
+      font: "normal normal normal 14px/23px Poppins",
+      letterSpacing: "0px",
+      color: "#868D96",
+      opacity: "1",
     },
   },
 }))(InputBase);
@@ -105,11 +121,11 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #E0E0E0",
     // borderRadius: "5px",
     opacity: "1",
-    padding: '10px',
+    // padding: '10px',
   },
   box: {
     paddingTop: "50px",
-    width: "90%",
+    width: "95%",
     // display: "flex",
     margin: "auto",
     [theme.breakpoints.down("sm")]: {
@@ -150,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
     font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-19) var(--unnamed-font-family-helveticaneue-medium)",
     letterSpacing: "var(--unnamed-character-spacing-0)",
     color: "var(--unnamed-color-0d0d0d)",
-    textAlign: "left",
+    float: "left",
     font: "normal normal normal 16px/19px HelveticaNeue-Medium",
     letterSpacing: "0px",
     color: "#0D0D0D",
@@ -161,11 +177,18 @@ const useStyles = makeStyles((theme) => ({
     font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)",
     letterSpacing: "var(--unnamed-character-spacing-0)",
     color: "var(--unnamed-color-0d0d0d)",
-    textAlign: "right",
+    float: "right",
     font: "normal normal normal 12px/14px Helvetica Neue",
     letterSpacing: "0px",
     color: "#0D0D0D",
     opacity: "1",
+  },
+  submit: {
+    // margin: theme.spacing(3, 0, 2),
+    fontSize: "14px",
+    boxShadow: "none",
+    padding: "10px",
+    fontWeight: "600",
   },
 }));
 
@@ -209,27 +232,9 @@ export default function Home() {
     // Fetching data from backend with SWR
     const { users, isLoading, isError } = usersData()
 
-    const errorMessageStyle = {
-      color: "red",
-      fontSize: "10px",
-      fontWeight: "bolder",
-      fontStyle: "oblique",
-    }
-  
-    const initialState = {
-      email: '',
-      username: '',
-      password: '',
-      role: '',
-    }
-
-    const [state, setState] = useState(initialState)
+    const [state, setState] = useState('')
+    const [search, setSearch] = useState([])
     const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState({
-      ...initialState,
-      success: '',
-      failure: '',
-    })
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [newType, setNewType] = useState('password')
@@ -246,152 +251,125 @@ export default function Home() {
     };
 
     const handleChange = (event) => {
-      const { name, value } = event.target
-      setState({ ...state, [name]: value })
-    }
-  
-    const changeType = () => {
-      if(newType === 'password') {
-        setNewType('text')
-      }
-  
-      if(newType === 'text') {
-        setNewType('password')
-      }
+      const { name, value } = event.target;
+      setState(value);
+      console.log(state);
     }
 
-    const handleSubmit = async (e) => {
-      e.preventDefault()
-  
-      let isValid = true
-  
-      if (isValid) {
-        const validate = validations(state.email, 'Email', true, 'email');
-        if (validate.status) {
-          setMessages({ ...messages, email: validate.message });
-          isValid = false;
-        }
+    const handleSearch = (event) => {
+      const { value } = event.target;
+
+      const data = users.users.filter(
+        (user) => user.staffname == value || user.email == value
+      );
+
+      if(data.length > 0) {
+        setSearch(data);
       }
 
-      if (isValid) {
-        const validate = validations(state.username, 'Username');
-        if (validate.status) {
-          setMessages({ ...messages, username: validate.message });
-          isValid = false;
-        }
+      if(data.length === 0) {
+        setSearch([])
       }
-  
-      if (isValid) {
-        const validatePass = validations(state.password, 'Password');
-        if (validatePass.status) {
-          setMessages({ ...messages, password: validatePass.message });
-          isValid = false;
-        }
-      }
-  
-      const body = {
-        email: state.email || null,
-        password: state.password || null,
-        staffname: state.username || null,
-        role: state.role ? state.role : 'credit_officer',
-      }
-      // console.log(body)
-  
-  
-      // const url = `${process.env.BACKEND_URL}/account/create_user`;
-      const url = `https://hcdti.savitechnig.com/account/create_user`;
-  
-      if (isValid) {
-        setLoading(true); 
-  
-        try {
-          const response = await axios.post(url, body, {
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Token ${token}`,
-            },
-          });
-  
-          // setMessages({ ...messages, success: response.data.success.message });
-          setState(initialState)
-          
-          // console.log(response)
-  
-          if (response.data) {
-            setLoading(false); 
-  
-            enqueueSnackbar(
-              `${response.data.reason}`,
-              {
-                variant: "success",
-              }
-            );
-          }
-        } catch (e) {
-          if (e.response) {
-            // console.log(e.response)
-            setLoading(false); 
-  
-            if (e.response.data.detail) {
-              enqueueSnackbar(`${e.response.data.detail}, Try again`, {
-                variant: "error",
-              });
-            }
-
-            if (e.response.data.reason) {
-              enqueueSnackbar(`${e.response.data.reason}, Try again`, {
-                variant: "error",
-              });
-            }
-            
-            setState(initialState)
-          }
-        }
-      }
-    }
+    };
 
     return (
       <Layout path={path}>
         <Box className={classes.box}>
-          <Paper className={classes.tContainer}>
+          <TableContainer className={classes.tContainer} component="div">
             <Box
               display="flex"
               flexDirection="column"
               className={classes.topBox}
             >
-              <Box display="flex" style={{ width: "100%" }}>
-                <Box
-                  display="flex"
-                  // justifyContent="flex-start"
+              <Box style={{ display: "flex", width: "100%" }}>
+                <div
                   style={{
-                    width: "50%",
-                    paddingLeft: "20px",
-                    paddingTop: "10px",
+                    // paddingLeft: "40px",
+                    paddingLeft: "45px",
+                    paddingTop: "15px",
+                    paddingBottom: "15px",
+                    width: "47%",
+                    // paddingTop: "10px",
                   }}
                 >
                   <Typography className={classes.typography3}>Users</Typography>
-                </Box>
+                </div>
 
-                <Box
-                  display="flex"
-                  justifyContent="flex-end"
+                <div
                   style={{
-                    width: "50%",
-                    paddingRight: "40px",
-                    paddingTop: "10px",
+                    padding: "15px",
+                    width: "47%",
+                    // paddingRight: "40px",
                   }}
                 >
                   <Typography className={classes.typography4}>
                     {users ? users.users.length : 0} users
                   </Typography>
-                </Box>
+                </div>
               </Box>
 
-              {/* <Divider light />
+              <Divider light />
+              <Box style={{ display: "flex", width: "100%", margin: "auto" }}>
+                <Box
+                  style={{
+                    display: "flex",
+                    width: "77%",
+                    justifyContent: "flex-end",
+                    padding: "20px",
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    style={{
+                      backgroundColor: "#72A624",
+                      color: "white",
+                      width: "152px",
+                      height: "33px",
+                      opacity: "1",
+                      borderRadius: "4px",
+                    }}
+                    className={classes.submit}
+                  >
+                    <Typography
+                      // className={classes.typography}
+                      style={{
+                        font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                        letterSpacing: "var(--unnamed-character-spacing-0)",
+                        color: "var(--unnamed-color-ffffff)",
+                        textAlign: "center",
+                        font: "normal normal 600 14px/21px Poppins",
+                        letterSpacing: "0px",
+                        color: "#FFFFFF",
+                        opacity: "1",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      Create New User
+                    </Typography>
+                  </Button>
+                </Box>
 
-              <Box>
-
-              </Box> */}
+                <Box
+                  style={{
+                    display: "flex",
+                    width: "23%",
+                    justifyContent: "flex-start",
+                    paddingTop: "20px",
+                    paddingBottom: "20px",
+                  }}
+                >
+                  <BootstrapInput
+                    placeholder="Search Users"
+                    value={state}
+                    name="state"
+                    id="state"
+                    onKeyUp={handleSearch}
+                    onChange={handleChange}
+                  />
+                </Box>
+              </Box>
             </Box>
 
             {isError ? (
@@ -469,11 +447,11 @@ export default function Home() {
                   </TableHead>
 
                   <TableBody>
-                    {users.users
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                    {(search.length > 0 ? search : users.users)
+                      // .slice(
+                      //   page * rowsPerPage,
+                      //   page * rowsPerPage + rowsPerPage
+                      // )
                       .map((user, i) => (
                         <TableRow key={user.id}>
                           <TableCell className={classes.tableCell}>
@@ -511,9 +489,10 @@ export default function Home() {
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {/* {user.status} */}
-                            </Typography>
+                            <Box display="flex" justifyContent="center">
+                              <EditIcon />
+                              <DeleteOutlinedIcon />
+                            </Box>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -521,7 +500,7 @@ export default function Home() {
                 </Table>
               )
             )}
-          </Paper>
+          </TableContainer>
         </Box>
       </Layout>
     );
