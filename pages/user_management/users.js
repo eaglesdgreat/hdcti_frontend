@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: "1",
   },
   tContainer: {
-    overflowX: 'auto',
+    overflowX: "auto",
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
     border: "1px solid var(--unnamed-color-e0e0e0)",
     background: "#FFFFFF 0% 0% no-repeat padding-box",
@@ -107,10 +107,14 @@ const useStyles = makeStyles((theme) => ({
     opacity: "1",
   },
   box: {
-    paddingTop: 50,
+    paddingTop: "50px",
     width: "90%",
     // display: "flex",
     margin: "auto",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      paddingTop: "0px",
+    },
   },
   typography: {
     font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-helvetica-neue)",
@@ -153,14 +157,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   typography4: {
-    font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)',
-    letterSpacing:'var(--unnamed-character-spacing-0)',
-    color:'var(--unnamed-color-0d0d0d)',
-    textAlign: 'right',
-    font: 'normal normal normal 12px/14px Helvetica Neue',
-    letterSpacing: '0px',
-    color: '#0D0D0D',
-    opacity: '1',
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "right",
+    font: "normal normal normal 12px/14px Helvetica Neue",
+    letterSpacing: "0px",
+    color: "#0D0D0D",
+    opacity: "1",
   },
 }));
 
@@ -381,7 +385,9 @@ export default function Home() {
 
             <Divider light />
 
-            <Box></Box>
+            <Box>
+
+            </Box>
           </Box>
           <Paper className={classes.tContainer}>
             {isError ? (
