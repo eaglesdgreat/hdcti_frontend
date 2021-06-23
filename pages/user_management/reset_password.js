@@ -385,10 +385,10 @@ export default function Index() {
                     style={{
                       width: '100%',
                       margin: 'auto',
-                      paddingLeft: 100,
-                      paddingRight: 100,
-                      paddingTop: 150,
-                      paddingBottom: 150,
+                      // paddingLeft: 100,
+                      // paddingRight: 100,
+                      // paddingTop: 150,
+                      // paddingBottom: 150,
                     }}
                   >
                     <CircularProgress size="3em" style={{ color: "#362D73" }} />

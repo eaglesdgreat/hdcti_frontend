@@ -19,6 +19,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Paper,
   Dialog,
   DialogActions,
   DialogContent,
@@ -78,151 +79,119 @@ const BootstrapInput = withStyles((theme) => ({
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      width: "100%",
-      height: "100%",
-      // margin: 'auto',
-      paddingTop: 100,
-      paddingBottom: 250,
-      background: "#ECF1F2 0% 0% no-repeat padding-box",
-      background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
-      opacity: "1",
-    },
-    formControl: {
-      marginTop: theme.spacing(2),
-      // minWidth: 175,
-    },
-    card: {
-      width: "529px",
-      height: "421px",
-      // paddingTop: '5%',
-      // paddingBottom: '5%',
-      // margin: 'auto',
-      // alignItems: 'center',
-      // borderRadius: '10px'
-      background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-      border: "1px solid var(--unnamed-color-e0e0e0)",
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      border: "1px solid #E0E0E0",
-      borderRadius: "5px",
-      opacity: "1",
-    },
-    box1: {
-      width: "100%",
-      // margin: 'auto',
-      // alignItem: 'center',
-      // border: '1px solid red',
-    },
-    typography: {
-      font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-19) var(--unnamed-font-family-helveticaneue-medium)",
-      letterSpacing: "var(--unnamed-character-spacing-0)",
-      color: "var(--unnamed-color-0d0d0d)",
-      textAlign: "left",
-      font: "normal normal normal 16px/19px HelveticaNeue-Medium",
-      letterSpacing: " 0px",
-      color: "#0D0D0D",
-      opacity: "1",
-    },
-    textField: {
-      // borderRadius: "6px",
-      height: '38px',
-      // margin: 'auto',
-      "& input": {
-        // color: "#182C51",
-        fontSize: "16px",
-        // fontWeight: "bold",
-        fontFamily: "Source Sans Pro",
-        fontStyle: "normal",
-        lineHeight: "20px",
-      },
-      "& ::placeholder": {
-        fontSize: "12px",
-        fontWeight: "500",
-        font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
-        letterSpacing: "var(--unnamed-character-spacing-0)",
-        color: "var(--unnamed-color-868d96)",
-        textAlign: "left",
-        font: "normal normal normal 14px/23px Poppins",
-        letterSpacing: "0px",
-        color: "#868D96",
-        opacity: "1",
-      },
-  
-      background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-      // border: "1px solid var(--unnamed-color-e0e0e0)",
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      // border: "1px solid #E0E0E0",
-      borderRadius: "5px",
-      opacity: "1",
-    },
-    form: {
-      width: "85%", // Fix IE 11 issue.
-      marginTop: theme.spacing(4),
-      paddingTop:'90px',
-      // fontSize: "14px",
-      margin:'auto',
-      [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(0),
-      paddingTop:'45px',
-      }
-    },
-    submit: {
-      // margin: theme.spacing(3, 0, 2),
-      fontSize: "14px",
-      boxShadow: "none",
-      padding: "10px",
-      fontWeight: "600",
-      marginTop: theme.spacing(4),
-    },
-    showPass: {
-      font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-16) var(--unnamed-font-family-poppins)",
-      letterSpacing: "var(--unnamed-character-spacing-0)",
-      color: "var(--unnamed-color-362d73)",
-      textAlign: "right",
-      font: "normal normal medium 12px/16px Poppins",
-      letterSpacing: " 0px",
-      color: "#362D73",
-      opacity: "1",
-      "&:hover,&:focus": {
-        background: "#ffffff00",
-      },
-    },
-    itemGrid: {
-      width:'100%'
-    },
-    createBox: {
-        background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-        border: "1px solid var(--unnamed-color-e0e0e0)",
-        background: "#FFFFFF 0% 0% no-repeat padding-box",
-        border: "1px solid #E0E0E0",
-        borderRadius: "5px",
-        opacity: "1",
-        height: "562px",
-        width:"98%",
-    },
-    menuPlaceholder: {
-      fontSize: "12px",
-      fontWeight: "500",
-      font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
-      letterSpacing: "var(--unnamed-character-spacing-0)",
-      color: "var(--unnamed-color-868d96)",
-      textAlign: "left",
-      font: "normal normal normal 14px/23px Poppins",
-      letterSpacing: "0px",
-      color: "#868D96",
-      opacity: "1",
-    }
-  }));
+  root: {
+    width: "100%",
+    height: "100%",
+    // margin: 'auto',
+    paddingTop: 100,
+    paddingBottom: 250,
+    background: "#ECF1F2 0% 0% no-repeat padding-box",
+    background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
+    opacity: "1",
+  },
+  tContainer: {
+    overflowX: 'auto',
+    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
+    border: "1px solid var(--unnamed-color-e0e0e0)",
+    background: "#FFFFFF 0% 0% no-repeat padding-box",
+    border: "1px solid #E0E0E0",
+    borderRadius: "5px",
+    opacity: "1",
+  },
+  topBox: {
+    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
+    border: "1px solid var(--unnamed-color-e0e0e0)",
+    background: "#FFFFFF 0% 0% no-repeat padding-box",
+    border: "1px solid #E0E0E0",
+    borderRadius: "5px",
+    opacity: "1",
+  },
+  box: {
+    paddingTop: 50,
+    width: "90%",
+    // display: "flex",
+    margin: "auto",
+  },
+  typography: {
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-helvetica-neue)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "center",
+    font: "normal normal medium 14px/17px Helvetica Neue",
+    letterSpacing: "0px",
+    color: "#0D0D0DA0",
+    textTransform: "capitalize",
+    opacity: "1",
+  },
+  typography2: {
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "center",
+    font: "normal normal normal 14px/21px Poppins",
+    letterSpacing: "0px",
+    color: "#0D0D0D",
+    opacity: "1",
+  },
+  tableCell: {
+    // borderBottom: 'none',
+    // width: '100%',
+  },
+  thead: {
+    background: "#DAF2B6 0% 0% no-repeat padding-box",
+    opacity: "1",
+  },
+  typography3: {
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-19) var(--unnamed-font-family-helveticaneue-medium)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "left",
+    font: "normal normal normal 16px/19px HelveticaNeue-Medium",
+    letterSpacing: "0px",
+    color: "#0D0D0D",
+    opacity: "1",
+    fontWeight: 600,
+  },
+  typography4: {
+    font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)',
+    letterSpacing:'var(--unnamed-character-spacing-0)',
+    color:'var(--unnamed-color-0d0d0d)',
+    textAlign: 'right',
+    font: 'normal normal normal 12px/14px Helvetica Neue',
+    letterSpacing: '0px',
+    color: '#0D0D0D',
+    opacity: '1',
+  },
+}));
 
 
-  const roles = [
-    // { id: 6, name: "Select Role", value: "", disabled: true },
-    { id: 1, name: "Super User", value: "super", disabled: false },
-    { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-    { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-    { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-    { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-  ];
+  const fetcher = async (...arg) => {
+  const [url, token] = arg
+
+  const response = await axios.get(url, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Token ${token}`,
+    },
+  });
+
+  return response.data
+}
+
+
+const usersData = () => {
+  // const url = `${process.env.BACKEND_URL}/account/get_all_user`
+  const url = `https://hcdti.savitechnig.com/account/get_all_user`
+  const token = isAuthenticated().auth_token
+
+  const { data, error } = useSWR([url, token], fetcher, { shouldRetryOnError: false })
+
+  return {
+    users: data,
+    isLoading: !error && !data,
+    isError: error
+  }
+}
 
 
 export default function Home() {
@@ -231,6 +200,9 @@ export default function Home() {
     const { enqueueSnackbar } = useSnackbar();
     const router = useRouter();
     const token = isAuthenticated().auth_token
+
+    // Fetching data from backend with SWR
+    const { users, isLoading, isError } = usersData()
 
     const errorMessageStyle = {
       color: "red",
@@ -253,7 +225,20 @@ export default function Home() {
       success: '',
       failure: '',
     })
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [newType, setNewType] = useState('password')
+
+    // handle change per page
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+
+    // handler for pagination change per page
+    const handleRowsChangePerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
 
     const handleChange = (event) => {
       const { name, value } = event.target
@@ -362,7 +347,180 @@ export default function Home() {
 
     return (
       <Layout path={path}>
-      
+        <Box className={classes.box}>
+          <Box display="flex" flexDirection="column" className={classes.topBox}>
+            <Box display="flex" style={{ width: "100%" }}>
+              <Box
+                display="flex"
+                // justifyContent="flex-start"
+                style={{
+                  width: "50%",
+                  paddingLeft: "20px",
+                  paddingTop: "10px",
+                }}
+              >
+                <Typography className={classes.typography3}>Users</Typography>
+              </Box>
+
+              <Box
+                display="flex"
+                // justifyContent="flex-end"
+                style={{
+                  width: "50%",
+                  paddingRight: "40px",
+                  paddingTop: "10px",
+                }}
+              >
+                <Typography
+                  className={classes.typography4}
+                >
+                  {users ? users.users.length : 0} users
+                </Typography>
+              </Box>
+            </Box>
+
+            <Divider light />
+
+            <Box></Box>
+          </Box>
+          <Paper className={classes.tContainer}>
+            {isError ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  margin: "auto",
+                  width: "100%",
+                  borderRadius: "5px",
+                  height: "100px",
+                  padding: "100px",
+                }}
+              >
+                <Typography className={classes.typography}>
+                  Error Fetching All Users Data
+                </Typography>
+              </Box>
+            ) : isLoading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  width: "100%",
+                  margin: "auto",
+                  paddingLeft: 100,
+                  paddingRight: 100,
+                  paddingTop: 150,
+                  paddingBottom: 150,
+                }}
+              >
+                <CircularProgress size="3em" style={{ color: "#362D73" }} />
+              </Box>
+            ) : (
+              users && (
+                <Table>
+                  <TableHead class={classes.thead}>
+                    <TableRow
+                    // style={{ background: "rgba(249, 250, 252, 0.5)" }}
+                    >
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography className={classes.typography}>
+                          S/N
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell
+                        align="left"
+                        size="small"
+                        className={classes.tableCell}
+                      >
+                        <Typography
+                          className={classes.typography}
+                        >
+                          Name
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography
+                          className={classes.typography}
+                        >
+                          Email
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography
+                          className={classes.typography}
+                        >
+                          Role
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography
+                          className={classes.typography}
+                        >
+                          Actions
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {users.users
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((user, i) => (
+                        <TableRow key={user.id}>
+                          <TableCell className={classes.tableCell}>
+                            <Typography className={classes.typography2}>
+                              {i + 1}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className={classes.tableCell}>
+                            <Typography className={classes.typography2}>
+                              {user.staffname}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className={classes.tableCell}>
+                            <Typography className={classes.typography2}>
+                              {user.email}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className={classes.tableCell}>
+                            <Typography className={classes.typography2}>
+                              {user.is_superuser
+                                ? "Super User"
+                                : "" || user.is_credit_officer
+                                ? "Credit Officer"
+                                : "" || user.is_branch_manager
+                                ? "Branch Manager"
+                                : "" || user.is_senior_manager
+                                ? "Senior Manager"
+                                : "" || user.is_agency_bank
+                                ? "Agency Bank"
+                                : ""}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className={classes.tableCell}>
+                            <Typography className={classes.typography2}>
+                              {/* {user.status} */}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              )
+            )}
+          </Paper>
+        </Box>
       </Layout>
     );
 }
