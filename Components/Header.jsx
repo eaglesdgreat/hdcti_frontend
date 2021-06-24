@@ -106,47 +106,47 @@ function Header(props) {
   const handleLogout = async () => {
     const url = `https://hcdti.savitechnig.com/account/token/logout`;
 
-    // logout(() => {
-    //   setAnchorEl2(null);
-    //   router.push("/");
-    // });
+    logout(() => {
+      setAnchorEl2(null);
+      router.push("/");
+    });
 
-    // enqueueSnackbar(
-    //   `You have successfully logout`,
-    //   {
-    //     variant: "success",
-    //   }
-    // );
+    enqueueSnackbar(
+      `You have successfully logout`,
+      {
+        variant: "success",
+      }
+    );
     
-    try {
-      const response = await axios.post(url, {
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Token ${token}`,
-        },
-      });
-      console.log('yes')
+    // try {
+    //   const response = await axios.post(url, {
+    //     headers: { 
+    //       "Content-Type": "application/json",
+    //       Authorization: `Token ${token}`,
+    //     },
+    //   });
+    //   console.log('yes')
       
-      // console.log(response)
+    //   // console.log(response)
 
-      logout(() => {
-        setAnchorEl2(null);
-        router.push("/");
-      });
+    //   logout(() => {
+    //     setAnchorEl2(null);
+    //     router.push("/");
+    //   });
 
-      enqueueSnackbar(
-        `You have successfully logout`,
-        {
-          variant: "success",
-        }
-      );
-    } catch (e) {
-      console.log(e)
+    //   enqueueSnackbar(
+    //     `You have successfully logout`,
+    //     {
+    //       variant: "success",
+    //     }
+    //   );
+    // } catch (e) {
+    //   console.log(e)
 
-      enqueueSnackbar(`Error while loging out. Try again`, {
-        variant: 'error',
-      });
-    }
+    //   enqueueSnackbar(`Error while loging out. Try again`, {
+    //     variant: 'error',
+    //   });
+    // }
   };
 
   return (
