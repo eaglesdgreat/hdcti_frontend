@@ -6,7 +6,7 @@
     "@ckeditor/ckeditor5-build-classic": "^22.0.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "^22.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
-    "@material-ui/core": "latest",
+    "@material-ui/core": "^4.11.4",
     "@material-ui/data-grid": "^4.0.0-alpha.6",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",

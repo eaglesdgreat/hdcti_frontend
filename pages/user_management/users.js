@@ -398,6 +398,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [idx, setIdx] = useState('')
+  const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
 
   // handle change per page
@@ -439,36 +440,44 @@ export default function Home() {
   // delete a user handler
   const clickDelete = async (e) => {
     e.preventDefault();
+    console.log(idx)
 
     let isValid = true;
 
-    const token = isAuthenticated().auth_token;
+    const tok = isAuthenticated().auth_token;
 
     const url = `https://hcdti.savitechnig.com/account/delete_user/${idx}`;
 
     if (isValid) {
+      setLoading(true);
+      
       try {
         const response = await axios.delete(url, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${token}`,
+            Authorization: `Token ${tok}`,
           },
         });
+        console.log(response);
 
-        if (response.code) {
-          enqueueSnackbar(
-            `User Account Has Been Deleted.`,
-            {
-              variant: "success",
-            }
-          );
+        if(response.data.code === 200) {
+          setLoading(false);
+
+          enqueueSnackbar(`User Account Has Been Deleted Succesfully.`, {
+            variant: "success",
+          });
 
           handleDialogClose();
+          
+          window.location.href = "/user_management/users";
         }
+        
       } catch (e) {
         console.log(e);
 
         if (e.response) {
+          setLoading(false); 
+
           enqueueSnackbar(`Error Deleting User Account. Try Again`, {
             variant: "error",
           });
@@ -784,11 +793,11 @@ export default function Home() {
                             <DialogTitle>
                               <Typography
                                 className={classes.typography}
-                                // style={{
-                                //   fontWeight: "600",
-                                //   fontSize: "24px",
-                                //   lineHeight: "28px",
-                                // }}
+                                style={{
+                                  fontWeight: "700",
+                                  fontSize: "24px",
+                                  lineHeight: "28px",
+                                }}
                               >
                                 Delete User Account
                               </Typography>
@@ -813,55 +822,73 @@ export default function Home() {
                                     }
                                   }
                                 >
-                                  You want to delete <strong>{userName}, </strong>
-                                  for the platform, click delete button to proceed
-                                  or cancel this action.
+                                  You want to delete{" "}
+                                  <strong>{userName} </strong>
+                                  from this platform, click delete button to
+                                  proceed or cancel this action.
                                 </Typography>
                               </Box>
                             </DialogContent>
 
-                            <DialogActions>
+                            <DialogActions
+                              style={{
+                                padding: "11px",
+                                justifyContent: "center",
+                              }}
+                            >
                               <Box
                                 display="flex"
-                                style={{
-                                  // margin: 'auto',
-                                  marginRight: "25px",
-                                  // border: '1px solid red',
-                                }}
+                                justifyContent="center"
+                                style={
+                                  {
+                                    // margin: 'auto',
+                                    // marginRight: "25px",
+                                    // border: '1px solid red',
+                                  }
+                                }
                               >
                                 <Button
                                   size="large"
                                   className={classes.button}
                                   onClick={clickDelete}
                                   disableRipple
+                                  disabled={loading}
                                   style={{
-                                    border: "2px solid #FF5C00",
+                                    border: "2px solid #72A624",
                                   }}
                                 >
-                                  <Typography
-                                    className={classes.typography}
-                                    style={{
-                                      textAlign: "center",
-                                      color: "#FF5C00",
-                                      fontSize: "13px",
-                                      fontWeight: "500",
-                                      lineHeight: "15px",
-                                      textTransform: "uppercase",
-                                      lineSpacing: "0.02em",
-                                    }}
-                                  >
-                                    Delete
-                                  </Typography>
+                                  {loading ? (
+                                    <CircularProgress
+                                      size="1em"
+                                      style={{ color: "#72A624" }}
+                                    />
+                                  ) : (
+                                    <Typography
+                                      className={classes.typography}
+                                      style={{
+                                        textAlign: "center",
+                                        color: "#72A624",
+                                        fontSize: "13px",
+                                        fontWeight: "500",
+                                        lineHeight: "15px",
+                                        textTransform: "capitalize",
+                                        lineSpacing: "0.02em",
+                                      }}
+                                    >
+                                      Delete
+                                    </Typography>
+                                  )}
                                 </Button>
 
                                 <Button
                                   size="large"
                                   className={classes.button}
                                   onClick={handleDialogClose}
+                                  disabled={loading}
                                   disableRipple
                                   style={{
-                                    border: "1px solid #FF5C00",
-                                    backgroundColor: "#FF5C00",
+                                    border: "1px solid #72A624",
+                                    backgroundColor: "#72A624",
                                     marginLeft: "20px",
                                   }}
                                 >
@@ -873,7 +900,7 @@ export default function Home() {
                                       fontSize: "13px",
                                       fontWeight: "500",
                                       lineHeight: "15px",
-                                      textTransform: "uppercase",
+                                      textTransform: "capitalize",
                                       lineSpacing: "0.02em",
                                     }}
                                   >
