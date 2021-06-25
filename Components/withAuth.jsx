@@ -18,14 +18,14 @@ async function  checkUser () {
       },
     });
 
-    console.log(response)
+    // console.log(response)
 
     if (response.status === 200) {
       data = true
     }
   } catch (e) {
     if (e.response) {
-      console.log(e.response)
+      // console.log(e.response)
       if(e.response.status === 401) {
         data = false
       }
@@ -44,7 +44,6 @@ function AuthProvider({ children }) {
     const handleRouteChange = url => {
       if (url !== "/" && !isAuthenticated().auth_token) {
         window.location.href = "/";
-        // router.replace('/')
       }
 
       // Check if the session has expired

@@ -121,16 +121,98 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #E0E0E0",
     // borderRadius: "5px",
     opacity: "1",
+    width: "100%",
     // padding: '10px',
+    "@media only screen and (max-width: 280px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 281px) and (max-width: 320px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 321px) and (max-width: 360px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 361px) and (max-width: 375px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 376px) and (max-width: 384px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 385px) and (max-width: 411px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 412px) and (max-width: 414px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 415px) and (max-width: 480px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 481px) and (max-width: 540px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 541px) and (max-width: 600px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 601px) and (max-width: 768px)": {
+      width: "547px",
+    },
+    "@media only screen and (min-width: 769px) and (max-width: 800px)": {
+      width: "547px",
+    },
   },
   box: {
     paddingTop: "50px",
     width: "95%",
     // display: "flex",
     margin: "auto",
-    [theme.breakpoints.down("sm")]: {
-      width: "100%",
+    overflowX: "auto",
+    "@media only screen and (max-width: 280px)": {
       paddingTop: "0px",
+      width: "240px",
+    },
+    "@media only screen and (min-width: 281px) and (max-width: 320px)": {
+      paddingTop: "0px",
+      width: "270px",
+    },
+    "@media only screen and (min-width: 321px) and (max-width: 360px)": {
+      paddingTop: "0px",
+      width: "310px",
+    },
+    "@media only screen and (min-width: 361px) and (max-width: 375px)": {
+      paddingTop: "0px",
+      width: "330px",
+    },
+    "@media only screen and (min-width: 376px) and (max-width: 384px)": {
+      paddingTop: "0px",
+      width: "340px",
+    },
+    "@media only screen and (min-width: 385px) and (max-width: 411px)": {
+      paddingTop: "0px",
+      width: "367px",
+    },
+    "@media only screen and (min-width: 412px) and (max-width: 414px)": {
+      paddingTop: "0px",
+      width: "367px",
+    },
+    "@media only screen and (min-width: 415px) and (max-width: 480px)": {
+      paddingTop: "0px",
+      width: "435px",
+    },
+    "@media only screen and (min-width: 481px) and (max-width: 540px)": {
+      paddingTop: "0px",
+      width: "495px",
+    },
+    "@media only screen and (min-width: 541px) and (max-width: 600px)": {
+      paddingTop: "0px",
+      width: "317px",
+    },
+    "@media only screen and (min-width: 601px) and (max-width: 768px)": {
+      paddingTop: "0px",
+      width: "490px",
+    },
+    "@media only screen and (min-width: 769px) and (max-width: 800px)": {
+      paddingTop: "0px",
+      width: "510px",
     },
   },
   typography: {
@@ -358,6 +440,7 @@ export default function Home() {
                     justifyContent: "flex-start",
                     paddingTop: "20px",
                     paddingBottom: "20px",
+                    paddingRight: '10px'
                   }}
                 >
                   <BootstrapInput
