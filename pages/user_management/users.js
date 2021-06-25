@@ -652,9 +652,9 @@ export default function Home() {
 
                           <TableCell className={classes.tableCell}>
                             <Box display="flex" justifyContent="center">
-                              {/* <IconButton onClick={handleEditClick(user.id)}> */}
+                              <IconButton onClick={() => {handleEditClick(user.id)}}>
                                 <EditIcon />
-                              {/* </IconButton> */}
+                              </IconButton>
 
                               <IconButton>
                                 <DeleteOutlinedIcon />
