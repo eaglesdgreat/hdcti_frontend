@@ -316,6 +316,8 @@ export default function Home() {
           // console.log(response)
   
           if (response.data) {
+            const last_url = JSON.parse(localStorage.getItem('last_url'))
+
             setLoading(false); 
   
             enqueueSnackbar(
@@ -324,6 +326,11 @@ export default function Home() {
                 variant: "success",
               }
             );
+
+            if(last_url) {
+              localStorage.removeItem("last_url");
+              router.push(`${last_url}`);
+            }
           }
         } catch (e) {
           if (e.response) {

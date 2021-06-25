@@ -11,6 +11,7 @@ import {
   Select,
   MenuItem,
   InputBase,
+  InputAdornment,
   FormControl,
   Table,
   TablePagination,
@@ -19,6 +20,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  IconButton,
   Paper,
   Dialog,
   DialogActions,
@@ -37,11 +39,8 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditIcon from "@material-ui/icons/Edit";
 
 // import { useStateValue } from '../../StateProviders';
-import TableLayout from "../../Components/Tables";
-import Layout from "../../Components/Layout";
-import validations from '../../lib/validations'
+import Layout from "./../../Components/Layout";
 import { isAuthenticated } from "../../lib/auth.helper";
-// import PrivateRoute from "./../../Components/PrivateRoute";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -124,40 +123,40 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     // padding: '10px',
     "@media only screen and (max-width: 280px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 281px) and (max-width: 320px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 321px) and (max-width: 360px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 361px) and (max-width: 375px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 376px) and (max-width: 384px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 385px) and (max-width: 411px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 412px) and (max-width: 414px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 415px) and (max-width: 480px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 481px) and (max-width: 540px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 541px) and (max-width: 600px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 601px) and (max-width: 768px)": {
-      width: "547px",
+      width: "628px",
     },
     "@media only screen and (min-width: 769px) and (max-width: 800px)": {
-      width: "547px",
+      width: "628px",
     },
   },
   box: {
@@ -272,6 +271,43 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px",
     fontWeight: "600",
   },
+  cssLabel: {
+    color: " #007945",
+    fontfamily: "Century Gothic",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "12px",
+    lineHeight: "28px",
+    letterSpacing: "0.1px",
+  },
+  cssOutlinedInput: {
+    whiteSpace: "initial",
+    "&$cssFocused $notchedOutline": {
+      borderColor: "#FFFFFF00",
+    },
+  },
+  cssFocused: {},
+  notchedOutline: {
+    borderWidth: "1px",
+    borderColor: "#FFFFFF00 !important",
+  },
+  roots: {
+    // background: "blue",
+    border: "1px solid #979797",
+    borderRadius: "23px",
+    width: "200%",
+    height: "32px",
+  },
+  input: {
+    color: "var(--unnamed-color-868d96)",
+    fontfamily: "Century Gothic",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "13px",
+    lineHeight: "28px",
+    letterSpacing: "0.1px",
+    marginTop: "-10px",
+  },
 }));
 
 
@@ -316,10 +352,8 @@ export default function Home() {
 
     const [state, setState] = useState('')
     const [search, setSearch] = useState([])
-    const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [newType, setNewType] = useState('password')
 
     // handle change per page
     const handleChangePage = (event, newPage) => {
@@ -332,25 +366,51 @@ export default function Home() {
       setPage(0);
     };
 
-    const handleChange = (event) => {
-      const { name, value } = event.target;
-      setState(value);
-      console.log(state);
+    const handleClick = () => {
+      const url = "/user_management/create_user";
+      localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
+
+      router.push(url);
     }
 
-    const handleSearch = (event) => {
-      const { value } = event.target;
-
-      const data = users.users.filter(
-        (user) => user.staffname == value || user.email == value
+    const handleEditClick = (id) => {
+      const url = "/user_management/edit_user/"+id;
+      console.log(url)
+      localStorage.setItem(
+        "last_url",
+        JSON.stringify("/user_management/users")
       );
 
-      if(data.length > 0) {
-        setSearch(data);
+      router.push(url);
+    };
+
+    const onSearchChange = (event) => {
+      setState(event.target.value);
+    };
+
+    const searchResult = () => {
+      const data = users.users
+
+      let currentList = data.map((request) => {
+        return { ...request };
+      });
+      // console.log(currentList)
+
+      if(state === "") {
+        setSearch([]);
       }
 
-      if(data.length === 0) {
-        setSearch([])
+      if (state !== "") {
+        let newList = [];
+
+        newList = currentList.filter((request) => {
+          const name = `${request.staffname ? request.staffname : ""} ${request.email ? request.email : ""}`.toLowerCase();
+
+          return name.includes(state.toLowerCase());
+        });
+        // console.log(newList)
+
+        setSearch(newList);
       }
     };
 
@@ -413,6 +473,7 @@ export default function Home() {
                       borderRadius: "4px",
                     }}
                     className={classes.submit}
+                    onClick={handleClick}
                   >
                     <Typography
                       // className={classes.typography}
@@ -440,16 +501,34 @@ export default function Home() {
                     justifyContent: "flex-start",
                     paddingTop: "20px",
                     paddingBottom: "20px",
-                    paddingRight: '10px'
+                    paddingRight: "10px",
                   }}
                 >
-                  <BootstrapInput
-                    placeholder="Search Users"
+                  <TextField
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    margin="none"
+                    className={classes.roots}
                     value={state}
-                    name="state"
-                    id="state"
-                    onKeyUp={handleSearch}
-                    onChange={handleChange}
+                    onChange={(event) => onSearchChange(event)}
+                    // onKeyPress={enterSearch}
+                    onKeyUp={searchResult}
+                    placeholder="Search Users"
+                    id="input-search"
+                    InputProps={{
+                      className: classes.input,
+                      classes: {
+                        root: classes.cssOutlinedInput,
+                        focused: classes.cssFocused,
+                        notchedOutline: classes.notchedOutline,
+                      },
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <img src="/search.svg" alt="search" />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </Box>
               </Box>
@@ -573,8 +652,13 @@ export default function Home() {
 
                           <TableCell className={classes.tableCell}>
                             <Box display="flex" justifyContent="center">
-                              <EditIcon />
-                              <DeleteOutlinedIcon />
+                              {/* <IconButton onClick={handleEditClick(user.id)}> */}
+                                <EditIcon />
+                              {/* </IconButton> */}
+
+                              <IconButton>
+                                <DeleteOutlinedIcon />
+                              </IconButton>
                             </Box>
                           </TableCell>
                         </TableRow>
