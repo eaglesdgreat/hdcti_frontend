@@ -49,6 +49,11 @@ const BootstrapInput = withStyles((theme) => ({
       marginTop: theme.spacing(3),
     },
   },
+  button: {
+    "&:hover,&:focus": {
+      backgroundColor: "#ffffff00",
+    },
+  },
   input: {
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
     // border: "1px solid var(--unnamed-color-e0e0e0)",
@@ -112,6 +117,44 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #E0E0E0",
     borderRadius: "5px",
     opacity: "1",
+  },
+  table: {
+    "@media only screen and (max-width: 280px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 281px) and (max-width: 320px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 321px) and (max-width: 360px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 361px) and (max-width: 375px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 376px) and (max-width: 384px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 385px) and (max-width: 411px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 412px) and (max-width: 414px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 415px) and (max-width: 480px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 481px) and (max-width: 540px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 541px) and (max-width: 600px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 601px) and (max-width: 768px)": {
+      width: "628px",
+    },
+    "@media only screen and (min-width: 769px) and (max-width: 800px)": {
+      width: "628px",
+    },
   },
   topBox: {
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
@@ -341,334 +384,514 @@ const usersData = () => {
 
 
 export default function Home() {
-    const path = '/users'
-    const classes = useStyles()
-    const { enqueueSnackbar } = useSnackbar();
-    const router = useRouter();
-    const token = isAuthenticated().auth_token
+  const path = "/users";
+  const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
-    // Fetching data from backend with SWR
-    const { users, isLoading, isError } = usersData()
+  // Fetching data from backend with SWR
+  const { users, isLoading, isError } = usersData();
 
-    const [state, setState] = useState('')
-    const [search, setSearch] = useState([])
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [state, setState] = useState("");
+  const [search, setSearch] = useState([]);
+  const [page, setPage] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [idx, setIdx] = useState('')
+  const [userName, setUserName] = useState("");
 
-    // handle change per page
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
+  // handle change per page
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
-    // handler for pagination change per page
-    const handleRowsChangePerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    };
+  // handler for pagination change per page
+  const handleRowsChangePerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-    const handleClick = () => {
-      const url = "/user_management/create_user";
-      localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
+  // click open dialog pop up
+  const handleDialogClick = () => {
+    setOpen(true);
+  };
 
-      router.push(url);
+  // handle dialog close changes
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
+
+  const handleClick = () => {
+    const url = "/user_management/create_user";
+    localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
+
+    router.push(url);
+  };
+
+  const handleEditClick = (id) => {
+    const url = "/user_management/edit_user/" + id;
+    console.log(url);
+    localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
+
+    router.push(url);
+  };
+
+  // delete a user handler
+  const clickDelete = async (e) => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    const token = isAuthenticated().auth_token;
+
+    const url = `https://hcdti.savitechnig.com/account/delete_user/${idx}`;
+
+    if (isValid) {
+      try {
+        const response = await axios.delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        if (response.code) {
+          enqueueSnackbar(
+            `User Account Has Been Deleted.`,
+            {
+              variant: "success",
+            }
+          );
+
+          handleDialogClose();
+        }
+      } catch (e) {
+        console.log(e);
+
+        if (e.response) {
+          enqueueSnackbar(`Error Deleting User Account. Try Again`, {
+            variant: "error",
+          });
+        }
+      }
+    }
+  };
+
+  const onSearchChange = (event) => {
+    setState(event.target.value);
+  };
+
+  const searchResult = () => {
+    const data = users.users;
+
+    let currentList = data.map((request) => {
+      return { ...request };
+    });
+    // console.log(currentList)
+
+    if (state === "") {
+      setSearch([]);
     }
 
-    const handleEditClick = (id) => {
-      const url = "/user_management/edit_user/"+id;
-      console.log(url)
-      localStorage.setItem(
-        "last_url",
-        JSON.stringify("/user_management/users")
-      );
+    if (state !== "") {
+      let newList = [];
 
-      router.push(url);
-    };
+      newList = currentList.filter((request) => {
+        const name = `${request.staffname ? request.staffname : ""} ${
+          request.email ? request.email : ""
+        }`.toLowerCase();
 
-    const onSearchChange = (event) => {
-      setState(event.target.value);
-    };
-
-    const searchResult = () => {
-      const data = users.users
-
-      let currentList = data.map((request) => {
-        return { ...request };
+        return name.includes(state.toLowerCase());
       });
-      // console.log(currentList)
+      // console.log(newList)
 
-      if(state === "") {
-        setSearch([]);
-      }
+      setSearch(newList);
+    }
+  };
 
-      if (state !== "") {
-        let newList = [];
+  return (
+    <Layout path={path}>
+      <Box className={classes.box}>
+        <TableContainer className={classes.tContainer} component="div">
+          <Box display="flex" flexDirection="column" className={classes.topBox}>
+            <Box style={{ display: "flex", width: "100%" }}>
+              <div
+                style={{
+                  // paddingLeft: "40px",
+                  paddingLeft: "45px",
+                  paddingTop: "15px",
+                  paddingBottom: "15px",
+                  width: "47%",
+                  // paddingTop: "10px",
+                }}
+              >
+                <Typography className={classes.typography3}>Users</Typography>
+              </div>
 
-        newList = currentList.filter((request) => {
-          const name = `${request.staffname ? request.staffname : ""} ${request.email ? request.email : ""}`.toLowerCase();
-
-          return name.includes(state.toLowerCase());
-        });
-        // console.log(newList)
-
-        setSearch(newList);
-      }
-    };
-
-    return (
-      <Layout path={path}>
-        <Box className={classes.box}>
-          <TableContainer className={classes.tContainer} component="div">
-            <Box
-              display="flex"
-              flexDirection="column"
-              className={classes.topBox}
-            >
-              <Box style={{ display: "flex", width: "100%" }}>
-                <div
-                  style={{
-                    // paddingLeft: "40px",
-                    paddingLeft: "45px",
-                    paddingTop: "15px",
-                    paddingBottom: "15px",
-                    width: "47%",
-                    // paddingTop: "10px",
-                  }}
-                >
-                  <Typography className={classes.typography3}>Users</Typography>
-                </div>
-
-                <div
-                  style={{
-                    padding: "15px",
-                    width: "47%",
-                    // paddingRight: "40px",
-                  }}
-                >
-                  <Typography className={classes.typography4}>
-                    {users ? users.users.length : 0} users
-                  </Typography>
-                </div>
-              </Box>
-
-              <Divider light />
-              <Box style={{ display: "flex", width: "100%", margin: "auto" }}>
-                <Box
-                  style={{
-                    display: "flex",
-                    width: "77%",
-                    justifyContent: "flex-end",
-                    padding: "20px",
-                  }}
-                >
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#72A624",
-                      color: "white",
-                      width: "152px",
-                      height: "33px",
-                      opacity: "1",
-                      borderRadius: "4px",
-                    }}
-                    className={classes.submit}
-                    onClick={handleClick}
-                  >
-                    <Typography
-                      // className={classes.typography}
-                      style={{
-                        font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                        letterSpacing: "var(--unnamed-character-spacing-0)",
-                        color: "var(--unnamed-color-ffffff)",
-                        textAlign: "center",
-                        font: "normal normal 600 14px/21px Poppins",
-                        letterSpacing: "0px",
-                        color: "#FFFFFF",
-                        opacity: "1",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      Create New User
-                    </Typography>
-                  </Button>
-                </Box>
-
-                <Box
-                  style={{
-                    display: "flex",
-                    width: "23%",
-                    justifyContent: "flex-start",
-                    paddingTop: "20px",
-                    paddingBottom: "20px",
-                    paddingRight: "10px",
-                  }}
-                >
-                  <TextField
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                    margin="none"
-                    className={classes.roots}
-                    value={state}
-                    onChange={(event) => onSearchChange(event)}
-                    // onKeyPress={enterSearch}
-                    onKeyUp={searchResult}
-                    placeholder="Search Users"
-                    id="input-search"
-                    InputProps={{
-                      className: classes.input,
-                      classes: {
-                        root: classes.cssOutlinedInput,
-                        focused: classes.cssFocused,
-                        notchedOutline: classes.notchedOutline,
-                      },
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <img src="/search.svg" alt="search" />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Box>
-              </Box>
+              <div
+                style={{
+                  padding: "15px",
+                  width: "47%",
+                  // paddingRight: "40px",
+                }}
+              >
+                <Typography className={classes.typography4}>
+                  {users ? users.users.length : 0} users
+                </Typography>
+              </div>
             </Box>
 
-            {isError ? (
+            <Divider light />
+            <Box style={{ display: "flex", width: "100%", margin: "auto" }}>
               <Box
-                display="flex"
-                justifyContent="center"
                 style={{
-                  margin: "auto",
-                  width: "100%",
-                  borderRadius: "5px",
-                  height: "100px",
-                  padding: "100px",
+                  display: "flex",
+                  width: "77%",
+                  justifyContent: "flex-end",
+                  padding: "20px",
                 }}
               >
-                <Typography className={classes.typography}>
-                  Error Fetching All Users Data
-                </Typography>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  style={{
+                    backgroundColor: "#72A624",
+                    color: "white",
+                    width: "152px",
+                    height: "33px",
+                    opacity: "1",
+                    borderRadius: "4px",
+                  }}
+                  className={classes.submit}
+                  onClick={handleClick}
+                >
+                  <Typography
+                    // className={classes.typography}
+                    style={{
+                      font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                      letterSpacing: "var(--unnamed-character-spacing-0)",
+                      color: "var(--unnamed-color-ffffff)",
+                      textAlign: "center",
+                      font: "normal normal 600 14px/21px Poppins",
+                      letterSpacing: "0px",
+                      color: "#FFFFFF",
+                      opacity: "1",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    Create New User
+                  </Typography>
+                </Button>
               </Box>
-            ) : isLoading ? (
+
               <Box
-                display="flex"
-                justifyContent="center"
                 style={{
-                  width: "100%",
-                  margin: "auto",
-                  paddingLeft: 100,
-                  paddingRight: 100,
-                  paddingTop: 150,
-                  paddingBottom: 150,
+                  display: "flex",
+                  width: "23%",
+                  justifyContent: "flex-start",
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  paddingRight: "10px",
                 }}
               >
-                <CircularProgress size="3em" style={{ color: "#362D73" }} />
+                <TextField
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  margin="none"
+                  className={classes.roots}
+                  value={state}
+                  onChange={(event) => onSearchChange(event)}
+                  // onKeyPress={enterSearch}
+                  onKeyUp={searchResult}
+                  placeholder="Search Users"
+                  id="input-search"
+                  InputProps={{
+                    className: classes.input,
+                    classes: {
+                      root: classes.cssOutlinedInput,
+                      focused: classes.cssFocused,
+                      notchedOutline: classes.notchedOutline,
+                    },
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <img src="/search.svg" alt="search" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
               </Box>
-            ) : (
-              users && (
-                <Table>
-                  <TableHead class={classes.thead}>
-                    <TableRow
-                    // style={{ background: "rgba(249, 250, 252, 0.5)" }}
+            </Box>
+          </Box>
+
+          {isError ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              style={{
+                margin: "auto",
+                width: "100%",
+                borderRadius: "5px",
+                height: "100px",
+                padding: "100px",
+              }}
+            >
+              <Typography className={classes.typography}>
+                Error Fetching All Users Data
+              </Typography>
+            </Box>
+          ) : isLoading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              style={{
+                width: "100%",
+                margin: "auto",
+                paddingLeft: 100,
+                paddingRight: 100,
+                paddingTop: 150,
+                paddingBottom: 150,
+              }}
+            >
+              <CircularProgress size="3em" style={{ color: "#362D73" }} />
+            </Box>
+          ) : (
+            users && (
+              <Table className={classes.table}>
+                <TableHead class={classes.thead}>
+                  <TableRow
+                  // style={{ background: "rgba(249, 250, 252, 0.5)" }}
+                  >
+                    <TableCell size="small" className={classes.tableCell}>
+                      <Typography className={classes.typography}>
+                        S/N
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell
+                      align="left"
+                      size="small"
+                      className={classes.tableCell}
                     >
-                      <TableCell size="small" className={classes.tableCell}>
-                        <Typography className={classes.typography}>
-                          S/N
-                        </Typography>
-                      </TableCell>
+                      <Typography className={classes.typography}>
+                        Name
+                      </Typography>
+                    </TableCell>
 
-                      <TableCell
-                        align="left"
-                        size="small"
-                        className={classes.tableCell}
-                      >
-                        <Typography className={classes.typography}>
-                          Name
-                        </Typography>
-                      </TableCell>
+                    <TableCell size="small" className={classes.tableCell}>
+                      <Typography className={classes.typography}>
+                        Email
+                      </Typography>
+                    </TableCell>
 
-                      <TableCell size="small" className={classes.tableCell}>
-                        <Typography className={classes.typography}>
-                          Email
-                        </Typography>
-                      </TableCell>
+                    <TableCell size="small" className={classes.tableCell}>
+                      <Typography className={classes.typography}>
+                        Role
+                      </Typography>
+                    </TableCell>
 
-                      <TableCell size="small" className={classes.tableCell}>
-                        <Typography className={classes.typography}>
-                          Role
-                        </Typography>
-                      </TableCell>
+                    <TableCell size="small" className={classes.tableCell}>
+                      <Typography className={classes.typography}>
+                        Actions
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
 
-                      <TableCell size="small" className={classes.tableCell}>
-                        <Typography className={classes.typography}>
-                          Actions
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
+                <TableBody>
+                  {(search.length > 0 ? search : users.users)
+                    // .slice(
+                    //   page * rowsPerPage,
+                    //   page * rowsPerPage + rowsPerPage
+                    // )
+                    .map((user, i) => (
+                      <TableRow key={user.id}>
+                        <TableCell className={classes.tableCell}>
+                          <Typography className={classes.typography2}>
+                            {i + 1}
+                          </Typography>
+                        </TableCell>
 
-                  <TableBody>
-                    {(search.length > 0 ? search : users.users)
-                      // .slice(
-                      //   page * rowsPerPage,
-                      //   page * rowsPerPage + rowsPerPage
-                      // )
-                      .map((user, i) => (
-                        <TableRow key={user.id}>
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {i + 1}
-                            </Typography>
-                          </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <Typography className={classes.typography2}>
+                            {user.staffname}
+                          </Typography>
+                        </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.staffname}
-                            </Typography>
-                          </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <Typography className={classes.typography2}>
+                            {user.email}
+                          </Typography>
+                        </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.email}
-                            </Typography>
-                          </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <Typography className={classes.typography2}>
+                            {user.is_superuser
+                              ? "Super User"
+                              : "" || user.is_credit_officer
+                              ? "Credit Officer"
+                              : "" || user.is_branch_manager
+                              ? "Branch Manager"
+                              : "" || user.is_senior_manager
+                              ? "Senior Manager"
+                              : "" || user.is_agency_bank
+                              ? "Agency Bank"
+                              : ""}
+                          </Typography>
+                        </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.is_superuser
-                                ? "Super User"
-                                : "" || user.is_credit_officer
-                                ? "Credit Officer"
-                                : "" || user.is_branch_manager
-                                ? "Branch Manager"
-                                : "" || user.is_senior_manager
-                                ? "Senior Manager"
-                                : "" || user.is_agency_bank
-                                ? "Agency Bank"
-                                : ""}
-                            </Typography>
-                          </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <Box display="flex" justifyContent="center">
+                            <IconButton
+                              onClick={() => {
+                                handleEditClick(user.id);
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
 
-                          <TableCell className={classes.tableCell}>
-                            <Box display="flex" justifyContent="center">
-                              <IconButton onClick={() => {handleEditClick(user.id)}}>
-                                <EditIcon />
-                              </IconButton>
+                            <IconButton
+                              onClick={() => {
+                                setIdx(user.id);
+                                setUserName(user.staffname);
+                                handleDialogClick();
+                              }}
+                            >
+                              <DeleteOutlinedIcon />
+                            </IconButton>
+                          </Box>
 
-                              <IconButton>
-                                <DeleteOutlinedIcon />
-                              </IconButton>
-                            </Box>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              )
-            )}
-          </TableContainer>
-        </Box>
-      </Layout>
-    );
+                          <Dialog
+                            open={open}
+                            onClose={handleDialogClose}
+                            BackdropProps={{
+                              style: {
+                                opacity: 0.1,
+                              },
+                            }}
+                            PaperProps={{
+                              style: {
+                                borderRadius: "8px",
+                                width: "428px",
+                                // height: '369px',
+                                paddingBottom: "5%",
+                                paddingTop: "2.5%",
+                                boxShadow: "none",
+                              },
+                            }}
+                          >
+                            <DialogTitle>
+                              <Typography
+                                className={classes.typography}
+                                // style={{
+                                //   fontWeight: "600",
+                                //   fontSize: "24px",
+                                //   lineHeight: "28px",
+                                // }}
+                              >
+                                Delete User Account
+                              </Typography>
+                            </DialogTitle>
+
+                            <DialogContent>
+                              <Box
+                                display="flex"
+                                component="span"
+                                style={{
+                                  whiteSpace: "initial",
+                                }}
+                              >
+                                <Typography
+                                  className={classes.typography}
+                                  style={
+                                    {
+                                      // fontWeight: "normal",
+                                      // fontSize: "15px",
+                                      // lineHeight: "22px",
+                                      // color: "#242120",
+                                    }
+                                  }
+                                >
+                                  You want to delete <strong>{userName}, </strong>
+                                  for the platform, click delete button to proceed
+                                  or cancel this action.
+                                </Typography>
+                              </Box>
+                            </DialogContent>
+
+                            <DialogActions>
+                              <Box
+                                display="flex"
+                                style={{
+                                  // margin: 'auto',
+                                  marginRight: "25px",
+                                  // border: '1px solid red',
+                                }}
+                              >
+                                <Button
+                                  size="large"
+                                  className={classes.button}
+                                  onClick={clickDelete}
+                                  disableRipple
+                                  style={{
+                                    border: "2px solid #FF5C00",
+                                  }}
+                                >
+                                  <Typography
+                                    className={classes.typography}
+                                    style={{
+                                      textAlign: "center",
+                                      color: "#FF5C00",
+                                      fontSize: "13px",
+                                      fontWeight: "500",
+                                      lineHeight: "15px",
+                                      textTransform: "uppercase",
+                                      lineSpacing: "0.02em",
+                                    }}
+                                  >
+                                    Delete
+                                  </Typography>
+                                </Button>
+
+                                <Button
+                                  size="large"
+                                  className={classes.button}
+                                  onClick={handleDialogClose}
+                                  disableRipple
+                                  style={{
+                                    border: "1px solid #FF5C00",
+                                    backgroundColor: "#FF5C00",
+                                    marginLeft: "20px",
+                                  }}
+                                >
+                                  <Typography
+                                    className={classes.typography}
+                                    style={{
+                                      textAlign: "center",
+                                      color: "#FFFFFF",
+                                      fontSize: "13px",
+                                      fontWeight: "500",
+                                      lineHeight: "15px",
+                                      textTransform: "uppercase",
+                                      lineSpacing: "0.02em",
+                                    }}
+                                  >
+                                    cancel
+                                  </Typography>
+                                </Button>
+                              </Box>
+                            </DialogActions>
+                          </Dialog>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )
+          )}
+        </TableContainer>
+      </Box>
+    </Layout>
+  );
 }
