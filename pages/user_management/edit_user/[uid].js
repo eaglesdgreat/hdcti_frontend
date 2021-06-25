@@ -425,7 +425,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={state.email}
+                        value={user.user.email}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -458,7 +458,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={state.username}
+                        value={user.user.staffname}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -492,7 +492,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={state.password}
+                        value={''}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -520,7 +520,7 @@ export default function Home() {
                       >
                         <Select
                           id="role"
-                          value={state.role}
+                          value={user.user.role}
                           name="role"
                           displayEmpty
                           disabled={disabled}
