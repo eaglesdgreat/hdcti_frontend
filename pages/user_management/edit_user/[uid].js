@@ -360,7 +360,7 @@ export default function Home() {
               fontWeight: 600,
             }}
           >
-            Create New User
+            Edit User
           </Typography>
 
           <Divider light />
@@ -526,7 +526,7 @@ export default function Home() {
                         textTransform: "capitalize",
                       }}
                     >
-                      Submit
+                      Update
                     </Typography>
                   )}
                 </Button>
@@ -536,7 +536,8 @@ export default function Home() {
                   fullWidth
                   variant="contained"
                   style={{
-                    backgroundColor: "#red",
+                    backgroundColor: "red",
+                    marginLeft:'10px',
                     color: "white",
                     width: "70px",
                     height: "40px",
