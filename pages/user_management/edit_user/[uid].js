@@ -17,6 +17,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import useSWR from "swr";
 import { useRouter } from "next/router";
+import Link from 'next/link'
 import { useSnackbar } from "notistack";
 import { PieChart } from "react-minimal-pie-chart";
 
@@ -251,7 +252,7 @@ const roles = [
 ];
 
 export default function Home() {
-  const path = "/edit_user";
+  const path = "/users";
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -260,19 +261,11 @@ export default function Home() {
   const { user, isLoading, isError, userMutate } = userData();
   console.log(user)
 
-  const initialState = {
-    email: "",
-    username: "",
-    role: "",
-  };
-
-  const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setState({ ...state, [name]: value });
 
     userMutate((data) => {
       return {
@@ -288,12 +281,12 @@ export default function Home() {
     let isValid = true;
 
     const body = {
-      staffname: state.username || null,
+      staffname: user.user.staffname || null,
     };
     // console.log(body)
 
-    // const url = `${process.env.BACKEND_URL}/account/create_user`;
-    const url = `https://hcdti.savitechnig.com/account/create_user`;
+    // const url = `${process.env.BACKEND_URL}/account/update_user`;
+    const url = `https://hcdti.savitechnig.com/account/update_user`;
 
     if (isValid) {
       setLoading(true);
@@ -306,7 +299,6 @@ export default function Home() {
           },
         });
 
-        // setMessages({ ...messages, success: response.data.success.message });
         setState(initialState);
 
         // console.log(response)
@@ -366,209 +358,275 @@ export default function Home() {
           <Divider light />
 
           <Box>
-            <form className={classes.form} noValidate onSubmit={handleSubmit}>
-              <Grid container spacing={4}>
-                <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                  <Typography
-                    className={classes.typography}
-                    style={{
-                      marginBottom: "-11px",
-                    }}
-                  >
-                    Email
-                  </Typography>
-                  <TextField
-                    className={classes.textField}
-                    disabled={disabled}
-                    placeholder="Enter the email address of the user"
-                    id="email"
-                    name="email"
-                    type="email"
-                    variant="outlined"
-                    size="small"
-                    autoFocus
-                    required
-                    fullWidth
-                    margin="normal"
-                    value={state.email}
-                    onChange={handleChange}
-                    // onKeyUp={''}
-                  />
-                </Grid>
-
-                <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                  <Typography
-                    className={classes.typography}
-                    style={{
-                      marginBottom: "-11px",
-                    }}
-                  >
-                    Username
-                  </Typography>
-                  <TextField
-                    className={classes.textField}
-                    placeholder="Enter a username for the user"
-                    id="staffname"
-                    name="staffname"
-                    type="text"
-                    variant="outlined"
-                    size="small"
-                    autoFocus
-                    required
-                    fullWidth
-                    margin="normal"
-                    value={state.username}
-                    onChange={handleChange}
-                    // onKeyUp={''}
-                  />
-                </Grid>
-
-                <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                  <Typography
-                    className={classes.typography}
-                    style={{
-                      marginBottom: "-11px",
-                    }}
-                  >
-                    Password
-                  </Typography>
-                  <TextField
-                    className={classes.textField}
-                    disabled={disabled}
-                    type="password"
-                    placeholder="Enter your password"
-                    id="password"
-                    name="password"
-                    variant="outlined"
-                    size="small"
-                    autoFocus
-                    required
-                    fullWidth
-                    margin="normal"
-                    value={state.password}
-                    onChange={handleChange}
-                    // onKeyUp={''}
-                  />
-                </Grid>
-
-                <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                  <Typography
-                    className={classes.typography}
-                    style={{
-                      marginBottom: "-11px",
-                    }}
-                  >
-                    Role
-                  </Typography>
-                  <FormControl
-                    variant="outlined"
-                    style={{ width: "100%" }}
-                    className={classes.formControl}
-                  >
-                    <Select
-                      id="role"
-                      value={state.role}
-                      name="role"
-                      displayEmpty
-                      disabled={disabled}
-                      // native={false}
-                      // renderValue={(value) => value}
-                      onChange={handleChange}
-                      input={<BootstrapInput />}
-                    >
-                      <MenuItem disabled={roles.length > 0} value="">
-                        <Typography noWrap className={classes.menuPlaceholder}>
-                          Select Role
-                        </Typography>
-                      </MenuItem>
-
-                      {roles.map((role) => (
-                        <MenuItem key={role.id} value={role.value}>
-                          <Typography noWrap className={classes.typography}>
-                            {role.name}
-                          </Typography>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  style={{
-                    backgroundColor: "#72A624",
-                    color: "white",
-                    width: "70px",
-                    height: "40px",
-                    opacity: "1",
-                  }}
-                  className={classes.submit}
-                >
-                  {loading ? (
-                    <CircularProgress size="2em" style={{ color: "#fff" }} />
-                  ) : (
-                    // "Login"
-                    <Typography
-                      // className={classes.typography}
-                      style={{
-                        font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                        letterSpacing: "var(--unnamed-character-spacing-0)",
-                        color: "var(--unnamed-color-ffffff)",
-                        textAlign: "center",
-                        font: "normal normal 600 14px/21px Poppins",
-                        letterSpacing: "0px",
-                        color: "#FFFFFF",
-                        opacity: "1",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      Update
-                    </Typography>
-                  )}
-                </Button>
-
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  style={{
-                    backgroundColor: "red",
-                    marginLeft:'10px',
-                    color: "white",
-                    width: "70px",
-                    height: "40px",
-                    opacity: "1",
-                  }}
-                  className={classes.submit}
-                >
-                  {loading ? (
-                    <CircularProgress size="2em" style={{ color: "#fff" }} />
-                  ) : (
-                    // "Login"
-                    <Typography
-                      // className={classes.typography}
-                      style={{
-                        font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                        letterSpacing: "var(--unnamed-character-spacing-0)",
-                        color: "var(--unnamed-color-ffffff)",
-                        textAlign: "center",
-                        font: "normal normal 600 14px/21px Poppins",
-                        letterSpacing: "0px",
-                        color: "#FFFFFF",
-                        opacity: "1",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      cancel
-                    </Typography>
-                  )}
-                </Button>
+            {isError ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  margin: "auto",
+                  width: "100%",
+                  borderRadius: "5px",
+                  height: "100px",
+                  padding: "100px",
+                }}
+              >
+                <Typography className={classes.typography}>
+                  Error Getting User Data
+                </Typography>
               </Box>
-            </form>
+            ) : isLoading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  width: "100%",
+                  margin: "auto",
+                  paddingLeft: 100,
+                  paddingRight: 100,
+                  paddingTop: 150,
+                  paddingBottom: 150,
+                }}
+              >
+                <CircularProgress size="3em" style={{ color: "#362D73" }} />
+              </Box>
+            ) : (
+              user && (
+                <form
+                  className={classes.form}
+                  noValidate
+                  onSubmit={handleSubmit}
+                >
+                  <Grid container spacing={4}>
+                    <Grid
+                      className={classes.itemGrid}
+                      item
+                      md={6}
+                      lg={6}
+                      xl={6}
+                    >
+                      <Typography
+                        className={classes.typography}
+                        style={{
+                          marginBottom: "-11px",
+                        }}
+                      >
+                        Email
+                      </Typography>
+                      <TextField
+                        className={classes.textField}
+                        disabled={disabled}
+                        placeholder="Enter the email address of the user"
+                        id="email"
+                        name="email"
+                        type="email"
+                        variant="outlined"
+                        size="small"
+                        autoFocus
+                        required
+                        fullWidth
+                        margin="normal"
+                        value={state.email}
+                        onChange={handleChange}
+                        // onKeyUp={''}
+                      />
+                    </Grid>
+
+                    <Grid
+                      className={classes.itemGrid}
+                      item
+                      md={6}
+                      lg={6}
+                      xl={6}
+                    >
+                      <Typography
+                        className={classes.typography}
+                        style={{
+                          marginBottom: "-11px",
+                        }}
+                      >
+                        Username
+                      </Typography>
+                      <TextField
+                        className={classes.textField}
+                        placeholder="Enter a username for the user"
+                        id="staffname"
+                        name="staffname"
+                        type="text"
+                        variant="outlined"
+                        size="small"
+                        autoFocus
+                        required
+                        fullWidth
+                        margin="normal"
+                        value={state.username}
+                        onChange={handleChange}
+                        // onKeyUp={''}
+                      />
+                    </Grid>
+
+                    <Grid
+                      className={classes.itemGrid}
+                      item
+                      md={6}
+                      lg={6}
+                      xl={6}
+                    >
+                      <Typography
+                        className={classes.typography}
+                        style={{
+                          marginBottom: "-11px",
+                        }}
+                      >
+                        Password
+                      </Typography>
+                      <TextField
+                        className={classes.textField}
+                        disabled={disabled}
+                        type="password"
+                        placeholder="Enter your password"
+                        id="password"
+                        name="password"
+                        variant="outlined"
+                        size="small"
+                        autoFocus
+                        required
+                        fullWidth
+                        margin="normal"
+                        value={state.password}
+                        onChange={handleChange}
+                        // onKeyUp={''}
+                      />
+                    </Grid>
+
+                    <Grid
+                      className={classes.itemGrid}
+                      item
+                      md={6}
+                      lg={6}
+                      xl={6}
+                    >
+                      <Typography
+                        className={classes.typography}
+                        style={{
+                          marginBottom: "-11px",
+                        }}
+                      >
+                        Role
+                      </Typography>
+                      <FormControl
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                        className={classes.formControl}
+                      >
+                        <Select
+                          id="role"
+                          value={state.role}
+                          name="role"
+                          displayEmpty
+                          disabled={disabled}
+                          // native={false}
+                          // renderValue={(value) => value}
+                          onChange={handleChange}
+                          input={<BootstrapInput />}
+                        >
+                          <MenuItem disabled={roles.length > 0} value="">
+                            <Typography
+                              noWrap
+                              className={classes.menuPlaceholder}
+                            >
+                              Select Role
+                            </Typography>
+                          </MenuItem>
+
+                          {roles.map((role) => (
+                            <MenuItem key={role.id} value={role.value}>
+                              <Typography noWrap className={classes.typography}>
+                                {role.name}
+                              </Typography>
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      style={{
+                        backgroundColor: "#72A624",
+                        color: "white",
+                        width: "70px",
+                        height: "40px",
+                        opacity: "1",
+                      }}
+                      className={classes.submit}
+                    >
+                      {loading ? (
+                        <CircularProgress
+                          size="2em"
+                          style={{ color: "#fff" }}
+                        />
+                      ) : (
+                        // "Login"
+                        <Typography
+                          // className={classes.typography}
+                          style={{
+                            font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                            letterSpacing: "var(--unnamed-character-spacing-0)",
+                            color: "var(--unnamed-color-ffffff)",
+                            textAlign: "center",
+                            font: "normal normal 600 14px/21px Poppins",
+                            letterSpacing: "0px",
+                            color: "#FFFFFF",
+                            opacity: "1",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          Update
+                        </Typography>
+                      )}
+                    </Button>
+
+                    <Link href={"/user_management/users"}>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "red",
+                          marginLeft: "10px",
+                          color: "white",
+                          width: "70px",
+                          height: "40px",
+                          opacity: "1",
+                        }}
+                        className={classes.submit}
+                      >
+                        <Typography
+                            style={{
+                                font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                                letterSpacing:
+                                "var(--unnamed-character-spacing-0)",
+                                color: "var(--unnamed-color-ffffff)",
+                                textAlign: "center",
+                                font: "normal normal 600 14px/21px Poppins",
+                                letterSpacing: "0px",
+                                color: "#FFFFFF",
+                                opacity: "1",
+                                textTransform: "capitalize",
+                            }}
+                        >
+                            cancel
+                        </Typography>
+                      </Button>
+                    </Link>
+                  </Box>
+                </form>
+              )
+            )}
           </Box>
         </Box>
       </Box>
