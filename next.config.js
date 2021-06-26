@@ -3,10 +3,10 @@ const path = require("path")
 
 dotenv.config();
 
-const aliasPathsToResolve = [
-  { name: 'components', path: path.resolve(__dirname, './components') },
-  { name: 'Common', path: path.resolve(__dirname, '../../common/react/') },
-]
+// const aliasPathsToResolve = [
+//   { name: 'components', path: path.resolve(__dirname, './components') },
+//   { name: 'Common', path: path.resolve(__dirname, '../../common/react/') },
+// ]
 
 module.exports = {
   env: {

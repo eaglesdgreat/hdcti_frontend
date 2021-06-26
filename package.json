@@ -48,6 +48,11 @@
     "dev": "next dev -p 4000 ",
     "build": "next build",
     "heroku-postbuild": "npm run build",
-    "start": "next start -p $PORT"
+    "start": "next start -p $PORT",
+    "lint": "next lint",
+    "prod": "npm run build npm start"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.12.0"
   }
 }

@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     color: '#362D73',
-    backgroundColor: '#FAEAE1',
+    backgroundColor: '#fff',
     width: '30px',
     height: '30px',
     textAlign: 'center',

@@ -468,7 +468,7 @@ export default function Home() {
           });
 
           handleDialogClose();
-          
+
           window.location.href = "/user_management/users";
         }
         
@@ -668,7 +668,7 @@ export default function Home() {
           ) : (
             users && (
               <Table className={classes.table}>
-                <TableHead class={classes.thead}>
+                <TableHead className={classes.thead}>
                   <TableRow
                   // style={{ background: "rgba(249, 250, 252, 0.5)" }}
                   >
