@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 // import { useStateValue } from '../StateProviders';
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
@@ -551,6 +551,7 @@ export default function Index() {
                               type="submit"
                               fullWidth
                               variant="contained"
+                              disabled={loading}
                               style={{
                                 backgroundColor: "#72A624",
                                 color: "white",

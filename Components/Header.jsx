@@ -23,7 +23,6 @@ import axios from 'axios'
 
 import { logout, isAuthenticated } from '../lib/auth.helper'
 import Notifications from './Notifications'
-import AddAdmin from './AddAdmin'
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -125,9 +124,8 @@ function Header(props) {
     //       Authorization: `Token ${token}`,
     //     },
     //   });
-    //   console.log('yes')
       
-    //   // console.log(response)
+    //   console.log(response)
 
     //   logout(() => {
     //     setAnchorEl2(null);
@@ -177,10 +175,6 @@ function Header(props) {
 
               <Grid item xs />
 
-              {/* <Grid item>
-                <AddAdmin />
-              </Grid> */}
-
               <Grid item>
                 <Notifications />
               </Grid>
@@ -198,23 +192,29 @@ function Header(props) {
               </Grid> */}
 
               <Grid item>
-                <Box 
+                <Box
                   display="flex"
                   aria-controls="avatar-menu"
                   aria-haspopup="true"
-                  style={{alignItems:"center"}}
+                  style={{ alignItems: "center", cursor: "pointer" }}
                 >
                   <IconButton
                     color="inherit"
+                    aria-controls="avatar-menu"
                     disableRipple
                     style={{ marginRight: "70px" }}
                   >
                     <Avatar className={classes.avatar} />
-                      {/* {(headName ? headName : "User").split("")[0]}
+                    {/* {(headName ? headName : "User").split("")[0]}
                     </Avatar> */}
                   </IconButton>
-                  
-                  <Box component="span" dsplay="flex" style={{width: '100%'}}>
+
+                  <Box
+                    aria-controls="avatar-menu"
+                    component="span"
+                    dsplay="flex"
+                    style={{ width: "100%", cursor: "pointer" }}
+                  >
                     <Typography
                       noWrap
                       className={classes.typography}
@@ -232,6 +232,7 @@ function Header(props) {
                   </Box>
 
                   <img
+                    style={{ cursor: "pointer" }}
                     src="/right-arro.svg"
                     alt="menu"
                     aria-controls="avatar-menu"
@@ -256,7 +257,7 @@ function Header(props) {
                         paddingTop: "4px",
                         paddingBottom: "4px",
                         // paddingLeft: "5px",
-                        overflow:'hidden'
+                        overflow: "hidden",
                       },
                     }}
                   >
@@ -277,9 +278,7 @@ function Header(props) {
                     </MenuItem> */}
 
                     <MenuItem onClick={handleLogout}>
-                      <Typography
-                        className={classes.typography}
-                      >
+                      <Typography className={classes.typography}>
                         Logout
                       </Typography>
                     </MenuItem>

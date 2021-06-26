@@ -560,6 +560,7 @@ export default function Home() {
                   <Button
                     type="submit"
                     fullWidth
+                    disabled={loading}
                     variant="contained"
                     style={{
                       backgroundColor: "#72A624",
