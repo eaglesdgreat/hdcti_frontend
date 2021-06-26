@@ -189,7 +189,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #E0E0E0",
     borderRadius: "5px",
     opacity: "1",
-    height: "562px",
+    height: "578px",
     width: "98%",
   },
   menuPlaceholder: {

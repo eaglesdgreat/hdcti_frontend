@@ -369,11 +369,21 @@ const useStyles = makeStyles((theme) => ({
 
 
 const usersData = () => {
+  let order = []
   // const url = `${process.env.BACKEND_URL}/account/get_all_user`
   const url = `https://hcdti.savitechnig.com/account/get_all_user`
   const token = isAuthenticated().auth_token
 
   const { data, error } = useSWR([url, token], fetcher, { shouldRetryOnError: false })
+
+  if(data) {
+    data.users.forEach(item => {
+      order.unshift(item)
+    })
+
+    if(order.length > 0)
+      data.users = order
+  }
 
   return {
     users: data,
@@ -824,7 +834,7 @@ export default function Home() {
                                 >
                                   You want to delete{" "}
                                   <strong>{userName} </strong>
-                                  from this platform, click delete button to
+                                  account from this platform, click delete button to
                                   proceed or cancel this action.
                                 </Typography>
                               </Box>
