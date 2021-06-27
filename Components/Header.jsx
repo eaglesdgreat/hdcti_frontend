@@ -87,8 +87,8 @@ function Header(props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const { onDrawerToggle } = props;
-  // const headName = isAuthenticated().user.firstName
-  const headName = ''
+  
+  const headName = isAuthenticated().staffname
   const token = isAuthenticated().auth_token
   // console.log(token)
 

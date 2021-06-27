@@ -16,8 +16,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
+import Link from 'next/link'
 
 import { authenticate } from './../lib/auth.helper'
+import { checkUser } from './../lib/login.user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -129,8 +131,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /(?=.*?[0-9])(?=.*?[A-Za-z]).+/;
+
 
 // validate input field 
 const validations = (value, name, required = true, type, secondValue) => {
@@ -146,12 +150,38 @@ const validations = (value, name, required = true, type, secondValue) => {
   }
 
   // validation for password 
-  if (type === 'password' && !passwordRegex.test(value)) {
-    return { message: `${name} must contain at least a number and a letter`, status: true }
-  }
+  // if (type === 'password' && !passwordRegex.test(value)) {
+  //   return { message: `${name} must contain at least a number and a letter`, status: true }
+  // }
 
   return { message: '', status: false };
 }
+
+
+// async function checkUser(token) {
+//   const url = `https://hcdti.savitechnig.com/account/logged_in_user`;
+//   let data = ''
+
+//   try {
+//     const response = await axios.get(url, {
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Token ${token}`,
+//       },
+//     });
+
+//     if (response.data) {
+//       data = response.data;
+//     }
+//   } catch (e) {
+//     if (e.response) {
+//       console.log(e.response)
+//     }
+//   }
+
+//   return data;
+// }
+
 
 export default function Index() {
   const classes = useStyles()
@@ -216,6 +246,8 @@ export default function Index() {
       if (validate.status) {
         setMessages({ ...messages, email: validate.message });
         isValid = false;
+      } else {
+        setMessages({ ...messages, email: '' });
       }
     }
 
@@ -224,6 +256,8 @@ export default function Index() {
       if (validatePass.status) {
         setMessages({ ...messages, password: validatePass.message });
         isValid = false;
+      } else {
+        setMessages({ ...messages, password: "" });
       }
     }
 
@@ -232,7 +266,6 @@ export default function Index() {
       password: state.password || null,
     }
     // console.log(body)
-
 
     // const url = `${process.env.BACKEND_URL}/account/token/login`;
     const url = `https://hcdti.savitechnig.com/account/token/login`;
@@ -249,28 +282,38 @@ export default function Index() {
         // console.log(response)
 
         if (response.data) {
-          authenticate(response.data, () => {
-            return router.push('/dashboard')
-          })
-          setLoading(false); 
+          let getUser = await checkUser(response.data.auth_token);
 
-          enqueueSnackbar(
-            `You are being redirected to your dashboard page.`,
-            {
-              variant: "success",
-            }
-          );
-        }
+          if (getUser) {
+            getUser.auth_token = response.data.auth_token;
+
+            authenticate(getUser, () => {
+              return router.push("/dashboard");
+            });
+
+            setLoading(false);
+
+            enqueueSnackbar(
+              `You are being redirected to your dashboard page.`,
+              {
+                variant: "success",
+              }
+            );
+          }
+          }
       } catch (e) {
         if (e.response) {
           console.log(e.response)
           setLoading(false); 
 
           // setMessages({ ...messages, failure: e.response.data.errors.message })
-          enqueueSnackbar(`Error while logining. Try again`, {
-            variant: 'error',
-          });
-          setState(initialState)
+          enqueueSnackbar(
+            `${e.response.data.non_field_errors[0]}, check your email or password, or click forget password.`,
+            {
+              variant: "error",
+            }
+          );
+          // setState(initialState)
         }
       }
     }
@@ -319,14 +362,15 @@ export default function Index() {
                           marginBottom: "-11px",
                         }}
                       >
-                        Username or Email
+                        Email<span style={{ color: "red" }}>*</span>
                       </Typography>
                       <TextField
                         className={classes.textField}
                         // type="email"
-                        placeholder="Enter your username or email"
+                        placeholder="Enter your email"
                         id="email"
                         name="email"
+                        type="email"
                         variant="outlined"
                         size="small"
                         autoFocus
@@ -349,7 +393,7 @@ export default function Index() {
                           marginBottom: "-11px",
                         }}
                       >
-                        Password
+                        Password<span style={{ color: "red" }}>*</span>
                       </Typography>
                       <TextField
                         className={classes.textField}
@@ -399,43 +443,77 @@ export default function Index() {
                     </Grid>
                   </Grid>
 
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#72A624",
-                      color: "white",
-                      width: "70px",
-                      height: "40px",
-                      opacity: "1",
-                    }}
-                    className={classes.submit}
-                  >
-                    {loading ? (
-                      <CircularProgress size="2em" style={{ color: "#fff" }} />
-                    ) : (
-                      // "Login"
-                      <Typography
-                        // className={classes.typography}
-                        style={
-                          {
-                            font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
-                            letterSpacing: 'var(--unnamed-character-spacing-0)',
-                            color: 'var(--unnamed-color-ffffff)',
-                            textAlign: 'center',
-                            font: 'normal normal 600 14px/21px Poppins',
-                            letterSpacing: '0px',
-                            color: '#FFFFFF',
-                            opacity: '1',
-                            textTransform:'capitalize',
-                          }
-                        }
+                  <Box display="flex">
+                    <div
+                      style={{
+                        width: "45%",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                      }}
+                    >
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "#72A624",
+                          color: "white",
+                          width: "70px",
+                          height: "40px",
+                          opacity: "1",
+                        }}
+                        className={classes.submit}
                       >
-                        Login
-                      </Typography>
-                    )}
-                  </Button>
+                        {loading ? (
+                          <CircularProgress
+                            size="2em"
+                            style={{ color: "#fff" }}
+                          />
+                        ) : (
+                          // "Login"
+                          <Typography
+                            // className={classes.typography}
+                            style={{
+                              font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                              letterSpacing:
+                                "var(--unnamed-character-spacing-0)",
+                              color: "var(--unnamed-color-ffffff)",
+                              textAlign: "center",
+                              font: "normal normal 600 14px/21px Poppins",
+                              letterSpacing: "0px",
+                              color: "#FFFFFF",
+                              opacity: "1",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            Login
+                          </Typography>
+                        )}
+                      </Button>
+                    </div>
+
+                    <div
+                      style={{
+                        width: "45%",
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        margin: "auto",
+                        paddingTop: "48px",
+                      }}
+                    >
+                      <Link href="/staff_reset_password">
+                        <a>
+                          <Button
+                            // onClick={changeType}
+                            className={classes.showPass}
+                            style={{ fontSize: "10px" }}
+                          >
+                            forget password?
+                          </Button>
+                        </a>
+                      </Link>
+                    </div>
+                  </Box>
                 </form>
               </Box>
             </CardContent>

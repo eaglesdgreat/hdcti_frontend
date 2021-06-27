@@ -399,7 +399,7 @@ export default function Home() {
                       variant="body1"
                       gutterBottom
                     >
-                      Email
+                      Email<span style={{ color: "red" }}>*</span>
                     </Typography>
                     <TextField
                       className={classes.textField}
@@ -429,7 +429,7 @@ export default function Home() {
                       variant="body1"
                       gutterBottom
                     >
-                      Username
+                      Username<span style={{ color: "red" }}>*</span>
                     </Typography>
                     <TextField
                       className={classes.textField}
@@ -440,7 +440,6 @@ export default function Home() {
                       type="text"
                       variant="outlined"
                       size="small"
-                      autoFocus
                       required
                       fullWidth
                       margin="normal"
@@ -459,7 +458,7 @@ export default function Home() {
                       variant="body1"
                       gutterBottom
                     >
-                      Password
+                      Password<span style={{ color: "red" }}>*</span>
                     </Typography>
                     <TextField
                       className={classes.textField}
@@ -469,7 +468,6 @@ export default function Home() {
                       name="password"
                       variant="outlined"
                       size="small"
-                      autoFocus
                       required
                       fullWidth
                       margin="normal"
@@ -513,7 +511,7 @@ export default function Home() {
                       variant="body1"
                       gutterBottom
                     >
-                      Role
+                      Role<span style={{ color: "red" }}>*</span>
                     </Typography>
                     <FormControl
                       variant="outlined"

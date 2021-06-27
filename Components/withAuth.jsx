@@ -37,12 +37,17 @@ async function  checkUser () {
 
 function AuthProvider({ children }) {
   const { pathname, events } = useRouter()
+  const checkUrl = ["/", '/staff_reset_password']
 
   // This check if the user is not authenticated or authorized to access a route and redirect them back to the login page
   useEffect(() => {
     // Check that a new route is OK
     const handleRouteChange = url => {
-      if (url !== "/" && !isAuthenticated().auth_token) {
+      if (pathname === "/staff_reset_password" && !isAuthenticated().auth_token) {
+        window.location.href = "/staff_reset_password";
+      }
+
+      if (!checkUrl.includes(url) && !isAuthenticated().auth_token) {
         window.location.href = "/";
       }
 
@@ -55,8 +60,8 @@ function AuthProvider({ children }) {
     }
 
     // Check that initial route is OK
-    if (pathname !== '/' && !isAuthenticated().auth_token) {
-      window.location.href = '/'
+    if (!checkUrl.includes(pathname) && !isAuthenticated().auth_token) {
+      window.location.href = "/";
       // router.replace('/')
     }
 
