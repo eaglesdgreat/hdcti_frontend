@@ -12,7 +12,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
-// import { useStateValue } from '../StateProviders';
+import { useStateValue } from '../StateProviders';
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useSnackbar } from "notistack";
@@ -219,40 +219,49 @@ const adminLogin = async () => {
 
 
 export default function Index() {
-  const classes = useStyles()
-  const router = useRouter()
+  const classes = useStyles();
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [{ adminToken }, dispatch] = useStateValue();
+  console.log('auth:',adminToken);
+
+  const addToBasket = (token) => {
+    dispatch({
+      type: "SAVE_TOKEN",
+      item: token,
+    });
+  };
 
   const errorMessageStyle = {
     color: "red",
     fontSize: "10px",
     fontWeight: "bolder",
     fontStyle: "oblique",
-  }
+  };
 
   const initialState = {
-    email: '',
-    password: '',
-    confirm_password:'',
-    otp: '',
-  }
+    email: "",
+    password: "",
+    confirm_password: "",
+    otp: "",
+  };
 
-  const [state, setState] = useState(initialState)
+  const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [newType, setNewType] = useState("password");
   const [open, setOpen] = useState(false);
-  const [adminToken, setAdminToken] = useState('')
   const [messages, setMessages] = useState({
     ...initialState,
-    success: '',
-    failure: '',
-  })
+    success: "",
+    failure: "",
+  });
 
   const handleChange = (event) => {
-    const { name, value } = event.target
-    setState({ ...state, [name]: value })
-  }
+    const { name, value } = event.target;
+    setState({ ...state, [name]: value });
+  };
 
   const changeType = () => {
     if (newType === "password") {
@@ -265,7 +274,7 @@ export default function Index() {
   };
 
   const sendMail = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     let isValid = true;
 
@@ -286,7 +295,8 @@ export default function Index() {
     // const url = `${process.env.BACKEND_URL}/account/token/login`;
     const url = `https://hcdti.savitechnig.com/account/reset_password_otp`;
 
-    if(isValid) {
+    if (isValid) {
+      console.log(resetLoading);
       if (resetLoading) {
         setLoading(false);
       } else {
@@ -294,8 +304,13 @@ export default function Index() {
       }
       let tok = await adminLogin();
 
-      if(tok) {
-        setAdminToken(tok)
+      if (tok) {
+        dispatch({
+          type: "SAVE_TOKEN",
+          item: '',
+        });
+        addToBasket(tok);
+
         try {
           const response = await axios.post(url, body, {
             headers: {
@@ -306,8 +321,8 @@ export default function Index() {
 
           if (response.data) {
             setLoading(false);
-            setResetLoading(false)
-            tok = ''
+            setResetLoading(false);
+            tok = "";
 
             enqueueSnackbar(`${response.data.reason}`, {
               variant: "success",
@@ -317,7 +332,7 @@ export default function Index() {
           }
         } catch (e) {
           if (e.response) {
-            console.log(e.response)
+            console.log(e.response);
             setLoading(false);
 
             enqueueSnackbar(`Checkk your connection or invalid email`, {
@@ -327,7 +342,7 @@ export default function Index() {
         }
       }
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -393,14 +408,14 @@ export default function Index() {
       setLoading(true);
 
       try {
-        const response = await axios.get(url, body, {
+        const response = await axios.post(url, body, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Token ${adminToken}`,
           },
         });
 
-        console.log(response)
+        console.log(response);
 
         if (response) {
           let user = await loginUser(body.email, body.new_password);
@@ -408,21 +423,22 @@ export default function Index() {
           if (user) {
             getUser.auth_token = response.data.auth_token;
 
-            authenticate(user, () => {
-              return router.push("/dashboard");
+            dispatch({
+              type: "SAVE_TOKEN",
+              item: "",
             });
 
-
-            enqueueSnackbar(
-              `You have successfully change your password.`,
-              {
-                variant: "success",
-              }
-            );
+            enqueueSnackbar(`You have successfully change your password.`, {
+              variant: "success",
+            });
 
             setLoading(false);
 
             setState(initialState);
+
+            authenticate(user, () => {
+              return router.push("/dashboard");
+            });
           }
         }
       } catch (e) {
@@ -430,19 +446,15 @@ export default function Index() {
           console.log(e.response);
           setLoading(false);
 
-          enqueueSnackbar(
-            `Passowrd change failed, Try again.`,
-            {
-              variant: "error",
-            }
-          );
+          enqueueSnackbar(`Passowrd change failed, Try again.`, {
+            variant: "error",
+          });
 
-          setState(initialState);
+          // setState(initialState);
         }
       }
     }
-  }
-
+  };
 
   return (
     <div className={classes.root}>
@@ -744,13 +756,13 @@ export default function Index() {
                       >
                         <Button
                           onClick={(event) => {
-                            setResetLoading(true)
-                            sendMail(event)
+                            setResetLoading(true);
+                            sendMail(event);
                           }}
                           className={classes.showPass}
                           style={{ fontSize: "12px" }}
                         >
-                           {resetLoading ? 'Resending OTP...' : 'Resend OTP'}
+                          {resetLoading ? "Resending OTP..." : "Resend OTP"}
                         </Button>
                       </div>
                     </Box>

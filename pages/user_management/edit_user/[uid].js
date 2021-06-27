@@ -206,7 +206,12 @@ const fetcher = async (...arg) => {
 
   // const {url, token} = arg
 
-  const response = await axios.get(url, { headers: { authenticate: token } });
+  const response = await axios.get(url, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${token}`,
+    },
+  });
 
   return response.data;
 };
@@ -215,8 +220,8 @@ const userData = () => {
   const router = useRouter();
   const { uid } = router.query;
 
-//   const url = `${process.env.BACKEND_URL}/api/product/${pid}?merchant=${merchant}`;
-    const url = `https://hcdti.savitechnig.com/account/logged_in_user`;
+  //   const url = `${process.env.BACKEND_URL}/account/get_single_user/${uid}`;
+  const url = `https://hcdti.savitechnig.com/account/get_single_user/${uid}`;
 
   const token = isAuthenticated().auth_token;
 
@@ -251,28 +256,62 @@ const roles = [
   { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
 ];
 
-export default function Home() {
+export default function Update() {
   const path = "/users";
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
+  const { uid } = router.query;
   const token = isAuthenticated().auth_token;
 
   const { user, isLoading, isError, userMutate } = userData();
-  console.log(user)
+//   console.log(user)
 
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [svaeRole, setSaveRole] = useState('')
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    userMutate((data) => {
-      return {
-        ...user,
-        user: { ...data.staffname, [name]: value },
-      };
-    }, false);
+    if(name === 'staffname') {
+        userMutate((data) => {
+          return {
+            ...user,
+            ...{...data, [name]: value},
+          };
+        }, false);
+    }
+
+    if(name === 'role') {
+        setSaveRole(value)
+
+        userMutate((data) => {
+            data.is_superuser = false;
+            data.is_credit_officer = false;
+            data.is_branch_manager = false;
+            data.is_senior_manager = false;
+            data.is_agency_bank = false;
+
+            let str =
+              value === "super"
+                ? "is_superuser"
+                : value === "credit_officer"
+                ? "is_credit_officer"
+                : value === "branch_manager"
+                ? "is_branch_manager"
+                : value === "senior_manager"
+                ? "is_senior_manager"
+                : value === "agency_bank"
+                ? "is_agency_bank"
+                : "";
+
+            return {
+                ...user,
+                ...{...data, [str]: true,}
+            };
+        }, false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -281,12 +320,13 @@ export default function Home() {
     let isValid = true;
 
     const body = {
-      staffname: user.user.staffname || null,
+      staffname: user.staffname || null,
+      role: svaeRole || null,
     };
     // console.log(body)
 
     // const url = `${process.env.BACKEND_URL}/account/update_user`;
-    const url = `https://hcdti.savitechnig.com/account/update_user`;
+    const url = `https://hcdti.savitechnig.com/account/update_user_admin/${uid}`;
 
     if (isValid) {
       setLoading(true);
@@ -298,9 +338,6 @@ export default function Home() {
             Authorization: `Token ${token}`,
           },
         });
-
-        setState(initialState);
-
         // console.log(response)
 
         if (response.data) {
@@ -333,8 +370,6 @@ export default function Home() {
               variant: "error",
             });
           }
-
-          setState(initialState);
         }
       }
     }
@@ -425,7 +460,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={user.user.email}
+                        value={user.email}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -458,7 +493,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={user.user.staffname}
+                        value={user.staffname}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -492,7 +527,7 @@ export default function Home() {
                         required
                         fullWidth
                         margin="normal"
-                        value={''}
+                        value={"**********"}
                         onChange={handleChange}
                         // onKeyUp={''}
                       />
@@ -520,10 +555,21 @@ export default function Home() {
                       >
                         <Select
                           id="role"
-                          value={user.user.role}
+                          value={
+                            user.is_superuser
+                              ? "super"
+                              : user.is_credit_officer
+                              ? 'credit_officer'
+                              : user.is_branch_manager
+                              ? 'branch_manager'
+                              : user.is_senior_manager
+                              ? 'senior_manager'
+                              : user.is_agency_bank
+                              ? 'agency_bank'
+                              : ""
+                          }
                           name="role"
                           displayEmpty
-                          disabled={disabled}
                           // native={false}
                           // renderValue={(value) => value}
                           onChange={handleChange}
@@ -606,20 +652,19 @@ export default function Home() {
                         className={classes.submit}
                       >
                         <Typography
-                            style={{
-                                font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                                letterSpacing:
-                                "var(--unnamed-character-spacing-0)",
-                                color: "var(--unnamed-color-ffffff)",
-                                textAlign: "center",
-                                font: "normal normal 600 14px/21px Poppins",
-                                letterSpacing: "0px",
-                                color: "#FFFFFF",
-                                opacity: "1",
-                                textTransform: "capitalize",
-                            }}
+                          style={{
+                            font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                            letterSpacing: "var(--unnamed-character-spacing-0)",
+                            color: "var(--unnamed-color-ffffff)",
+                            textAlign: "center",
+                            font: "normal normal 600 14px/21px Poppins",
+                            letterSpacing: "0px",
+                            color: "#FFFFFF",
+                            opacity: "1",
+                            textTransform: "capitalize",
+                          }}
                         >
-                            cancel
+                          cancel
                         </Typography>
                       </Button>
                     </Link>

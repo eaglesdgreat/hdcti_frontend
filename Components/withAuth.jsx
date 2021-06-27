@@ -43,7 +43,7 @@ function AuthProvider({ children }) {
   useEffect(() => {
     // Check that a new route is OK
     const handleRouteChange = url => {
-      if (pathname === "/staff_reset_password" && !isAuthenticated().auth_token) {
+      if (url === "/staff_reset_password" && !isAuthenticated().auth_token) {
         window.location.href = "/staff_reset_password";
       }
 

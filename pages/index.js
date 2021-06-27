@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack'
 import Link from 'next/link'
 
 import { authenticate } from './../lib/auth.helper'
-import { checkUser } from './../lib/login.user'
+// import { checkUser } from './../lib/login.user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -158,29 +158,29 @@ const validations = (value, name, required = true, type, secondValue) => {
 }
 
 
-// async function checkUser(token) {
-//   const url = `https://hcdti.savitechnig.com/account/logged_in_user`;
-//   let data = ''
+async function checkUser(token) {
+  const url = `https://hcdti.savitechnig.com/account/logged_in_user`;
+  let data = ''
 
-//   try {
-//     const response = await axios.get(url, {
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Token ${token}`,
-//       },
-//     });
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
 
-//     if (response.data) {
-//       data = response.data;
-//     }
-//   } catch (e) {
-//     if (e.response) {
-//       console.log(e.response)
-//     }
-//   }
+    if (response.data) {
+      data = response.data;
+    }
+  } catch (e) {
+    if (e.response) {
+      console.log(e.response)
+    }
+  }
 
-//   return data;
-// }
+  return data;
+}
 
 
 export default function Index() {
@@ -275,10 +275,6 @@ export default function Index() {
 
       try {
         const response = await axios.post(url, body)
-
-        // setMessages({ ...messages, success: response.data.success.message });
-        setState(initialState)
-        
         // console.log(response)
 
         if (response.data) {
@@ -287,18 +283,20 @@ export default function Index() {
           if (getUser) {
             getUser.auth_token = response.data.auth_token;
 
+             setState(initialState);
+
+             setLoading(false);
+
+             enqueueSnackbar(
+               `You are being redirected to your dashboard page.`,
+               {
+                 variant: "success",
+               }
+             );
+
             authenticate(getUser, () => {
               return router.push("/dashboard");
             });
-
-            setLoading(false);
-
-            enqueueSnackbar(
-              `You are being redirected to your dashboard page.`,
-              {
-                variant: "success",
-              }
-            );
           }
           }
       } catch (e) {
