@@ -227,7 +227,7 @@ function Header(props) {
                         marginRight: "5px",
                       }}
                     >
-                      Hello, {headName ? headName : "User"}
+                      {headName ? headName : "User"}
                     </Typography>
                   </Box>
 
