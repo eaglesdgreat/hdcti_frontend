@@ -275,42 +275,59 @@ export default function Update() {
     const { name, value } = event.target;
 
     if(name === 'staffname') {
-        userMutate((data) => {
-          return {
-            ...user,
-            ...{...data, [name]: value},
-          };
-        }, false);
+      const user_role = 
+        user.is_superuser
+          ? "super"
+          : user.is_credit_officer
+          ? "credit_officer"
+          : user.is_branch_manager
+          ? "branch_manager"
+          : user.is_senior_manager
+          ? "senior_manager"
+          : user.is_agency_bank
+          ? "agency_bank"
+          : "";
+          
+      setSaveRole(user_role);
+
+      const strg = value
+
+      userMutate((data) => {
+        return {
+          ...user,
+          ...{...data, [name]: strg},
+        };
+      }, false);
     }
 
     if(name === 'role') {
-        setSaveRole(value)
+      setSaveRole(value)
 
-        userMutate((data) => {
-            data.is_superuser = false;
-            data.is_credit_officer = false;
-            data.is_branch_manager = false;
-            data.is_senior_manager = false;
-            data.is_agency_bank = false;
+      userMutate((data) => {
+          data.is_superuser = false;
+          data.is_credit_officer = false;
+          data.is_branch_manager = false;
+          data.is_senior_manager = false;
+          data.is_agency_bank = false;
 
-            let str =
-              value === "super"
-                ? "is_superuser"
-                : value === "credit_officer"
-                ? "is_credit_officer"
-                : value === "branch_manager"
-                ? "is_branch_manager"
-                : value === "senior_manager"
-                ? "is_senior_manager"
-                : value === "agency_bank"
-                ? "is_agency_bank"
-                : "";
+          let str =
+            value === "super"
+              ? "is_superuser"
+              : value === "credit_officer"
+              ? "is_credit_officer"
+              : value === "branch_manager"
+              ? "is_branch_manager"
+              : value === "senior_manager"
+              ? "is_senior_manager"
+              : value === "agency_bank"
+              ? "is_agency_bank"
+              : "";
 
-            return {
-                ...user,
-                ...{...data, [str]: true,}
-            };
-        }, false);
+          return {
+              ...user,
+              ...{...data, [str]: true,}
+          };
+      }, false);
     }
   };
 
@@ -379,16 +396,34 @@ export default function Update() {
     <Layout path={path}>
       <Box display="flex" style={{ width: "100%" }}>
         <Box className={classes.createBox}>
-          <Typography
-            className={classes.typography}
-            style={{
-              padding: "16px",
-              paddingLeft: "30px",
-              fontWeight: 600,
-            }}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            style={{ width: "100%" }}
           >
-            Edit User
-          </Typography>
+            <Typography
+              className={classes.typography}
+              style={{
+                padding: "16px",
+                paddingLeft: "30px",
+                fontWeight: 600,
+              }}
+            >
+              Edit User
+            </Typography>
+
+            <Typography
+              className={classes.typography}
+              style={{
+                padding: "16px",
+                paddingRight: "30px",
+                fontWeight: 500,
+              }}
+            >
+              <span style={{ fontWeight: 600 }}>Staff ID:</span>{" "}
+              {user && user.staffid ? user.staffid : ""}
+            </Typography>
+          </Box>
 
           <Divider light />
 
@@ -559,13 +594,13 @@ export default function Update() {
                             user.is_superuser
                               ? "super"
                               : user.is_credit_officer
-                              ? 'credit_officer'
+                              ? "credit_officer"
                               : user.is_branch_manager
-                              ? 'branch_manager'
+                              ? "branch_manager"
                               : user.is_senior_manager
-                              ? 'senior_manager'
+                              ? "senior_manager"
                               : user.is_agency_bank
-                              ? 'agency_bank'
+                              ? "agency_bank"
                               : ""
                           }
                           name="role"
