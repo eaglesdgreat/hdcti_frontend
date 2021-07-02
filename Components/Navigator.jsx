@@ -22,7 +22,7 @@ const categories = [
   {
     id: 1,
     head: "Loan Applications",
-    headUrl: "/loan_application",
+    headUrl: "/loan_management",
     body1: {
       id: "Create New",
       icon: <img src="/home.svg" alt="home" />,
@@ -40,7 +40,7 @@ const categories = [
   {
     id: 2,
     head: "Groups",
-    headUrl: "/groups",
+    headUrl: "/group_management",
     body1: {
       id: "Create New",
       icon: <img src="/home.svg" alt="home" />,

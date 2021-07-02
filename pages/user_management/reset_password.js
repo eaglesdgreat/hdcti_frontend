@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
   InputBase,
+  NoSsr,
 } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 // import { useStateValue } from '../StateProviders';
@@ -373,231 +374,233 @@ export default function Index() {
 
   return (
     <Layout path={path}>
-      <div className={classes.root}>
-        <Container maxWidth="sm">
-          <Box display="flex" className={classes.box}>
-            <Card className={classes.card}>
-              <CardContent style={{ padding: "0px" }}>
-                {isLoading ? (
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    style={{
-                      width: "100%",
-                      margin: "auto",
-                      paddingLeft: 100,
-                      paddingRight: 100,
-                      paddingTop: 150,
-                      paddingBottom: 150,
-                    }}
-                  >
-                    <CircularProgress size="3em" style={{ color: "#362D73" }} />
-                  </Box>
-                ) : (
-                  users && (
-                    <>
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          padding: "16px",
-                          paddingLeft: "30px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Reset Password
-                      </Typography>
-
-                      <Divider light />
-
-                      {/* {messages.failure && (
-                        <span style={errorMessageStyle}>{messages.failure}</span>
-                      )} */}
-
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        className={classes.box}
-                        // style={{ width: '60%' }}
-                      >
-                        <form
-                          className={classes.form}
-                          noValidate
-                          onSubmit={handleSubmit}
+      <NoSsr>
+        <div className={classes.root}>
+          <Container maxWidth="sm">
+            <Box display="flex" className={classes.box}>
+              <Card className={classes.card}>
+                <CardContent style={{ padding: "0px" }}>
+                  {isLoading ? (
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      style={{
+                        width: "100%",
+                        margin: "auto",
+                        paddingLeft: 100,
+                        paddingRight: 100,
+                        paddingTop: 150,
+                        paddingBottom: 150,
+                      }}
+                    >
+                      <CircularProgress size="3em" style={{ color: "#362D73" }} />
+                    </Box>
+                  ) : (
+                    users && (
+                      <>
+                        <Typography
+                          className={classes.typography}
+                          style={{
+                            padding: "16px",
+                            paddingLeft: "30px",
+                            fontWeight: 600,
+                          }}
                         >
-                          <Grid container spacing={6}>
-                            <Grid item xs={12} sm={12}>
-                              <Typography
-                                className={classes.typography}
-                                style={
-                                  {
-                                    // marginBottom: "-11px",
+                          Reset Password
+                        </Typography>
+
+                        <Divider light />
+
+                        {/* {messages.failure && (
+                          <span style={errorMessageStyle}>{messages.failure}</span>
+                        )} */}
+
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          className={classes.box}
+                          // style={{ width: '60%' }}
+                        >
+                          <form
+                            className={classes.form}
+                            noValidate
+                            onSubmit={handleSubmit}
+                          >
+                            <Grid container spacing={6}>
+                              <Grid item xs={12} sm={12}>
+                                <Typography
+                                  className={classes.typography}
+                                  style={
+                                    {
+                                      // marginBottom: "-11px",
+                                    }
                                   }
-                                }
-                              >
-                                Users
-                              </Typography>
-                              <FormControl
-                                variant="outlined"
-                                style={{ width: "100%" }}
-                                className={classes.formControl}
-                              >
-                                <Select
-                                  id="user"
-                                  value={state.user}
-                                  name="user"
-                                  displayEmpty
-                                  // native={false}
-                                  // renderValue={(value) => value}
-                                  onChange={handleChange}
-                                  input={<BootstrapInput />}
                                 >
-                                  <MenuItem
-                                    disabled={users.users.length > 0}
-                                    value=""
+                                  Users
+                                </Typography>
+                                <FormControl
+                                  variant="outlined"
+                                  style={{ width: "100%" }}
+                                  className={classes.formControl}
+                                >
+                                  <Select
+                                    id="user"
+                                    value={state.user}
+                                    name="user"
+                                    displayEmpty
+                                    // native={false}
+                                    // renderValue={(value) => value}
+                                    onChange={handleChange}
+                                    input={<BootstrapInput />}
                                   >
-                                    <Typography
-                                      noWrap
-                                      className={classes.menuPlaceholder}
+                                    <MenuItem
+                                      disabled={users.users.length > 0}
+                                      value=""
                                     >
-                                      Select User
-                                    </Typography>
-                                  </MenuItem>
-                                  {users.users.map((user) => (
-                                    <MenuItem key={user.id} value={user.email}>
                                       <Typography
                                         noWrap
-                                        className={classes.typography}
-                                        style={
-                                          {
-                                            // fontSize: '15px',
-                                            // lineHeight: '18px',
-                                            // color: '#242120'
-                                          }
-                                        }
+                                        className={classes.menuPlaceholder}
                                       >
-                                        {user.staffname}
+                                        Select User
                                       </Typography>
                                     </MenuItem>
-                                  ))}
-                                </Select>
-                              </FormControl>
-                            </Grid>
+                                    {users.users.map((user) => (
+                                      <MenuItem key={user.id} value={user.email}>
+                                        <Typography
+                                          noWrap
+                                          className={classes.typography}
+                                          style={
+                                            {
+                                              // fontSize: '15px',
+                                              // lineHeight: '18px',
+                                              // color: '#242120'
+                                            }
+                                          }
+                                        >
+                                          {user.staffname}
+                                        </Typography>
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                              </Grid>
 
-                            <Grid item xs={12} sm={12}>
-                              <Typography
-                                className={classes.typography}
-                                style={{
-                                  marginBottom: "-11px",
-                                }}
-                              >
-                                New Password
-                              </Typography>
-                              <TextField
-                                className={classes.textField}
-                                type={newType}
-                                placeholder="Enter your password"
-                                id="password"
-                                name="password"
-                                variant="outlined"
-                                size="small"
-                                autoFocus
-                                required
-                                fullWidth
-                                margin="normal"
-                                value={state.password}
-                                onChange={handleChange}
-                                // onKeyUp={''}
-                              />
-                              <Box
-                                display="flex"
-                                justifyContent="space-between"
-                              >
-                                <div
+                              <Grid item xs={12} sm={12}>
+                                <Typography
+                                  className={classes.typography}
                                   style={{
-                                    width: "50%",
+                                    marginBottom: "-11px",
                                   }}
                                 >
-                                  {messages.password && (
-                                    <span style={errorMessageStyle}>
-                                      {messages.password}
-                                    </span>
-                                  )}
-                                </div>
-
-                                <div
-                                  style={{
-                                    width: "50%",
-                                    display: "flex",
-                                    justifyContent: "flex-end",
-                                  }}
+                                  New Password
+                                </Typography>
+                                <TextField
+                                  className={classes.textField}
+                                  type={newType}
+                                  placeholder="Enter your password"
+                                  id="password"
+                                  name="password"
+                                  variant="outlined"
+                                  size="small"
+                                  autoFocus
+                                  required
+                                  fullWidth
+                                  margin="normal"
+                                  value={state.password}
+                                  onChange={handleChange}
+                                  // onKeyUp={''}
+                                />
+                                <Box
+                                  display="flex"
+                                  justifyContent="space-between"
                                 >
-                                  <Button
-                                    onClick={changeType}
-                                    className={classes.showPass}
+                                  <div
                                     style={{
-                                      fontSize: "10px",
-                                      marginTop: "-11px",
+                                      width: "50%",
                                     }}
                                   >
-                                    Show password
-                                  </Button>
-                                </div>
-                              </Box>
-                            </Grid>
-                          </Grid>
+                                    {messages.password && (
+                                      <span style={errorMessageStyle}>
+                                        {messages.password}
+                                      </span>
+                                    )}
+                                  </div>
 
-                          <Box display="flex" justifyContent="flex-start">
-                            <Button
-                              type="submit"
-                              fullWidth
-                              variant="contained"
-                              disabled={loading}
-                              style={{
-                                backgroundColor: "#72A624",
-                                color: "white",
-                                width: "70px",
-                                height: "40px",
-                                opacity: "1",
-                              }}
-                              className={classes.submit}
-                            >
-                              {loading ? (
-                                <CircularProgress
-                                  size="2em"
-                                  style={{ color: "#fff" }}
-                                />
-                              ) : (
-                                // "Login"
-                                <Typography
-                                  // className={classes.typography}
-                                  style={{
-                                    font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                                    letterSpacing:
-                                      "var(--unnamed-character-spacing-0)",
-                                    color: "var(--unnamed-color-ffffff)",
-                                    textAlign: "center",
-                                    font: "normal normal 600 14px/21px Poppins",
-                                    letterSpacing: "0px",
-                                    color: "#FFFFFF",
-                                    opacity: "1",
-                                    textTransform: "capitalize",
-                                  }}
-                                >
-                                  Submit
-                                </Typography>
-                              )}
-                            </Button>
-                          </Box>
-                        </form>
-                      </Box>
-                    </>
-                  )
-                )}
-              </CardContent>
-            </Card>
-          </Box>
-        </Container>
-      </div>
+                                  <div
+                                    style={{
+                                      width: "50%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <Button
+                                      onClick={changeType}
+                                      className={classes.showPass}
+                                      style={{
+                                        fontSize: "10px",
+                                        marginTop: "-11px",
+                                      }}
+                                    >
+                                      Show password
+                                    </Button>
+                                  </div>
+                                </Box>
+                              </Grid>
+                            </Grid>
+
+                            <Box display="flex" justifyContent="flex-start">
+                              <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                disabled={loading}
+                                style={{
+                                  backgroundColor: "#72A624",
+                                  color: "white",
+                                  width: "70px",
+                                  height: "40px",
+                                  opacity: "1",
+                                }}
+                                className={classes.submit}
+                              >
+                                {loading ? (
+                                  <CircularProgress
+                                    size="2em"
+                                    style={{ color: "#fff" }}
+                                  />
+                                ) : (
+                                  // "Login"
+                                  <Typography
+                                    // className={classes.typography}
+                                    style={{
+                                      font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                                      letterSpacing:
+                                        "var(--unnamed-character-spacing-0)",
+                                      color: "var(--unnamed-color-ffffff)",
+                                      textAlign: "center",
+                                      font: "normal normal 600 14px/21px Poppins",
+                                      letterSpacing: "0px",
+                                      color: "#FFFFFF",
+                                      opacity: "1",
+                                      textTransform: "capitalize",
+                                    }}
+                                  >
+                                    Submit
+                                  </Typography>
+                                )}
+                              </Button>
+                            </Box>
+                          </form>
+                        </Box>
+                      </>
+                    )
+                  )}
+                </CardContent>
+              </Card>
+            </Box>
+          </Container>
+        </div>
+      </NoSsr>
     </Layout>
   );
 }

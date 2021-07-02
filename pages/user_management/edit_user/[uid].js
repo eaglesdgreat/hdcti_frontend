@@ -12,6 +12,7 @@ import {
   MenuItem,
   InputBase,
   FormControl,
+  NoSsr,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -394,291 +395,254 @@ export default function Update() {
 
   return (
     <Layout path={path}>
-      <Box display="flex" style={{ width: "100%" }}>
-        <Box className={classes.createBox}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            style={{ width: "100%" }}
-          >
-            <Typography
-              className={classes.typography}
-              style={{
-                padding: "16px",
-                paddingLeft: "30px",
-                fontWeight: 600,
-              }}
+      <NoSsr>
+        <Box display="flex" style={{ width: "100%" }}>
+          <Box className={classes.createBox}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              style={{ width: "100%" }}
             >
-              Edit User
-            </Typography>
-
-            <Typography
-              className={classes.typography}
-              style={{
-                padding: "16px",
-                paddingRight: "30px",
-                fontWeight: 500,
-              }}
-            >
-              <span style={{ fontWeight: 600 }}>Staff ID:</span>{" "}
-              {user && user.staffid ? user.staffid : ""}
-            </Typography>
-          </Box>
-
-          <Divider light />
-
-          <Box>
-            {isError ? (
-              <Box
-                display="flex"
-                justifyContent="center"
+              <Typography
+                className={classes.typography}
                 style={{
-                  margin: "auto",
-                  width: "100%",
-                  borderRadius: "5px",
-                  height: "100px",
-                  padding: "100px",
+                  padding: "16px",
+                  paddingLeft: "30px",
+                  fontWeight: 600,
                 }}
               >
-                <Typography className={classes.typography}>
-                  Error Getting User Data
-                </Typography>
-              </Box>
-            ) : isLoading ? (
-              <Box
-                display="flex"
-                justifyContent="center"
+                Edit User
+              </Typography>
+
+              <Typography
+                className={classes.typography}
                 style={{
-                  width: "100%",
-                  margin: "auto",
-                  paddingLeft: 100,
-                  paddingRight: 100,
-                  paddingTop: 150,
-                  paddingBottom: 150,
+                  padding: "16px",
+                  paddingRight: "30px",
+                  fontWeight: 500,
                 }}
               >
-                <CircularProgress size="3em" style={{ color: "#362D73" }} />
-              </Box>
-            ) : (
-              user && (
-                <form
-                  className={classes.form}
-                  noValidate
-                  onSubmit={handleSubmit}
+                <span style={{ fontWeight: 600 }}>Staff ID:</span>{" "}
+                {user && user.staffid ? user.staffid : ""}
+              </Typography>
+            </Box>
+
+            <Divider light />
+
+            <Box>
+              {isError ? (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  style={{
+                    margin: "auto",
+                    width: "100%",
+                    borderRadius: "5px",
+                    height: "100px",
+                    padding: "100px",
+                  }}
                 >
-                  <Grid container spacing={4}>
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          marginBottom: "-11px",
-                        }}
+                  <Typography className={classes.typography}>
+                    Error Getting User Data
+                  </Typography>
+                </Box>
+              ) : isLoading ? (
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  style={{
+                    width: "100%",
+                    margin: "auto",
+                    paddingLeft: 100,
+                    paddingRight: 100,
+                    paddingTop: 150,
+                    paddingBottom: 150,
+                  }}
+                >
+                  <CircularProgress size="3em" style={{ color: "#362D73" }} />
+                </Box>
+              ) : (
+                user && (
+                  <form
+                    className={classes.form}
+                    noValidate
+                    onSubmit={handleSubmit}
+                  >
+                    <Grid container spacing={4}>
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
                       >
-                        Email
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        disabled={disabled}
-                        placeholder="Enter the email address of the user"
-                        id="email"
-                        name="email"
-                        type="email"
-                        variant="outlined"
-                        size="small"
-                        autoFocus
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={user.email}
-                        onChange={handleChange}
-                        // onKeyUp={''}
-                      />
-                    </Grid>
-
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          marginBottom: "-11px",
-                        }}
-                      >
-                        Username
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        placeholder="Enter a username for the user"
-                        id="staffname"
-                        name="staffname"
-                        type="text"
-                        variant="outlined"
-                        size="small"
-                        autoFocus
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={user.staffname}
-                        onChange={handleChange}
-                        // onKeyUp={''}
-                      />
-                    </Grid>
-
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          marginBottom: "-11px",
-                        }}
-                      >
-                        Password
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        disabled={disabled}
-                        type="password"
-                        placeholder="Enter your password"
-                        id="password"
-                        name="password"
-                        variant="outlined"
-                        size="small"
-                        autoFocus
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={"**********"}
-                        onChange={handleChange}
-                        // onKeyUp={''}
-                      />
-                    </Grid>
-
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={classes.typography}
-                        style={{
-                          marginBottom: "-11px",
-                        }}
-                      >
-                        Role
-                      </Typography>
-                      <FormControl
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        className={classes.formControl}
-                      >
-                        <Select
-                          id="role"
-                          value={
-                            user.is_superuser
-                              ? "super"
-                              : user.is_credit_officer
-                              ? "credit_officer"
-                              : user.is_branch_manager
-                              ? "branch_manager"
-                              : user.is_senior_manager
-                              ? "senior_manager"
-                              : user.is_agency_bank
-                              ? "agency_bank"
-                              : ""
-                          }
-                          name="role"
-                          displayEmpty
-                          // native={false}
-                          // renderValue={(value) => value}
-                          onChange={handleChange}
-                          input={<BootstrapInput />}
-                        >
-                          <MenuItem disabled={roles.length > 0} value="">
-                            <Typography
-                              noWrap
-                              className={classes.menuPlaceholder}
-                            >
-                              Select Role
-                            </Typography>
-                          </MenuItem>
-
-                          {roles.map((role) => (
-                            <MenuItem key={role.id} value={role.value}>
-                              <Typography noWrap className={classes.typography}>
-                                {role.name}
-                              </Typography>
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      style={{
-                        backgroundColor: "#72A624",
-                        color: "white",
-                        width: "70px",
-                        height: "40px",
-                        opacity: "1",
-                      }}
-                      className={classes.submit}
-                    >
-                      {loading ? (
-                        <CircularProgress
-                          size="2em"
-                          style={{ color: "#fff" }}
-                        />
-                      ) : (
-                        // "Login"
                         <Typography
-                          // className={classes.typography}
+                          className={classes.typography}
                           style={{
-                            font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                            letterSpacing: "var(--unnamed-character-spacing-0)",
-                            color: "var(--unnamed-color-ffffff)",
-                            textAlign: "center",
-                            font: "normal normal 600 14px/21px Poppins",
-                            letterSpacing: "0px",
-                            color: "#FFFFFF",
-                            opacity: "1",
-                            textTransform: "capitalize",
+                            marginBottom: "-11px",
                           }}
                         >
-                          Update
+                          Email
                         </Typography>
-                      )}
-                    </Button>
+                        <TextField
+                          className={classes.textField}
+                          disabled={disabled}
+                          placeholder="Enter the email address of the user"
+                          id="email"
+                          name="email"
+                          type="email"
+                          variant="outlined"
+                          size="small"
+                          autoFocus
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={user.email}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                      </Grid>
 
-                    <Link href={"/user_management/users"}>
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
+                      >
+                        <Typography
+                          className={classes.typography}
+                          style={{
+                            marginBottom: "-11px",
+                          }}
+                        >
+                          Username
+                        </Typography>
+                        <TextField
+                          className={classes.textField}
+                          placeholder="Enter a username for the user"
+                          id="staffname"
+                          name="staffname"
+                          type="text"
+                          variant="outlined"
+                          size="small"
+                          autoFocus
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={user.staffname}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                      </Grid>
+
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
+                      >
+                        <Typography
+                          className={classes.typography}
+                          style={{
+                            marginBottom: "-11px",
+                          }}
+                        >
+                          Password
+                        </Typography>
+                        <TextField
+                          className={classes.textField}
+                          disabled={disabled}
+                          type="password"
+                          placeholder="Enter your password"
+                          id="password"
+                          name="password"
+                          variant="outlined"
+                          size="small"
+                          autoFocus
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={"**********"}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                      </Grid>
+
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
+                      >
+                        <Typography
+                          className={classes.typography}
+                          style={{
+                            marginBottom: "-11px",
+                          }}
+                        >
+                          Role
+                        </Typography>
+                        <FormControl
+                          variant="outlined"
+                          style={{ width: "100%" }}
+                          className={classes.formControl}
+                        >
+                          <Select
+                            id="role"
+                            value={
+                              user.is_superuser
+                                ? "super"
+                                : user.is_credit_officer
+                                ? "credit_officer"
+                                : user.is_branch_manager
+                                ? "branch_manager"
+                                : user.is_senior_manager
+                                ? "senior_manager"
+                                : user.is_agency_bank
+                                ? "agency_bank"
+                                : ""
+                            }
+                            name="role"
+                            displayEmpty
+                            // native={false}
+                            // renderValue={(value) => value}
+                            onChange={handleChange}
+                            input={<BootstrapInput />}
+                          >
+                            <MenuItem disabled={roles.length > 0} value="">
+                              <Typography
+                                noWrap
+                                className={classes.menuPlaceholder}
+                              >
+                                Select Role
+                              </Typography>
+                            </MenuItem>
+
+                            {roles.map((role) => (
+                              <MenuItem key={role.id} value={role.value}>
+                                <Typography
+                                  noWrap
+                                  className={classes.typography}
+                                >
+                                  {role.name}
+                                </Typography>
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+
+                    <Box display="flex" justifyContent="flex-end">
                       <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         style={{
-                          backgroundColor: "red",
-                          marginLeft: "10px",
+                          backgroundColor: "#72A624",
                           color: "white",
                           width: "70px",
                           height: "40px",
@@ -686,30 +650,74 @@ export default function Update() {
                         }}
                         className={classes.submit}
                       >
-                        <Typography
-                          style={{
-                            font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                            letterSpacing: "var(--unnamed-character-spacing-0)",
-                            color: "var(--unnamed-color-ffffff)",
-                            textAlign: "center",
-                            font: "normal normal 600 14px/21px Poppins",
-                            letterSpacing: "0px",
-                            color: "#FFFFFF",
-                            opacity: "1",
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          cancel
-                        </Typography>
+                        {loading ? (
+                          <CircularProgress
+                            size="2em"
+                            style={{ color: "#fff" }}
+                          />
+                        ) : (
+                          // "Login"
+                          <Typography
+                            // className={classes.typography}
+                            style={{
+                              font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                              letterSpacing:
+                                "var(--unnamed-character-spacing-0)",
+                              color: "var(--unnamed-color-ffffff)",
+                              textAlign: "center",
+                              font: "normal normal 600 14px/21px Poppins",
+                              letterSpacing: "0px",
+                              color: "#FFFFFF",
+                              opacity: "1",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            Update
+                          </Typography>
+                        )}
                       </Button>
-                    </Link>
-                  </Box>
-                </form>
-              )
-            )}
+
+                      <Link href={"/user_management/users"}>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          style={{
+                            backgroundColor: "red",
+                            marginLeft: "10px",
+                            color: "white",
+                            width: "70px",
+                            height: "40px",
+                            opacity: "1",
+                          }}
+                          className={classes.submit}
+                        >
+                          <Typography
+                            style={{
+                              font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                              letterSpacing:
+                                "var(--unnamed-character-spacing-0)",
+                              color: "var(--unnamed-color-ffffff)",
+                              textAlign: "center",
+                              font: "normal normal 600 14px/21px Poppins",
+                              letterSpacing: "0px",
+                              color: "#FFFFFF",
+                              opacity: "1",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            cancel
+                          </Typography>
+                        </Button>
+                      </Link>
+                    </Box>
+                  </form>
+                )
+              )}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      </NoSsr>
     </Layout>
   );
 }

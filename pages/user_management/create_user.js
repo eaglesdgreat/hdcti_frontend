@@ -11,6 +11,7 @@ import {
   Select,
   MenuItem,
   InputBase,
+  NoSsr,
   FormControl,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -298,7 +299,7 @@ export default function Home() {
       }
   
       if (isValid) {
-        const validatePass = validations(state.password, 'Password');
+        const validatePass = validations(state.password, 'Password', true, 'password');
         if (validatePass.status) {
           setMessages({ ...messages, password: validatePass.message });
           isValid = false;
@@ -375,217 +376,256 @@ export default function Home() {
 
     return (
       <Layout path={path}>
-        <Box display="flex" style={{ width: "100%" }}>
-          <Box className={classes.createBox}>
-            <Typography
-              className={classes.typography}
-              style={{
-                padding: "16px",
-                paddingLeft: "30px",
-                fontWeight: 600,
-              }}
-            >
-              Create New User
-            </Typography>
+        <NoSsr>
+          <Box display="flex" style={{ width: "100%" }}>
+            <Box className={classes.createBox}>
+              <NoSsr>
+                <Typography
+                  className={classes.typography}
+                  style={{
+                    padding: "16px",
+                    paddingLeft: "30px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Create New User
+                </Typography>
 
-            <Divider light />
+                <Divider light />
 
-            <Box>
-              <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                <Grid container spacing={4}>
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={clsx(classes.typography, classes.formTypo)}
-                      variant="body1"
-                      gutterBottom
-                    >
-                      Email<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      // type="email"
-                      placeholder="Enter the email address of the user"
-                      id="email"
-                      name="email"
-                      type="email"
-                      variant="outlined"
-                      size="small"
-                      autoFocus
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.email}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    {messages.email && (
-                      <span style={errorMessageStyle}>{messages.email}</span>
-                    )}
-                  </Grid>
-
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={clsx(classes.typography, classes.formTypo)}
-                      variant="body1"
-                      gutterBottom
-                    >
-                      Username<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      // type="email"
-                      placeholder="Enter a username for the user"
-                      id="username"
-                      name="username"
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.username}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    {messages.username && (
-                      <span style={errorMessageStyle}>{messages.username}</span>
-                    )}
-                  </Grid>
-
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={clsx(classes.typography, classes.formTypo)}
-                      variant="body1"
-                      gutterBottom
-                    >
-                      Password<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <TextField
-                      className={classes.textField}
-                      type={newType}
-                      placeholder="Enter your password"
-                      id="password"
-                      name="password"
-                      variant="outlined"
-                      size="small"
-                      required
-                      fullWidth
-                      margin="normal"
-                      value={state.password}
-                      onChange={handleChange}
-                      // onKeyUp={''}
-                    />
-                    <Box display="flex" justifyContent="space-between">
-                      <div
-                        style={{
-                          width: "50%",
-                        }}
+                <Box>
+                  <form
+                    className={classes.form}
+                    noValidate
+                    onSubmit={handleSubmit}
+                  >
+                    <Grid container spacing={4}>
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
                       >
-                        {messages.password && (
+                        <Typography
+                          className={clsx(classes.typography, classes.formTypo)}
+                          variant="body1"
+                          gutterBottom
+                        >
+                          Email<span style={{ color: "red" }}>*</span>
+                        </Typography>
+                        <TextField
+                          className={classes.textField}
+                          // type="email"
+                          placeholder="Enter the email address of the user"
+                          id="email"
+                          name="email"
+                          type="email"
+                          variant="outlined"
+                          size="small"
+                          autoFocus
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={state.email}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                        {messages.email && (
                           <span style={errorMessageStyle}>
-                            {messages.password}
+                            {messages.email}
                           </span>
                         )}
-                      </div>
+                      </Grid>
 
-                      <div
-                        style={{
-                          width: "50%",
-                          display: "flex",
-                          justifyContent: "flex-end",
-                        }}
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
                       >
-                        <Button
-                          onClick={changeType}
-                          className={classes.showPass}
-                          // style={{ fontSize: "10px", marginTop: "-11px" }}
+                        <Typography
+                          className={clsx(classes.typography, classes.formTypo)}
+                          variant="body1"
+                          gutterBottom
                         >
-                          Show password
-                        </Button>
-                      </div>
-                    </Box>
-                  </Grid>
-                  <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                    <Typography
-                      className={clsx(classes.typography, classes.formTypo)}
-                      variant="body1"
-                      gutterBottom
-                    >
-                      Role<span style={{ color: "red" }}>*</span>
-                    </Typography>
-                    <FormControl
-                      variant="outlined"
-                      // style={{ width: "100%" }}
-                      className={classes.formControl}
-                    >
-                      <Select
-                        id="role"
-                        value={state.role}
-                        name="role"
-                        displayEmpty
-                        // native={false}
-                        // renderValue={(value) => value}
-                        onChange={handleChange}
-                        input={<BootstrapInput />}
+                          Username<span style={{ color: "red" }}>*</span>
+                        </Typography>
+                        <TextField
+                          className={classes.textField}
+                          // type="email"
+                          placeholder="Enter a username for the user"
+                          id="username"
+                          name="username"
+                          type="text"
+                          variant="outlined"
+                          size="small"
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={state.username}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                        {messages.username && (
+                          <span style={errorMessageStyle}>
+                            {messages.username}
+                          </span>
+                        )}
+                      </Grid>
+
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
                       >
-                        <MenuItem disabled={roles.length > 0} value="">
-                          <Typography
-                            noWrap
-                            variant="body1"
-                            className={classes.menuPlaceholder}
+                        <Typography
+                          className={clsx(classes.typography, classes.formTypo)}
+                          variant="body1"
+                          gutterBottom
+                        >
+                          Password<span style={{ color: "red" }}>*</span>
+                        </Typography>
+                        <TextField
+                          className={classes.textField}
+                          type={newType}
+                          placeholder="Enter your password"
+                          id="password"
+                          name="password"
+                          variant="outlined"
+                          size="small"
+                          required
+                          fullWidth
+                          margin="normal"
+                          value={state.password}
+                          onChange={handleChange}
+                          // onKeyUp={''}
+                        />
+                        <Box display="flex" justifyContent="space-between">
+                          <div
+                            style={{
+                              width: "50%",
+                            }}
                           >
-                            Select Role
-                          </Typography>
-                        </MenuItem>
+                            {messages.password && (
+                              <span style={errorMessageStyle}>
+                                {messages.password}
+                              </span>
+                            )}
+                          </div>
 
-                        {roles.map((role) => (
-                          <MenuItem key={role.id} value={role.value}>
-                            <Typography
-                              noWrap
-                              variant="body1"
-                              className={classes.typography}
+                          <div
+                            style={{
+                              width: "50%",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            <Button
+                              onClick={changeType}
+                              className={classes.showPass}
+                              // style={{ fontSize: "10px", marginTop: "-11px" }}
                             >
-                              {role.name}
-                            </Typography>
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-
-                <Box display="flex" justifyContent="flex-end">
-                  <Button
-                    type="submit"
-                    fullWidth
-                    disabled={loading}
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#72A624",
-                      color: "white",
-                      width: "70px",
-                      height: "40px",
-                      opacity: "1",
-                    }}
-                    className={classes.submit}
-                  >
-                    {loading ? (
-                      <CircularProgress size="2em" style={{ color: "#fff" }} />
-                    ) : (
-                      // "Login"
-                      <Typography
-                        variant="body1"
-                        className={classes.submitTypo}
+                              Show password
+                            </Button>
+                          </div>
+                        </Box>
+                      </Grid>
+                      <Grid
+                        className={classes.itemGrid}
+                        item
+                        md={6}
+                        lg={6}
+                        xl={6}
                       >
-                        Submit
-                      </Typography>
-                    )}
-                  </Button>
+                        <Typography
+                          className={clsx(classes.typography, classes.formTypo)}
+                          variant="body1"
+                          gutterBottom
+                        >
+                          Role<span style={{ color: "red" }}>*</span>
+                        </Typography>
+                        <FormControl
+                          variant="outlined"
+                          // style={{ width: "100%" }}
+                          className={classes.formControl}
+                        >
+                          <Select
+                            id="role"
+                            value={state.role}
+                            name="role"
+                            displayEmpty
+                            // native={false}
+                            // renderValue={(value) => value}
+                            onChange={handleChange}
+                            input={<BootstrapInput />}
+                          >
+                            <MenuItem disabled={roles.length > 0} value="">
+                              <Typography
+                                noWrap
+                                variant="body1"
+                                className={classes.menuPlaceholder}
+                              >
+                                Select Role
+                              </Typography>
+                            </MenuItem>
+
+                            {roles.map((role) => (
+                              <MenuItem key={role.id} value={role.value}>
+                                <Typography
+                                  noWrap
+                                  variant="body1"
+                                  className={classes.typography}
+                                >
+                                  {role.name}
+                                </Typography>
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+
+                    <Box display="flex" justifyContent="flex-end">
+                      <Button
+                        type="submit"
+                        fullWidth
+                        disabled={loading}
+                        variant="contained"
+                        style={{
+                          backgroundColor: "#72A624",
+                          color: "white",
+                          width: "70px",
+                          height: "40px",
+                          opacity: "1",
+                        }}
+                        className={classes.submit}
+                      >
+                        {loading ? (
+                          <CircularProgress
+                            size="2em"
+                            style={{ color: "#fff" }}
+                          />
+                        ) : (
+                          // "Login"
+                          <Typography
+                            variant="body1"
+                            className={classes.submitTypo}
+                          >
+                            Submit
+                          </Typography>
+                        )}
+                      </Button>
+                    </Box>
+                  </form>
                 </Box>
-              </form>
+              </NoSsr>
             </Box>
           </Box>
-        </Box>
+        </NoSsr>
       </Layout>
     );
 }

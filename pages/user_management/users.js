@@ -21,6 +21,7 @@ import {
   TableContainer,
   TableRow,
   IconButton,
+  NoSsr,
   Paper,
   Dialog,
   DialogActions,
@@ -559,356 +560,390 @@ export default function Home() {
 
   return (
     <Layout path={path}>
-      <Box className={classes.box}>
-        <TableContainer className={classes.tContainer} component="div">
-          <Box display="flex" flexDirection="column" className={classes.topBox}>
-            <Box style={{ display: "flex", width: "100%" }}>
-              <div
-                style={{
-                  // paddingLeft: "40px",
-                  paddingLeft: "45px",
-                  paddingTop: "15px",
-                  paddingBottom: "15px",
-                  width: "47%",
-                  // paddingTop: "10px",
-                }}
-              >
-                <Typography className={classes.typography3}>Users</Typography>
-              </div>
-
-              <div
-                style={{
-                  padding: "15px",
-                  width: "47%",
-                  // paddingRight: "40px",
-                }}
-              >
-                <Typography className={classes.typography4}>
-                  {users ? users.users.length : 0} users
-                </Typography>
-              </div>
-            </Box>
-
-            <Divider light />
-            <Box style={{ display: "flex", width: "100%", margin: "auto" }}>
-              <Box
-                style={{
-                  display: "flex",
-                  width: "77%",
-                  justifyContent: "flex-end",
-                  padding: "20px",
-                }}
-              >
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
+      <NoSsr>
+        <Box className={classes.box}>
+          <TableContainer className={classes.tContainer} component="div">
+            <Box
+              display="flex"
+              flexDirection="column"
+              className={classes.topBox}
+            >
+              <Box style={{ display: "flex", width: "100%" }}>
+                <div
                   style={{
-                    backgroundColor: "#72A624",
-                    color: "white",
-                    width: "152px",
-                    height: "33px",
-                    opacity: "1",
-                    borderRadius: "4px",
+                    // paddingLeft: "40px",
+                    paddingLeft: "45px",
+                    paddingTop: "15px",
+                    paddingBottom: "15px",
+                    width: "47%",
+                    // paddingTop: "10px",
                   }}
-                  className={classes.submit}
-                  onClick={handleClick}
                 >
-                  <Typography
-                    // className={classes.typography}
-                    style={{
-                      font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
-                      letterSpacing: "var(--unnamed-character-spacing-0)",
-                      color: "var(--unnamed-color-ffffff)",
-                      textAlign: "center",
-                      font: "normal normal 600 14px/21px Poppins",
-                      letterSpacing: "0px",
-                      color: "#FFFFFF",
-                      opacity: "1",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    Create New User
+                  <Typography className={classes.typography3}>Users</Typography>
+                </div>
+
+                <div
+                  style={{
+                    padding: "15px",
+                    width: "47%",
+                    // paddingRight: "40px",
+                  }}
+                >
+                  <Typography className={classes.typography4}>
+                    {users ? users.users.length : 0} users
                   </Typography>
-                </Button>
+                </div>
               </Box>
 
+              <Divider light />
+              <Box style={{ display: "flex", width: "100%", margin: "auto" }}>
+                <Box
+                  style={{
+                    display: "flex",
+                    width: "77%",
+                    justifyContent: "flex-end",
+                    padding: "20px",
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    style={{
+                      backgroundColor: "#72A624",
+                      color: "white",
+                      width: "152px",
+                      height: "33px",
+                      opacity: "1",
+                      borderRadius: "4px",
+                    }}
+                    className={classes.submit}
+                    onClick={handleClick}
+                  >
+                    <Typography
+                      // className={classes.typography}
+                      style={{
+                        font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
+                        letterSpacing: "var(--unnamed-character-spacing-0)",
+                        color: "var(--unnamed-color-ffffff)",
+                        textAlign: "center",
+                        font: "normal normal 600 14px/21px Poppins",
+                        letterSpacing: "0px",
+                        color: "#FFFFFF",
+                        opacity: "1",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      Create New User
+                    </Typography>
+                  </Button>
+                </Box>
+
+                <Box
+                  style={{
+                    display: "flex",
+                    width: "23%",
+                    justifyContent: "flex-start",
+                    paddingTop: "20px",
+                    paddingBottom: "20px",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <TextField
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    margin="none"
+                    className={classes.roots}
+                    value={state}
+                    onChange={(event) => onSearchChange(event)}
+                    // onKeyPress={enterSearch}
+                    onKeyUp={searchResult}
+                    placeholder="Search Users"
+                    id="input-search"
+                    InputProps={{
+                      className: classes.input,
+                      classes: {
+                        root: classes.cssOutlinedInput,
+                        focused: classes.cssFocused,
+                        notchedOutline: classes.notchedOutline,
+                      },
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <img src="/search.svg" alt="search" />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Box>
+
+            {isError ? (
               <Box
+                display="flex"
+                justifyContent="center"
                 style={{
-                  display: "flex",
-                  width: "23%",
-                  justifyContent: "flex-start",
-                  paddingTop: "20px",
-                  paddingBottom: "20px",
-                  paddingRight: "10px",
+                  margin: "auto",
+                  width: "100%",
+                  borderRadius: "5px",
+                  height: "100px",
+                  padding: "100px",
                 }}
               >
-                <TextField
-                  type="text"
-                  fullWidth
-                  variant="outlined"
-                  margin="none"
-                  className={classes.roots}
-                  value={state}
-                  onChange={(event) => onSearchChange(event)}
-                  // onKeyPress={enterSearch}
-                  onKeyUp={searchResult}
-                  placeholder="Search Users"
-                  id="input-search"
-                  InputProps={{
-                    className: classes.input,
-                    classes: {
-                      root: classes.cssOutlinedInput,
-                      focused: classes.cssFocused,
-                      notchedOutline: classes.notchedOutline,
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <img src="/search.svg" alt="search" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <Typography className={classes.typography}>
+                  Error Fetching All Users Data
+                </Typography>
               </Box>
-            </Box>
-          </Box>
-
-          {isError ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              style={{
-                margin: "auto",
-                width: "100%",
-                borderRadius: "5px",
-                height: "100px",
-                padding: "100px",
-              }}
-            >
-              <Typography className={classes.typography}>
-                Error Fetching All Users Data
-              </Typography>
-            </Box>
-          ) : isLoading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              style={{
-                width: "100%",
-                margin: "auto",
-                paddingLeft: 100,
-                paddingRight: 100,
-                paddingTop: 150,
-                paddingBottom: 150,
-              }}
-            >
-              <CircularProgress size="3em" style={{ color: "#362D73" }} />
-            </Box>
-          ) : (
-            users && (
-              <Table className={classes.table}>
-                <TableHead className={classes.thead}>
-                  <TableRow
-                  // style={{ background: "rgba(249, 250, 252, 0.5)" }}
-                  >
-                    <TableCell size="small" className={classes.tableCell}>
-                      <Typography className={classes.typography}>
-                        S/N
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell
-                      align="left"
-                      size="small"
-                      className={classes.tableCell}
+            ) : isLoading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  width: "100%",
+                  margin: "auto",
+                  paddingLeft: 100,
+                  paddingRight: 100,
+                  paddingTop: 150,
+                  paddingBottom: 150,
+                }}
+              >
+                <CircularProgress size="3em" style={{ color: "#362D73" }} />
+              </Box>
+            ) : (
+              users && (
+                <Table className={classes.table}>
+                  <TableHead className={classes.thead}>
+                    <TableRow
+                    // style={{ background: "rgba(249, 250, 252, 0.5)" }}
                     >
-                      <Typography className={classes.typography}>
-                        Name
-                      </Typography>
-                    </TableCell>
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography className={classes.typography}>
+                          S/N
+                        </Typography>
+                      </TableCell>
 
-                    <TableCell size="small" className={classes.tableCell}>
-                      <Typography className={classes.typography}>
-                        Email
-                      </Typography>
-                    </TableCell>
+                      <TableCell
+                        align="left"
+                        size="small"
+                        className={classes.tableCell}
+                      >
+                        <Typography className={classes.typography}>
+                          Name
+                        </Typography>
+                      </TableCell>
 
-                    <TableCell size="small" className={classes.tableCell}>
-                      <Typography className={classes.typography}>
-                        Role
-                      </Typography>
-                    </TableCell>
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography className={classes.typography}>
+                          Email
+                        </Typography>
+                      </TableCell>
 
-                    <TableCell size="small" className={classes.tableCell}>
-                      <Typography className={classes.typography}>
-                        Actions
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography className={classes.typography}>
+                          Role
+                        </Typography>
+                      </TableCell>
 
-                {users.users.length > 20 ? (
-                  <TableBody>
-                    {(search.length > 0 ? search : users.users)
-                      .filter((user) => user.is_active === true)
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((user, i) => (
-                        <TableRow key={user.id}>
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {i + 1}
-                            </Typography>
-                          </TableCell>
+                      <TableCell size="small" className={classes.tableCell}>
+                        <Typography className={classes.typography}>
+                          Actions
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.staffname}
-                            </Typography>
-                          </TableCell>
+                  {users.users.length > 20 ? (
+                    <TableBody>
+                      {(search.length > 0 ? search : users.users)
+                        .filter((user) => user.is_active === true)
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((user, i) => (
+                          <TableRow key={user.id}>
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {i + 1}
+                              </Typography>
+                            </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.email}
-                            </Typography>
-                          </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.staffname}
+                              </Typography>
+                            </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.is_superuser
-                                ? "Super User"
-                                : "" || user.is_credit_officer
-                                ? "Credit Officer"
-                                : "" || user.is_branch_manager
-                                ? "Branch Manager"
-                                : "" || user.is_senior_manager
-                                ? "Senior Manager"
-                                : "" || user.is_agency_bank
-                                ? "Agency Bank"
-                                : ""}
-                            </Typography>
-                          </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.email}
+                              </Typography>
+                            </TableCell>
 
-                          <TableCell className={classes.tableCell}>
-                            <Box display="flex" justifyContent="center">
-                              <IconButton
-                                onClick={() => {
-                                  handleEditClick(user.id);
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.is_superuser
+                                  ? "Super User"
+                                  : "" || user.is_credit_officer
+                                  ? "Credit Officer"
+                                  : "" || user.is_branch_manager
+                                  ? "Branch Manager"
+                                  : "" || user.is_senior_manager
+                                  ? "Senior Manager"
+                                  : "" || user.is_agency_bank
+                                  ? "Agency Bank"
+                                  : ""}
+                              </Typography>
+                            </TableCell>
 
-                              <IconButton
-                                onClick={() => {
-                                  setIdx(user.id);
-                                  setUserName(user.staffname);
-                                  handleDialogClick();
-                                }}
-                              >
-                                <DeleteOutlinedIcon />
-                              </IconButton>
-                            </Box>
-
-                            <Dialog
-                              open={open}
-                              onClose={handleDialogClose}
-                              BackdropProps={{
-                                style: {
-                                  opacity: 0.1,
-                                },
-                              }}
-                              PaperProps={{
-                                style: {
-                                  borderRadius: "8px",
-                                  width: "428px",
-                                  // height: '369px',
-                                  paddingBottom: "5%",
-                                  paddingTop: "2.5%",
-                                  boxShadow: "none",
-                                },
-                              }}
-                            >
-                              <DialogTitle>
-                                <Typography
-                                  className={classes.typography}
-                                  style={{
-                                    fontWeight: "700",
-                                    fontSize: "24px",
-                                    lineHeight: "28px",
+                            <TableCell className={classes.tableCell}>
+                              <Box display="flex" justifyContent="center">
+                                <IconButton
+                                  onClick={() => {
+                                    handleEditClick(user.id);
                                   }}
                                 >
-                                  Delete User Account
-                                </Typography>
-                              </DialogTitle>
+                                  <EditIcon />
+                                </IconButton>
 
-                              <DialogContent>
-                                <Box
-                                  display="flex"
-                                  component="span"
-                                  style={{
-                                    whiteSpace: "initial",
+                                <IconButton
+                                  onClick={() => {
+                                    setIdx(user.id);
+                                    setUserName(user.staffname);
+                                    handleDialogClick();
                                   }}
                                 >
+                                  <DeleteOutlinedIcon />
+                                </IconButton>
+                              </Box>
+
+                              <Dialog
+                                open={open}
+                                onClose={handleDialogClose}
+                                BackdropProps={{
+                                  style: {
+                                    opacity: 0.1,
+                                  },
+                                }}
+                                PaperProps={{
+                                  style: {
+                                    borderRadius: "8px",
+                                    width: "428px",
+                                    // height: '369px',
+                                    paddingBottom: "5%",
+                                    paddingTop: "2.5%",
+                                    boxShadow: "none",
+                                  },
+                                }}
+                              >
+                                <DialogTitle>
                                   <Typography
                                     className={classes.typography}
+                                    style={{
+                                      fontWeight: "700",
+                                      fontSize: "24px",
+                                      lineHeight: "28px",
+                                    }}
+                                  >
+                                    Delete User Account
+                                  </Typography>
+                                </DialogTitle>
+
+                                <DialogContent>
+                                  <Box
+                                    display="flex"
+                                    component="span"
+                                    style={{
+                                      whiteSpace: "initial",
+                                    }}
+                                  >
+                                    <Typography
+                                      className={classes.typography}
+                                      style={
+                                        {
+                                          // fontWeight: "normal",
+                                          // fontSize: "15px",
+                                          // lineHeight: "22px",
+                                          // color: "#242120",
+                                        }
+                                      }
+                                    >
+                                      You want to delete{" "}
+                                      <strong>{userName} </strong>
+                                      account from this platform, click delete
+                                      button to proceed or cancel this action.
+                                    </Typography>
+                                  </Box>
+                                </DialogContent>
+
+                                <DialogActions
+                                  style={{
+                                    padding: "11px",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Box
+                                    display="flex"
+                                    justifyContent="center"
                                     style={
                                       {
-                                        // fontWeight: "normal",
-                                        // fontSize: "15px",
-                                        // lineHeight: "22px",
-                                        // color: "#242120",
+                                        // margin: 'auto',
+                                        // marginRight: "25px",
+                                        // border: '1px solid red',
                                       }
                                     }
                                   >
-                                    You want to delete{" "}
-                                    <strong>{userName} </strong>
-                                    account from this platform, click delete
-                                    button to proceed or cancel this action.
-                                  </Typography>
-                                </Box>
-                              </DialogContent>
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={clickDelete}
+                                      disableRipple
+                                      disabled={loading}
+                                      style={{
+                                        border: "2px solid #72A624",
+                                      }}
+                                    >
+                                      {loading ? (
+                                        <CircularProgress
+                                          size="1em"
+                                          style={{ color: "#72A624" }}
+                                        />
+                                      ) : (
+                                        <Typography
+                                          className={classes.typography}
+                                          style={{
+                                            textAlign: "center",
+                                            color: "#72A624",
+                                            fontSize: "13px",
+                                            fontWeight: "500",
+                                            lineHeight: "15px",
+                                            textTransform: "capitalize",
+                                            lineSpacing: "0.02em",
+                                          }}
+                                        >
+                                          Delete
+                                        </Typography>
+                                      )}
+                                    </Button>
 
-                              <DialogActions
-                                style={{
-                                  padding: "11px",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <Box
-                                  display="flex"
-                                  justifyContent="center"
-                                  style={
-                                    {
-                                      // margin: 'auto',
-                                      // marginRight: "25px",
-                                      // border: '1px solid red',
-                                    }
-                                  }
-                                >
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={clickDelete}
-                                    disableRipple
-                                    disabled={loading}
-                                    style={{
-                                      border: "2px solid #72A624",
-                                    }}
-                                  >
-                                    {loading ? (
-                                      <CircularProgress
-                                        size="1em"
-                                        style={{ color: "#72A624" }}
-                                      />
-                                    ) : (
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={handleDialogClose}
+                                      disabled={loading}
+                                      disableRipple
+                                      style={{
+                                        border: "1px solid #72A624",
+                                        backgroundColor: "#72A624",
+                                        marginLeft: "20px",
+                                      }}
+                                    >
                                       <Typography
                                         className={classes.typography}
                                         style={{
                                           textAlign: "center",
-                                          color: "#72A624",
+                                          color: "#FFFFFF",
                                           fontSize: "13px",
                                           fontWeight: "500",
                                           lineHeight: "15px",
@@ -916,203 +951,203 @@ export default function Home() {
                                           lineSpacing: "0.02em",
                                         }}
                                       >
-                                        Delete
+                                        cancel
                                       </Typography>
-                                    )}
-                                  </Button>
+                                    </Button>
+                                  </Box>
+                                </DialogActions>
+                              </Dialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  ) : (
+                    <TableBody>
+                      {(search.length > 0 ? search : users.users)
+                        .filter((user) => user.is_active === true)
+                        .map((user, i) => (
+                          <TableRow key={user.id}>
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {i + 1}
+                              </Typography>
+                            </TableCell>
 
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={handleDialogClose}
-                                    disabled={loading}
-                                    disableRipple
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.staffname}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.email}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className={classes.tableCell}>
+                              <Typography className={classes.typography2}>
+                                {user.is_superuser
+                                  ? "Super User"
+                                  : "" || user.is_credit_officer
+                                  ? "Credit Officer"
+                                  : "" || user.is_branch_manager
+                                  ? "Branch Manager"
+                                  : "" || user.is_senior_manager
+                                  ? "Senior Manager"
+                                  : "" || user.is_agency_bank
+                                  ? "Agency Bank"
+                                  : ""}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className={classes.tableCell}>
+                              <Box display="flex" justifyContent="center">
+                                <IconButton
+                                  onClick={() => {
+                                    handleEditClick(user.id);
+                                  }}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={() => {
+                                    setIdx(user.id);
+                                    setUserName(user.staffname);
+                                    handleDialogClick();
+                                  }}
+                                >
+                                  <DeleteOutlinedIcon />
+                                </IconButton>
+                              </Box>
+
+                              <Dialog
+                                open={open}
+                                onClose={handleDialogClose}
+                                BackdropProps={{
+                                  style: {
+                                    opacity: 0.1,
+                                  },
+                                }}
+                                PaperProps={{
+                                  style: {
+                                    borderRadius: "8px",
+                                    width: "428px",
+                                    // height: '369px',
+                                    paddingBottom: "5%",
+                                    paddingTop: "2.5%",
+                                    boxShadow: "none",
+                                  },
+                                }}
+                              >
+                                <DialogTitle>
+                                  <Typography
+                                    className={classes.typography}
                                     style={{
-                                      border: "1px solid #72A624",
-                                      backgroundColor: "#72A624",
-                                      marginLeft: "20px",
+                                      fontWeight: "700",
+                                      fontSize: "24px",
+                                      lineHeight: "28px",
+                                    }}
+                                  >
+                                    Delete User Account
+                                  </Typography>
+                                </DialogTitle>
+
+                                <DialogContent>
+                                  <Box
+                                    display="flex"
+                                    component="span"
+                                    style={{
+                                      whiteSpace: "initial",
                                     }}
                                   >
                                     <Typography
                                       className={classes.typography}
-                                      style={{
-                                        textAlign: "center",
-                                        color: "#FFFFFF",
-                                        fontSize: "13px",
-                                        fontWeight: "500",
-                                        lineHeight: "15px",
-                                        textTransform: "capitalize",
-                                        lineSpacing: "0.02em",
-                                      }}
+                                      style={
+                                        {
+                                          // fontWeight: "normal",
+                                          // fontSize: "15px",
+                                          // lineHeight: "22px",
+                                          // color: "#242120",
+                                        }
+                                      }
                                     >
-                                      cancel
+                                      You want to delete{" "}
+                                      <strong>{userName} </strong>
+                                      account from this platform, click delete
+                                      button to proceed or cancel this action.
                                     </Typography>
-                                  </Button>
-                                </Box>
-                              </DialogActions>
-                            </Dialog>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                ) : (
-                  <TableBody>
-                    {(search.length > 0 ? search : users.users)
-                      .filter((user) => user.is_active === true)
-                      .map((user, i) => (
-                        <TableRow key={user.id}>
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {i + 1}
-                            </Typography>
-                          </TableCell>
+                                  </Box>
+                                </DialogContent>
 
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.staffname}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.email}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {user.is_superuser
-                                ? "Super User"
-                                : "" || user.is_credit_officer
-                                ? "Credit Officer"
-                                : "" || user.is_branch_manager
-                                ? "Branch Manager"
-                                : "" || user.is_senior_manager
-                                ? "Senior Manager"
-                                : "" || user.is_agency_bank
-                                ? "Agency Bank"
-                                : ""}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell className={classes.tableCell}>
-                            <Box display="flex" justifyContent="center">
-                              <IconButton
-                                onClick={() => {
-                                  handleEditClick(user.id);
-                                }}
-                              >
-                                <EditIcon />
-                              </IconButton>
-
-                              <IconButton
-                                onClick={() => {
-                                  setIdx(user.id);
-                                  setUserName(user.staffname);
-                                  handleDialogClick();
-                                }}
-                              >
-                                <DeleteOutlinedIcon />
-                              </IconButton>
-                            </Box>
-
-                            <Dialog
-                              open={open}
-                              onClose={handleDialogClose}
-                              BackdropProps={{
-                                style: {
-                                  opacity: 0.1,
-                                },
-                              }}
-                              PaperProps={{
-                                style: {
-                                  borderRadius: "8px",
-                                  width: "428px",
-                                  // height: '369px',
-                                  paddingBottom: "5%",
-                                  paddingTop: "2.5%",
-                                  boxShadow: "none",
-                                },
-                              }}
-                            >
-                              <DialogTitle>
-                                <Typography
-                                  className={classes.typography}
+                                <DialogActions
                                   style={{
-                                    fontWeight: "700",
-                                    fontSize: "24px",
-                                    lineHeight: "28px",
+                                    padding: "11px",
+                                    justifyContent: "center",
                                   }}
                                 >
-                                  Delete User Account
-                                </Typography>
-                              </DialogTitle>
-
-                              <DialogContent>
-                                <Box
-                                  display="flex"
-                                  component="span"
-                                  style={{
-                                    whiteSpace: "initial",
-                                  }}
-                                >
-                                  <Typography
-                                    className={classes.typography}
+                                  <Box
+                                    display="flex"
+                                    justifyContent="center"
                                     style={
                                       {
-                                        // fontWeight: "normal",
-                                        // fontSize: "15px",
-                                        // lineHeight: "22px",
-                                        // color: "#242120",
+                                        // margin: 'auto',
+                                        // marginRight: "25px",
+                                        // border: '1px solid red',
                                       }
                                     }
                                   >
-                                    You want to delete{" "}
-                                    <strong>{userName} </strong>
-                                    account from this platform, click delete
-                                    button to proceed or cancel this action.
-                                  </Typography>
-                                </Box>
-                              </DialogContent>
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={clickDelete}
+                                      disableRipple
+                                      disabled={loading}
+                                      style={{
+                                        border: "2px solid #72A624",
+                                      }}
+                                    >
+                                      {loading ? (
+                                        <CircularProgress
+                                          size="1em"
+                                          style={{ color: "#72A624" }}
+                                        />
+                                      ) : (
+                                        <Typography
+                                          className={classes.typography}
+                                          style={{
+                                            textAlign: "center",
+                                            color: "#72A624",
+                                            fontSize: "13px",
+                                            fontWeight: "500",
+                                            lineHeight: "15px",
+                                            textTransform: "capitalize",
+                                            lineSpacing: "0.02em",
+                                          }}
+                                        >
+                                          Delete
+                                        </Typography>
+                                      )}
+                                    </Button>
 
-                              <DialogActions
-                                style={{
-                                  padding: "11px",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <Box
-                                  display="flex"
-                                  justifyContent="center"
-                                  style={
-                                    {
-                                      // margin: 'auto',
-                                      // marginRight: "25px",
-                                      // border: '1px solid red',
-                                    }
-                                  }
-                                >
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={clickDelete}
-                                    disableRipple
-                                    disabled={loading}
-                                    style={{
-                                      border: "2px solid #72A624",
-                                    }}
-                                  >
-                                    {loading ? (
-                                      <CircularProgress
-                                        size="1em"
-                                        style={{ color: "#72A624" }}
-                                      />
-                                    ) : (
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={handleDialogClose}
+                                      disabled={loading}
+                                      disableRipple
+                                      style={{
+                                        border: "1px solid #72A624",
+                                        backgroundColor: "#72A624",
+                                        marginLeft: "20px",
+                                      }}
+                                    >
                                       <Typography
                                         className={classes.typography}
                                         style={{
                                           textAlign: "center",
-                                          color: "#72A624",
+                                          color: "#FFFFFF",
                                           fontSize: "13px",
                                           fontWeight: "500",
                                           lineHeight: "15px",
@@ -1120,63 +1155,35 @@ export default function Home() {
                                           lineSpacing: "0.02em",
                                         }}
                                       >
-                                        Delete
+                                        cancel
                                       </Typography>
-                                    )}
-                                  </Button>
-
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={handleDialogClose}
-                                    disabled={loading}
-                                    disableRipple
-                                    style={{
-                                      border: "1px solid #72A624",
-                                      backgroundColor: "#72A624",
-                                      marginLeft: "20px",
-                                    }}
-                                  >
-                                    <Typography
-                                      className={classes.typography}
-                                      style={{
-                                        textAlign: "center",
-                                        color: "#FFFFFF",
-                                        fontSize: "13px",
-                                        fontWeight: "500",
-                                        lineHeight: "15px",
-                                        textTransform: "capitalize",
-                                        lineSpacing: "0.02em",
-                                      }}
-                                    >
-                                      cancel
-                                    </Typography>
-                                  </Button>
-                                </Box>
-                              </DialogActions>
-                            </Dialog>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                )}
-              </Table>
-            )
-          )}
-          {users.users.length > 20 && (
-            <TablePagination
-              rowsPerPageOptions={[10, 20, 30, 40]}
-              component="div"
-              count={search.length > 0 ? search.length : users.users.length}
-              page={page}
-              style={{ paddingRight: 30 }}
-              onChangePage={handleChangePage}
-              rowsPerPage={rowsPerPage}
-              onChangeRowsPerPage={handleRowsChangePerPage}
-            />
-          )}
-        </TableContainer>
-      </Box>
+                                    </Button>
+                                  </Box>
+                                </DialogActions>
+                              </Dialog>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  )}
+                </Table>
+              )
+            )}
+            {users.users.length > 20 && (
+              <TablePagination
+                rowsPerPageOptions={[10, 20, 30, 40]}
+                component="div"
+                count={search.length > 0 ? search.length : users.users.length}
+                page={page}
+                style={{ paddingRight: 30 }}
+                onChangePage={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onChangeRowsPerPage={handleRowsChangePerPage}
+              />
+            )}
+          </TableContainer>
+        </Box>
+      </NoSsr>
     </Layout>
   );
 }

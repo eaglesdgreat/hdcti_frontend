@@ -224,7 +224,6 @@ export default function Index() {
   const { enqueueSnackbar } = useSnackbar();
 
   const [{ adminToken }, dispatch] = useStateValue();
-  console.log('auth:',adminToken);
 
   const addToBasket = (token) => {
     dispatch({
@@ -291,25 +290,26 @@ export default function Index() {
     const body = {
       email: state.email || null,
     };
+    // console.log(body);
 
     // const url = `${process.env.BACKEND_URL}/account/token/login`;
     const url = `https://hcdti.savitechnig.com/account/reset_password_otp`;
 
     if (isValid) {
-      console.log(resetLoading);
       if (resetLoading) {
         setLoading(false);
       } else {
         setLoading(true);
       }
       let tok = await adminLogin();
+      // console.log('tok:',tok)
 
       if (tok) {
-        dispatch({
-          type: "SAVE_TOKEN",
-          item: '',
-        });
-        addToBasket(tok);
+        // dispatch({
+        //   type: "SAVE_TOKEN",
+        //   item: '',
+        // });
+        // addToBasket(tok);
 
         try {
           const response = await axios.post(url, body, {
@@ -395,14 +395,14 @@ export default function Index() {
 
     const body = {
       email: state.email || null,
-      new_password: state.password || null,
-      re_new_password: state.confirm_password || null,
-      current_password: state.otp || null,
+      password: state.password || null,
+      re_password: state.confirm_password || null,
+      otp_code: state.otp || null,
     };
     // console.log(body)
 
-    // const url = `${process.env.BACKEND_URL}/account/users/set_password`;
-    const url = `https://hcdti.savitechnig.com/account/users/set_password`;
+    // const url = `${process.env.BACKEND_URL}/account/reset_password_confirm`;
+    const url = `https://hcdti.savitechnig.com/account/reset_password_confirm`;
 
     if (isValid) {
       setLoading(true);
@@ -411,23 +411,12 @@ export default function Index() {
         const response = await axios.post(url, body, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Token ${adminToken}`,
           },
         });
 
-        console.log(response);
+        // console.log(response);
 
-        if (response) {
-          let user = await loginUser(body.email, body.new_password);
-
-          if (user) {
-            getUser.auth_token = response.data.auth_token;
-
-            dispatch({
-              type: "SAVE_TOKEN",
-              item: "",
-            });
-
+        if (response.data) {
             enqueueSnackbar(`You have successfully change your password.`, {
               variant: "success",
             });
@@ -436,20 +425,23 @@ export default function Index() {
 
             setState(initialState);
 
-            authenticate(user, () => {
-              return router.push("/dashboard");
-            });
-          }
+            router.push("/");
         }
       } catch (e) {
         if (e.response) {
-          console.log(e.response);
+          // console.log(e.response);
+
           setLoading(false);
 
-          enqueueSnackbar(`Passowrd change failed, Try again.`, {
-            variant: "error",
-          });
-
+          if(e.response.data.reason) {
+            enqueueSnackbar(`${e.response.data.reason}, Try again.`, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar(`Passowrd change failed, Try again.`, {
+              variant: "error",
+            });
+          }
           // setState(initialState);
         }
       }
@@ -531,6 +523,7 @@ export default function Index() {
                           type="submit"
                           fullWidth
                           variant="contained"
+                          disabled={loading}
                           style={{
                             backgroundColor: "#72A624",
                             color: "white",
