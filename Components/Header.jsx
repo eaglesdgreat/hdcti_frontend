@@ -2,6 +2,7 @@ import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
+import NoSsr from '@material-ui/core/NoSsr'
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
@@ -149,37 +150,38 @@ function Header(props) {
 
   return (
     <React.Fragment>
-      <Box
-        display="flex"
-        style={{
-          width: "100%",
-          // paddingTop: '1.5%',
-          // paddingBottom: '1.5%',
-        }}
-      >
-        <AppBar className={classes.appbar} position="sticky" elevation={1}>
-          <Toolbar>
-            <Grid container spacing={1} alignItems="center">
-              <Hidden smUp>
+      <NoSsr>
+        <Box
+          display="flex"
+          style={{
+            width: "100%",
+            // paddingTop: '1.5%',
+            // paddingBottom: '1.5%',
+          }}
+        >
+          <AppBar className={classes.appbar} position="sticky" elevation={1}>
+            <Toolbar>
+              <Grid container spacing={1} alignItems="center">
+                <Hidden smUp>
+                  <Grid item>
+                    <IconButton
+                      color="inherit"
+                      aria-label="open drawer"
+                      onClick={onDrawerToggle}
+                      // className={classes.menuButton}
+                    >
+                      <MenuIcon style={{ backgroundColor: "#362D73" }} />
+                    </IconButton>
+                  </Grid>
+                </Hidden>
+
+                <Grid item xs />
+
                 <Grid item>
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={onDrawerToggle}
-                    // className={classes.menuButton}
-                  >
-                    <MenuIcon style={{ backgroundColor: "#362D73" }} />
-                  </IconButton>
+                  <Notifications />
                 </Grid>
-              </Hidden>
 
-              <Grid item xs />
-
-              <Grid item>
-                <Notifications />
-              </Grid>
-
-              {/* <Grid item>
+                {/* <Grid item>
                 <IconButton
                   color="inherit"
                   disableRipple
@@ -191,77 +193,77 @@ function Header(props) {
                 </IconButton>
               </Grid> */}
 
-              <Grid item>
-                <Box
-                  display="flex"
-                  aria-controls="avatar-menu"
-                  aria-haspopup="true"
-                  style={{ alignItems: "center", cursor: "pointer" }}
-                >
-                  <IconButton
-                    color="inherit"
-                    aria-controls="avatar-menu"
-                    disableRipple
-                    style={{ marginRight: "70px" }}
-                  >
-                    <Avatar className={classes.avatar} />
-                    {/* {(headName ? headName : "User").split("")[0]}
-                    </Avatar> */}
-                  </IconButton>
-
+                <Grid item>
                   <Box
-                    aria-controls="avatar-menu"
-                    component="span"
-                    dsplay="flex"
-                    style={{ width: "100%", cursor: "pointer" }}
-                  >
-                    <Typography
-                      noWrap
-                      className={classes.typography}
-                      style={{
-                        // fontWeight: "500",
-                        // fontSize: "15px",
-                        // lineHeight: "17.58px",
-                        // color: "#242120",
-                        marginLeft: "-70px",
-                        marginRight: "5px",
-                      }}
-                    >
-                      {headName ? headName : "User"}
-                    </Typography>
-                  </Box>
-
-                  <img
-                    style={{ cursor: "pointer" }}
-                    src="/right-arro.svg"
-                    alt="menu"
+                    display="flex"
                     aria-controls="avatar-menu"
                     aria-haspopup="true"
-                    onClick={handleClick2}
-                  />
-
-                  <Menu
-                    id="avatar-menu"
-                    anchorEl={anchorEl2}
-                    keepMounted
-                    open={Boolean(anchorEl2)}
-                    onClose={handleClose2}
-                    PaperProps={{
-                      style: {
-                        borderRadius: "8px",
-                        margin: "25px 0px 0px -23px",
-                        boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.08)",
-                        backgroundColor: "#FFFFFF",
-                        width: "100px",
-                        height: "60px",
-                        paddingTop: "4px",
-                        paddingBottom: "4px",
-                        // paddingLeft: "5px",
-                        overflow: "hidden",
-                      },
-                    }}
+                    style={{ alignItems: "center", cursor: "pointer" }}
                   >
-                    {/* <MenuItem>
+                    <IconButton
+                      color="inherit"
+                      aria-controls="avatar-menu"
+                      disableRipple
+                      style={{ marginRight: "70px" }}
+                    >
+                      <Avatar className={classes.avatar} />
+                      {/* {(headName ? headName : "User").split("")[0]}
+                    </Avatar> */}
+                    </IconButton>
+
+                    <Box
+                      aria-controls="avatar-menu"
+                      component="span"
+                      dsplay="flex"
+                      style={{ width: "100%", cursor: "pointer" }}
+                    >
+                      <Typography
+                        noWrap
+                        className={classes.typography}
+                        style={{
+                          // fontWeight: "500",
+                          // fontSize: "15px",
+                          // lineHeight: "17.58px",
+                          // color: "#242120",
+                          marginLeft: "-70px",
+                          marginRight: "5px",
+                        }}
+                      >
+                        {headName ? headName : "User"}
+                      </Typography>
+                    </Box>
+
+                    <img
+                      style={{ cursor: "pointer" }}
+                      src="/right-arro.svg"
+                      alt="menu"
+                      aria-controls="avatar-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick2}
+                    />
+
+                    <Menu
+                      id="avatar-menu"
+                      anchorEl={anchorEl2}
+                      keepMounted
+                      open={Boolean(anchorEl2)}
+                      onClose={handleClose2}
+                      PaperProps={{
+                        style: {
+                          borderRadius: "8px",
+                          margin: "25px 0px 0px -23px",
+                          boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.08)",
+                          backgroundColor: "#FFFFFF",
+                          width: "100px",
+                          height: "60px",
+                          paddingTop: "4px",
+                          paddingBottom: "4px",
+                          // paddingLeft: "5px",
+                          overflow: "hidden",
+                        },
+                      }}
+                    >
+                      {/* <MenuItem>
                       <Typography
                         className={classes.typography}
                       >
@@ -277,18 +279,19 @@ function Header(props) {
                       </Typography>
                     </MenuItem> */}
 
-                    <MenuItem onClick={handleLogout}>
-                      <Typography className={classes.typography}>
-                        Logout
-                      </Typography>
-                    </MenuItem>
-                  </Menu>
-                </Box>
+                      <MenuItem onClick={handleLogout}>
+                        <Typography className={classes.typography}>
+                          Logout
+                        </Typography>
+                      </MenuItem>
+                    </Menu>
+                  </Box>
+                </Grid>
               </Grid>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-      </Box>
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </NoSsr>
     </React.Fragment>
   );
 }
