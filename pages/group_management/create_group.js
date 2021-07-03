@@ -16,11 +16,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import clsx from "clsx";
-import Alert from "@material-ui/lab/Alert";
+import { Alert, AlertTitle } from "@material-ui/lab";
+import Link from 'next/link'
 
 // import { authenticate } from "./../lib/auth.helper";
 import Layout from "./../../Components/Layout";
 import validations from "./../../lib/validations";
+import { fontWeight } from "@material-ui/system";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,6 +132,15 @@ const useStyles = makeStyles((theme) => ({
       background: "#ffffff00",
     },
   },
+  success: {
+    letterSpacing: 'var(--unnamed-character-spacing-0)',
+    color: 'var(--unnamed-color-155724)',
+    textAlign: 'left',
+    letterSpacing: '0px',
+    color: '#155724',
+    opacity: 1,
+    fontSize: '16px',
+  }
 }));
 
 export default function CreateGroup() {
@@ -163,6 +174,11 @@ export default function CreateGroup() {
     setState({ ...state, [name]: value });
   };
 
+  const clearError = (e) => {
+    const { name } = e.target;
+    setMessages({ ...messages, [name]: '' });
+  };
+
   const createGroup = async (e) => {
     e.preventDefault();
 
@@ -188,6 +204,8 @@ export default function CreateGroup() {
 
     if (isValid) {
       console.log(body);
+      setMessages({ ...messages, success: 'Groups Created Successfully'})
+      console.log(messages)
       // setLoading(true);
 
       // try {
@@ -238,7 +256,7 @@ export default function CreateGroup() {
                       fontWeight: 600,
                     }}
                   >
-                    Create A Group
+                    Create a Group
                   </Typography>
 
                   <Divider light />
@@ -255,7 +273,29 @@ export default function CreateGroup() {
                       onSubmit={createGroup}
                     >
                       <Grid container spacing={6}>
-                        <Grid item xs={12} sm={12}></Grid>
+                        <Grid item xs={12} sm={12}>
+                          {messages.success && (
+                            <Alert severity="success">
+                              {/* <AlertTitle>Success</AlertTitle> */}
+                              <Typography className={classes.success}>
+                                {messages.success} -{" "}
+                                <Link href="/groups">
+                                  <a
+                                    className={classes.success}
+                                    style={{
+                                      textDecoration: "none",
+                                      fontWeight: 700,
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    {" "}
+                                    View all Groups
+                                  </a>
+                                </Link>
+                              </Typography>
+                            </Alert>
+                          )}
+                        </Grid>
 
                         <Grid item xs={12} sm={12}>
                           <Typography
@@ -264,7 +304,7 @@ export default function CreateGroup() {
                               marginBottom: "-11px",
                             }}
                           >
-                            Name Of Group<span style={{ color: "red" }}>*</span>
+                            Name of Group<span style={{ color: "red" }}>*</span>
                           </Typography>
 
                           <TextField
@@ -282,12 +322,13 @@ export default function CreateGroup() {
                             margin="normal"
                             value={state.name}
                             onChange={handleChange}
-                            // onKeyUp={''}
+                            onKeyUp={clearError}
                           />
                           {messages.name && (
-                            <span style={errorMessageStyle}>
+                            <Alert severity="error">
+                              {/* <AlertTitle>Error</AlertTitle> */}
                               {messages.name}
-                            </span>
+                            </Alert>
                           )}
                         </Grid>
                       </Grid>
