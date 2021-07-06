@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Divider,
   NoSsr,
+  Collapse,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
@@ -18,25 +19,28 @@ import { useSnackbar } from "notistack";
 import clsx from "clsx";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import Link from 'next/link'
+import axios from 'axios'
 
 // import { authenticate } from "./../lib/auth.helper";
 import Layout from "./../../Components/Layout";
 import validations from "./../../lib/validations";
-import { fontWeight } from "@material-ui/system";
+import { isAuthenticated } from './../../lib/auth.helper'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     height: "100%",
-    // margin: 'auto',
-    paddingTop: 100,
-    paddingBottom: 250,
+    paddingTop: 50,
+    margin: "auto",
     background: "#ECF1F2 0% 0% no-repeat padding-box",
     background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
     opacity: "1",
+    [theme.breakpoints.down("sm")]: {
+      marginTop: -70,
+    },
   },
   card: {
-    width: "529px",
+    width: "100%",
     height: "400px",
     // paddingTop: '5%',
     // paddingBottom: '5%',
@@ -57,14 +61,6 @@ const useStyles = makeStyles((theme) => ({
     // border: '1px solid red',
   },
   typography: {
-    // lineHeight: '35px',
-    // fontSize: '25px',
-    // fontWeight: 'bold',
-    // fontFamily: 'Source Sans Pro',
-    // letterSpacing: '0.01em',
-    // fontStyle: 'normal',
-    // color: '#000000',
-    // textAlign: 'center',
     font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-19) var(--unnamed-font-family-helveticaneue-medium)",
     letterSpacing: "var(--unnamed-character-spacing-0)",
     color: "var(--unnamed-color-0d0d0d)",
@@ -75,13 +71,8 @@ const useStyles = makeStyles((theme) => ({
     opacity: "1",
   },
   textField: {
-    // borderRadius: "6px",
-    // height: '45px',
-    // margin: 'auto',
     "& input": {
-      // color: "#182C51",
       fontSize: "16px",
-      // fontWeight: "bold",
       fontFamily: "Source Sans Pro",
       fontStyle: "normal",
       lineHeight: "20px",
@@ -100,9 +91,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
     background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
     borderRadius: "5px",
     opacity: "1",
   },
@@ -112,7 +101,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px",
   },
   submit: {
-    // margin: theme.spacing(3, 0, 2),
     fontSize: "14px",
     boxShadow: "none",
     padding: "10px",
@@ -133,19 +121,20 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   success: {
-    letterSpacing: 'var(--unnamed-character-spacing-0)',
-    color: 'var(--unnamed-color-155724)',
-    textAlign: 'left',
-    letterSpacing: '0px',
-    color: '#155724',
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-155724)",
+    textAlign: "left",
+    letterSpacing: "0px",
+    color: "#155724",
     opacity: 1,
-    fontSize: '16px',
-  }
+    fontSize: "16px",
+  },
 }));
 
 export default function CreateGroup() {
   const path = "/create_group";
   const classes = useStyles();
+  const token = isAuthenticated().auth_token
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -195,48 +184,45 @@ export default function CreateGroup() {
     }
 
     const body = {
-      name: state.name || null,
+      groupName: state.name || null,
     };
     // console.log(body);
 
-    // const url = `${process.env.BACKEND_URL}/account/token/login`;
-    const url = `https://hcdti.savitechnig.com/account/reset_password_otp`;
+    // const url = `${process.env.BACKEND_URL}/account/create_group`;
+    const url = `https://hcdti.savitechnig.com/account/create_group`;
 
     if (isValid) {
-      console.log(body);
-      setMessages({ ...messages, success: 'Groups Created Successfully'})
-      console.log(messages)
-      // setLoading(true);
+      setLoading(true);
 
-      // try {
-      //   const response = await axios.post(url, body, {
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Token ${tok}`,
-      //     },
-      //   });
+      try {
+        const response = await axios.post(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        });
 
-      //   if (response.data) {
-      //     setLoading(false);
-      //     setResetLoading(false);
-      //     tok = "";
+        // console.log(response)
 
-      //     enqueueSnackbar(`${response.data.reason}`, {
-      //       variant: "success",
-      //     });
+        if (response.data.code === 200) {
+          setLoading(false);
+          setOpen(true);
+          setMessages({ ...messages, success: "Groups Created Successfully" });
 
-      //     setOpen(true);
-      //   }
-      // } catch (e) {
-      //   if (e.response) {
-      //     console.log(e.response);
-      //     setLoading(false);
+          enqueueSnackbar(`${response.data.reason}`, {
+            variant: "success",
+          });
+        }
+      } catch (e) {
+        if (e.response) {
+          // console.log(e.response);
+          setLoading(false);
 
-      //     enqueueSnackbar(`Checkk your connection or invalid email`, {
-      //       variant: "error",
-      //     });
-      //   }
-      // }
+          enqueueSnackbar(`Group was not created, check your connection and try again.`, {
+            variant: "error",
+          });
+        }
+      }
     }
   };
 
@@ -275,25 +261,37 @@ export default function CreateGroup() {
                       <Grid container spacing={6}>
                         <Grid item xs={12} sm={12}>
                           {messages.success && (
-                            <Alert severity="success">
-                              {/* <AlertTitle>Success</AlertTitle> */}
-                              <Typography className={classes.success}>
-                                {messages.success} -{" "}
-                                <Link href="/groups">
-                                  <a
-                                    className={classes.success}
-                                    style={{
-                                      textDecoration: "none",
-                                      fontWeight: 700,
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    {" "}
-                                    View all Groups
-                                  </a>
-                                </Link>
-                              </Typography>
-                            </Alert>
+                            <Collapse in={open}>
+                              <Alert
+                                severity="success"
+                                onClose={() => {
+                                  setMessages({
+                                    ...initialState,
+                                    success: "",
+                                    failure: "",
+                                  });
+                                  setOpen(false);
+                                }}
+                              >
+                                {/* <AlertTitle>Success</AlertTitle> */}
+                                <Typography className={classes.success}>
+                                  {messages.success} -{" "}
+                                  <Link href="/group_management/groups">
+                                    <a
+                                      className={classes.success}
+                                      style={{
+                                        textDecoration: "none",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      {" "}
+                                      View all Groups
+                                    </a>
+                                  </Link>
+                                </Typography>
+                              </Alert>
+                            </Collapse>
                           )}
                         </Grid>
 
@@ -309,7 +307,6 @@ export default function CreateGroup() {
 
                           <TextField
                             className={classes.textField}
-                            // type="email"
                             placeholder="Enter the name of the group"
                             id="name"
                             name="name"
@@ -336,7 +333,7 @@ export default function CreateGroup() {
                       <Box display="flex">
                         <div
                           style={{
-                            width: "45%",
+                            width: "55%",
                             display: "flex",
                             justifyContent: "flex-start",
                           }}

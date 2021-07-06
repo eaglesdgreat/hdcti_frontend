@@ -108,6 +108,7 @@ function Header(props) {
 
     logout(() => {
       setAnchorEl2(null);
+      localStorage.setItem('page_last_url', JSON.stringify(router.pathname))
       router.push("/");
     });
 

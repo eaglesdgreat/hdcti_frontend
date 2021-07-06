@@ -232,7 +232,7 @@ const useStyles = makeStyles((theme) => ({
   ];
 
 
-export default function Home() {
+export default function CreateUser() {
     const path = '/create_user'
     const classes = useStyles()
     const { enqueueSnackbar } = useSnackbar();
@@ -347,7 +347,6 @@ export default function Home() {
             );
 
             if(last_url) {
-              localStorage.removeItem("last_url");
               router.push(`${last_url}`);
             }
           }

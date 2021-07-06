@@ -393,7 +393,7 @@ const usersData = () => {
 }
 
 
-export default function Home() {
+export default function Users() {
   const path = "/users";
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -433,6 +433,8 @@ export default function Home() {
   };
 
   const handleClick = () => {
+    localStorage.removeItem("last_url");
+
     const url = "/user_management/create_user";
     localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
 
@@ -440,8 +442,9 @@ export default function Home() {
   };
 
   const handleEditClick = (id) => {
+    localStorage.removeItem("last_url");
+
     const url = "/user_management/edit_user/" + id;
-    console.log(url);
     localStorage.setItem("last_url", JSON.stringify("/user_management/users"));
 
     router.push(url);
@@ -450,7 +453,7 @@ export default function Home() {
   // delete a user handler
   const clickDelete = async (e) => {
     e.preventDefault();
-    console.log(idx)
+    // console.log(idx)
 
     let isValid = true;
 
@@ -1169,7 +1172,7 @@ export default function Home() {
                 </Table>
               )
             )}
-            {users.users.length > 20 && (
+            {users && users.users.length > 20 && (
               <TablePagination
                 rowsPerPageOptions={[10, 20, 30, 40]}
                 component="div"

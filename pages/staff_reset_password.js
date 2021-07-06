@@ -649,7 +649,7 @@ export default function Index() {
                               className={classes.showPass}
                               style={{ fontSize: "10px", marginTop: "-11px" }}
                             >
-                              Show password
+                              Show Password
                             </Button>
                           </div>
                         </Box>

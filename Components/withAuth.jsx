@@ -56,11 +56,10 @@ function AuthProvider({ children }) {
   const { pathname, events } = useRouter();
   const checkUrl = ["/", "/staff_reset_password"];
   const classes = useStyles()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // This check if the user is not authenticated or authorized to access a route and redirect them back to the login page
   useEffect(() => {
-    setLoading(true);
     // Check that a new route is OK
     const handleRouteChange = (url) => {
       if (url === "/staff_reset_password" && !isAuthenticated().auth_token) {

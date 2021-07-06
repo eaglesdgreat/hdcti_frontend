@@ -20,7 +20,6 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import Link from 'next/link'
 import { useSnackbar } from "notistack";
-import { PieChart } from "react-minimal-pie-chart";
 
 // import { useStateValue } from '../../StateProviders';
 import Layout from "../../../Components/Layout";
