@@ -347,7 +347,10 @@ export default function CreateUser() {
             );
 
             if(last_url) {
+              localStorage.removeItem("last_url");
               router.push(`${last_url}`);
+            } else {
+              router.push(`/user_management/users`);
             }
           }
         } catch (e) {

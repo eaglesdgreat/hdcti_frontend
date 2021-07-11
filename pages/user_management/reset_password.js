@@ -250,13 +250,12 @@ export default function Index() {
   const router = useRouter()
   const path = '/reset_password'
   const { enqueueSnackbar } = useSnackbar();
-  const authToken = isAuthenticated().auth_token
+  const authToken = isAuthenticated()
   // const [{ basket }, dispatch] = useStateValue();
 
   // Fetching data from backend with SWR
   const { users, isLoading, isError } = usersData()
-
-  // console.log(users.users)
+  console.log(users)
 
   // const addToBasket = () => {
   //   dispatch({
@@ -328,10 +327,10 @@ export default function Index() {
       email: state.user || null,
       password: state.password || null, ///
     };
-    console.log(body);
+    console.log(body, authToken);
 
-    // const url = `${process.env.BACKEND_URL}/account/reset_password_otp`;
-    const url = `https://hcdti.savitechnig.com/account/reset_password_otp`;
+    // const url = `${process.env.BACKEND_URL}/account/admin_reset_password/${authToken.id}`;
+    const url = `https://hcdti.savitechnig.com/account/admin_reset_password/${authToken.id}`;
 
     if (isValid) {
       setLoading(true);
@@ -340,10 +339,9 @@ export default function Index() {
         const response = await axios.post(url, body, {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Token ${authToken}`,
+            Authorization: `Token ${authToken.auth_token}`,
           },
         });
-
 
         // console.log(response);
 

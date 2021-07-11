@@ -3,6 +3,8 @@ export const initialState = {
   adminToken: "",
   status: "",
   product: "",
+  get_queryy: {},
+  groupId: '',
 };
 
 export const reducer = (state, action) => {
@@ -29,6 +31,18 @@ export const reducer = (state, action) => {
         return {
           ...state,
           adminToken: action.item,
+        };
+
+      case "GET_QUERY_VALUE":
+        return {
+          ...state,
+          get_query: { ...action.item },
+        };
+
+      case "GET_GROUP_ID":
+        return {
+          ...state,
+          groupId: action.item ,
         };
 
       default:

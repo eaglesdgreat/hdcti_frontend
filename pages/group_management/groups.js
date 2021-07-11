@@ -39,7 +39,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import moment from 'moment'
 import Link from 'next/link'
 
-// import { useStateValue } from '../../StateProviders';
+import { useStateValue } from '../../StateProviders';
 import Layout from "./../../Components/Layout";
 import { isAuthenticated } from "../../lib/auth.helper";
 
@@ -435,6 +435,14 @@ export default function Groups() {
   const { groups, isLoading, isError } = groupsData();
   // console.log(groups);
 
+  const [{ groupId }, dispatch] = useStateValue();
+  const addToBasket = (data) => {
+    dispatch({
+      type: "GET_GROUP_ID",
+      item: data,
+    });
+  };
+
   const [state, setState] = useState("");
   const [search, setSearch] = useState([]);
   const [page, setPage] = useState(0);
@@ -482,6 +490,28 @@ export default function Groups() {
 
     router.push(url);
   };
+
+  const changeLeader = () => {
+    localStorage.removeItem("last_url");
+
+    const url = "/group_management/change_leader";
+
+    localStorage.setItem(
+      "last_url",
+      JSON.stringify("/group_management/groups")
+    );
+
+    router.push(url);
+  };
+
+  const detailsPage = (id, gId) => {
+    localStorage.removeItem("group_id");
+    
+    const url = `/group_management/group_details/${id}`;
+    localStorage.setItem('group_id', JSON.stringify(gId))
+
+    router.push(url);
+  }
 
   // delete a group handler
   const clickDelete = async (e) => {
@@ -770,35 +800,83 @@ export default function Groups() {
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>
-                            <Link
+                            {/* <Link
                               href={{
                                 pathname: `/group_management/group_details/[gid]`,
                                 query: {
                                   gid: group.id,
-                                  groupId: group.groupId,
+                                  // groupId: group.groupId,
+                                  groupId: () => {
+                                    addToBasket(group.groupId);
+                                  },
                                 },
                               }}
+                            > */}
+                            <a
+                              onClick={() => {
+                                // addToBasket(group.groupId)
+                                detailsPage(group.id, group.groupId);
+                              }}
+                              style={{
+                                textDecoration: "none",
+                                cursor: "pointer",
+                              }}
                             >
-                              <a
-                                style={{
-                                  textDecoration: "none",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                <Typography className={classes.typography2}>
-                                  {group.groupName}
-                                </Typography>
-                              </a>
-                            </Link>
+                              <Typography className={classes.typography2}>
+                                {group.groupName}
+                              </Typography>
+                            </a>
+                            {/* </Link> */}
                             <Typography className={classes.member}>
                               {group.totalMember} Members
                             </Typography>
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>
-                            <Typography className={classes.typography2}>
-                              {/* {group.leader.staffname} */}
-                            </Typography>
+                            {group.leaderName ? (
+                              <Link
+                                href={{
+                                  pathname: `/group_management/group_details/[gid]`,
+                                  query: {
+                                    gid: group.id,
+                                  },
+                                }}
+                              >
+                                <a
+                                  // onClick={() => {
+                                  //   // addToBasket(group.groupId)
+                                  //   detailsPage(group.id, group.groupId);
+                                  // }}
+                                  style={{
+                                    textDecoration: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <Typography className={classes.typography2}>
+                                    {group.leaderName}
+                                  </Typography>
+                                </a>
+                              </Link>
+                            ) : (
+                              <>
+                                <a
+                                  onClick={() => {
+                                    changeLeader();
+                                  }}
+                                  style={{
+                                    textDecoration: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <Typography className={classes.typography2}>
+                                    Select Leader
+                                  </Typography>
+                                </a>
+                                <Typography className={classes.member}>
+                                  No Leader Found
+                                </Typography>
+                              </>
+                            )}
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>

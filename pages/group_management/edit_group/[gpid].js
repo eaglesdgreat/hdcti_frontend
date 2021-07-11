@@ -191,7 +191,7 @@ export default function Update() {
   const token = isAuthenticated().auth_token;
 
   const { group, isLoading, isError, groupMutate } = groupData();
-  console.log(group);
+  // console.log(group);
 
   const initialState = {
     name: "",

@@ -45,7 +45,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
 
-// import { useStateValue } from '../../StateProviders';
+import { useStateValue } from './../../../StateProviders';
 import Layout from "./../../../Components/Layout";
 import { isAuthenticated } from "../../../lib/auth.helper";
 
@@ -406,9 +406,57 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
     opacity: 1,
     width: "65%",
-    [theme.breakpoints.down("sm")]: {
-      width: "100%",
+    "@media only screen and (max-width: 280px)": {
       marginTop: "69px",
+      width: "240px",
+    },
+    "@media only screen and (min-width: 281px) and (max-width: 320px)": {
+      marginTop: "69px",
+      width: "270px",
+    },
+    "@media only screen and (min-width: 321px) and (max-width: 360px)": {
+      marginTop: "69px",
+      width: "310px",
+    },
+    "@media only screen and (min-width: 361px) and (max-width: 375px)": {
+      marginTop: "69px",
+      width: "330px",
+    },
+    "@media only screen and (min-width: 376px) and (max-width: 384px)": {
+      marginTop: "69px",
+      width: "340px",
+    },
+    "@media only screen and (min-width: 385px) and (max-width: 411px)": {
+      marginTop: "69px",
+      width: "367px",
+    },
+    "@media only screen and (min-width: 412px) and (max-width: 414px)": {
+      marginTop: "69px",
+      width: "367px",
+    },
+    "@media only screen and (min-width: 415px) and (max-width: 480px)": {
+      marginTop: "69px",
+      width: "435px",
+    },
+    "@media only screen and (min-width: 481px) and (max-width: 540px)": {
+      marginTop: "69px",
+      width: "495px",
+    },
+    "@media only screen and (min-width: 541px) and (max-width: 600px)": {
+      marginTop: "69px",
+      width: "317px",
+    },
+    "@media only screen and (min-width: 601px) and (max-width: 768px)": {
+      marginTop: "69px",
+      width: "490px",
+    },
+    "@media only screen and (min-width: 769px) and (max-width: 800px)": {
+      marginTop: "69px",
+      width: "510px",
+    },
+    "@media only screen and (min-width: 801px) and (max-width: 834px)": {
+      marginTop: "69px",
+      width: "530px",
     },
   },
   actionTypo: {
@@ -499,7 +547,7 @@ const fetcher = async (...arg) => {
 
 const groupData = () => {
   const router = useRouter();
-  const { gid, groupId } = router.query;
+  const { gid } = router.query;
 
   // const url = `${process.env.BACKEND_URL}/account/groupbyid/${gid}`
   const url = `https://hcdti.savitechnig.com/account/groupbyid/${gid}`;
@@ -516,9 +564,8 @@ const groupData = () => {
   };
 };
 
-const membersData = () => {
+const membersData = (groupId) => {
   const router = useRouter();
-  const { groupId } = router.query;
 
   // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}?page=1`
   const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}?page=1`;
@@ -542,12 +589,14 @@ export default function GroupDetails() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
-  // Fetching data from backend with SWR
-  const { group, isLoading, isError } = groupData();
-  // console.log(group);
+  const [{ get_query }, dispatch] = useStateValue();
 
-  const { members, isMemberLoading, isMemberError } = membersData();
-  console.log(members);
+  const addToBasket = (data) => {
+    dispatch({
+      type: "GET_QUERY_VALUE",
+      item: data,
+    });
+  };
 
   const [state, setState] = useState("");
   const [search, setSearch] = useState([]);
@@ -559,8 +608,18 @@ export default function GroupDetails() {
   const [idx, setIdx] = useState("");
   const [loading, setLoading] = useState(false);
   const [groupName, setGroupName] = useState("");
+  const [groupId, setGroupId] = useState(
+    JSON.parse(localStorage.getItem("group_id"))
+  );
 
   const anchorRef = useRef(null);
+
+  // Fetching data from backend with SWR
+  const { group, isLoading, isError } = groupData();
+  // console.log(group);
+
+  const { members, isMemberLoading, isMemberError } = membersData(groupId);
+  // console.log(members);
 
   const handleToggle = () => {
     setOpenMenu(!openMenu);
@@ -622,20 +681,49 @@ export default function GroupDetails() {
     setGroupOpen(false);
   };
 
-  const handleClick = () => {
-    const url = "/group_management/create_group";
+  const changeLeader = () => {
+    const { gid } = router.query;
+    localStorage.removeItem("last_url");
+
+    const url = "/group_management/change_leader";
+
+    localStorage.setItem(
+      "last_url",
+      JSON.stringify("/group_management/group_details/" + gid)
+    );
 
     router.push(url);
   };
 
-  const handleEditClick = (id) => {
+  const handleClick = () => {
+    const { gid } = router.query;
     localStorage.removeItem("last_url");
+    localStorage.removeItem("add_member");
 
-    const url = "/group_management/edit_group/" + id;
-    console.log(url);
+    const url = "/group_management/add_member";
+
     localStorage.setItem(
       "last_url",
-      JSON.stringify("/group_management/groups")
+      JSON.stringify("/group_management/group_details/" + gid)
+    );
+    localStorage.setItem(
+      "add_member",
+      JSON.stringify({ group: groupId, name: group.result.groupName })
+    );
+
+    router.push(url, "/group_management/add_member");
+  };
+
+  const handleEditClick = (id) => {
+    const { gid } = router.query;
+    localStorage.removeItem("last_url");
+
+    // const url = "/group_management/edit_member/" + id;
+    const url = "/group_management/edit_member/" + id;
+
+    localStorage.setItem(
+      "last_url",
+      JSON.stringify("/group_management/group_details/" + gid)
     );
 
     router.push(url);
@@ -644,14 +732,14 @@ export default function GroupDetails() {
   // delete a group handler
   const clickDelete = async (e) => {
     e.preventDefault();
-    // console.log(idx);
 
     let isValid = true;
 
+    const { gid } = router.query;
     const tok = isAuthenticated().auth_token;
 
-    // const url = `${process.env.BACKEND_URL}/account/removegroup/${idx}`;
-    const url = `https://hcdti.savitechnig.com/account/removegroup/${idx}`;
+    // const url = `${process.env.BACKEND_URL}/account/removegroup/${gid}`;
+    const url = `https://hcdti.savitechnig.com/account/removegroup/${gid}`;
 
     if (isValid) {
       setLoading(true);
@@ -665,24 +753,71 @@ export default function GroupDetails() {
         });
         // console.log(response);
 
-        if (response.data.code === 200) {
-          setLoading(false);
+        setLoading(false);
 
-          enqueueSnackbar(`Group Account Has Been Deleted Succesfully.`, {
-            variant: "success",
-          });
+        enqueueSnackbar(`Group Account Has Been Deleted Succesfully.`, {
+          variant: "success",
+        });
 
-          handleDialogClose();
+        handleDialogCloseGroup();
 
-          window.location.href = "/group_management/groups";
-        }
+        window.location.href = "/group_management/groups";
       } catch (e) {
-        // console.log(e);
+        console.log(e);
 
         if (e.response) {
           setLoading(false);
 
           enqueueSnackbar(`Error Deleting Group Account. Try Again`, {
+            variant: "error",
+          });
+        }
+      }
+    }
+  };
+
+
+  // delete a group member handler
+  const deleteMember = async (e) => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    const { gid } = router.query;
+    const tok = isAuthenticated().auth_token;
+    console.log(tok)
+
+    // const url = `${process.env.BACKEND_URL}/account/removemember/${idx}`;
+    const url = `https://hcdti.savitechnig.com/account/removemember/${idx}`;
+
+    if (isValid) {
+      setLoading(true);
+
+      try {
+        const response = await axios.delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${tok}`,
+          },
+        });
+        // console.log(response);
+
+        setLoading(false);
+
+        enqueueSnackbar(`Group Member Has Been Deleted Succesfully.`, {
+          variant: "success",
+        });
+
+        handleDialogClose();
+
+        window.location.href = "/group_management/group_details/" + gid;
+      } catch (e) {
+        console.log(e);
+
+        if (e.response) {
+          setLoading(false);
+
+          enqueueSnackbar(`Error Deleting Group Member. Try Again`, {
             variant: "error",
           });
         }
@@ -802,7 +937,7 @@ export default function GroupDetails() {
               </Box>
 
               <Button
-                // onClick={changeType}
+                onClick={changeLeader}
                 className={classes.showPass}
                 style={{ fontSize: "12px" }}
                 disableFocusRipple
@@ -1065,12 +1200,10 @@ export default function GroupDetails() {
                 <Box style={{ display: "flex", width: "100%" }}>
                   <div
                     style={{
-                      // paddingLeft: "40px",
                       paddingLeft: "45px",
                       paddingTop: "15px",
                       paddingBottom: "15px",
                       width: "47%",
-                      // paddingTop: "10px",
                     }}
                   >
                     <Typography className={classes.typography3}>
@@ -1082,7 +1215,6 @@ export default function GroupDetails() {
                     style={{
                       padding: "15px",
                       width: "47%",
-                      // paddingRight: "40px",
                     }}
                   >
                     <Typography className={classes.typography4}>
@@ -1114,7 +1246,6 @@ export default function GroupDetails() {
                       onClick={handleClick}
                     >
                       <Typography
-                        // className={classes.typography}
                         style={{
                           font: "var(--unnamed-font-style-normal) normal 600 13px/20px var(--unnamed-font-family-poppins)",
                           letterSpacing: "var(--unnamed-character-spacing-0)",
@@ -1141,7 +1272,6 @@ export default function GroupDetails() {
                       className={classes.roots}
                       value={state}
                       onChange={(event) => onSearchChange(event)}
-                      // onKeyPress={enterSearch}
                       onKeyUp={searchResult}
                       placeholder="Search Members"
                       id="input-search"
@@ -1198,9 +1328,7 @@ export default function GroupDetails() {
                 members && (
                   <Table className={classes.table}>
                     <TableHead className={classes.thead}>
-                      <TableRow
-                      // style={{ background: "rgba(249, 250, 252, 0.5)" }}
-                      >
+                      <TableRow>
                         <TableCell
                           align="left"
                           size="small"
@@ -1260,7 +1388,7 @@ export default function GroupDetails() {
                               <Box display="flex" justifyContent="center">
                                 <IconButton
                                   onClick={() => {
-                                    handleEditClick(i + 1, member.groupId);
+                                    handleEditClick(member.id);
                                   }}
                                 >
                                   <EditIcon />
@@ -1269,7 +1397,7 @@ export default function GroupDetails() {
                                 <IconButton
                                   onClick={() => {
                                     setIdx(member.id);
-                                    setGroupName(member.groupName);
+                                    setGroupName(member.memberName);
                                     handleDialogClick();
                                   }}
                                 >
@@ -1289,7 +1417,6 @@ export default function GroupDetails() {
                                   style: {
                                     borderRadius: "8px",
                                     width: "428px",
-                                    // height: '369px',
                                     paddingBottom: "5%",
                                     paddingTop: "2.5%",
                                     boxShadow: "none",
@@ -1317,20 +1444,10 @@ export default function GroupDetails() {
                                       whiteSpace: "initial",
                                     }}
                                   >
-                                    <Typography
-                                      className={classes.dialogTypo}
-                                      style={
-                                        {
-                                          // fontWeight: "normal",
-                                          // fontSize: "15px",
-                                          // lineHeight: "22px",
-                                          // color: "#242120",
-                                        }
-                                      }
-                                    >
+                                    <Typography className={classes.dialogTypo}>
                                       You want to delete{" "}
                                       <strong>{groupName} </strong>
-                                      account from this platform, click delete
+                                      as a member of this group, click delete
                                       button to proceed or cancel this action.
                                     </Typography>
                                   </Box>
@@ -1342,22 +1459,14 @@ export default function GroupDetails() {
                                     justifyContent: "center",
                                   }}
                                 >
-                                  <Box
-                                    display="flex"
-                                    justifyContent="center"
-                                    style={
-                                      {
-                                        // margin: 'auto',
-                                        // marginRight: "25px",
-                                        // border: '1px solid red',
-                                      }
-                                    }
-                                  >
+                                  <Box display="flex" justifyContent="center">
                                     <Button
                                       size="large"
-                                      className={classes.button}
-                                      onClick={clickDelete}
+                                      className={classes.button2}
+                                      onClick={deleteMember}
+                                      disableFocusRipple
                                       disableRipple
+                                      disableTouchRipple
                                       disabled={loading}
                                       style={{
                                         border: "2px solid #72A624",
@@ -1388,10 +1497,12 @@ export default function GroupDetails() {
 
                                     <Button
                                       size="large"
-                                      className={classes.button}
+                                      className={classes.button2}
                                       onClick={handleDialogClose}
                                       disabled={loading}
+                                      disableFocusRipple
                                       disableRipple
+                                      disableTouchRipple
                                       style={{
                                         border: "1px solid #72A624",
                                         backgroundColor: "#72A624",
