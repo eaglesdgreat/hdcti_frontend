@@ -82,6 +82,13 @@ function AuthProvider({ children }) {
       if (checkUrl.includes(url) && !isAuthenticated().auth_token) {
         setLoading(false);
       }
+
+      if (url === '/' && isAuthenticated().auth_token) {
+        logout(() => {
+          setLoading(false);
+          window.location.href = "/";
+        })
+      }
     };
 
     // Check if the session has expired
@@ -105,6 +112,13 @@ function AuthProvider({ children }) {
     //check if the user have token to login
     if (!checkUrl.includes(pathname) && isAuthenticated().auth_token) {
       setLoading(false);
+    }
+
+    if (pathname === '/' && isAuthenticated().auth_token) {
+      logout(() => {
+        setLoading(false);
+        window.location.href = "/";
+      })
     }
 
     // Monitor routes
