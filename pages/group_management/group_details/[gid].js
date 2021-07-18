@@ -44,6 +44,7 @@ import { PieChart } from "react-minimal-pie-chart";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from "moment";
+import Link from 'next/link'
 
 import { useStateValue } from './../../../StateProviders';
 import Layout from "./../../../Components/Layout";
@@ -923,15 +924,29 @@ export default function GroupDetails() {
                 ) : (
                   members &&
                   members.results && (
-                    <Typography className={classes.groupTypo}>
-                      {members.results.result.find(
-                        (mem) => mem.isLeader === true
-                      )
-                        ? members.results.result.find(
-                            (mem) => mem.isLeader === true
-                          ).memberName
-                        : "No Leader Found"}
-                    </Typography>
+                    members.results.result.find((mem) => mem.isLeader === true)
+                    ?
+                   ( <Link
+                      href={{
+                        pathname: `/group_management/member_details/[mdid]`,
+                        query: {
+                          mdid: 1,
+                        },
+                      }}
+                    >
+                      <a
+                        style={{
+                          textDecoration: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                          <Typography className={classes.groupTypo}>
+                            {members.results.result.find((mem) => mem.isLeader === true).memberName}
+                        </Typography>
+                      </a>
+                    </Link>)
+                    :
+                   ( <Typography className={classes.groupTypo}>No Leader Found</Typography>)
                   )
                 )}
               </Box>
