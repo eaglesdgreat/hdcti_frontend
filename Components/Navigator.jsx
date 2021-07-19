@@ -27,13 +27,13 @@ const categories = [
       id: "Create New",
       icon: <img src="/home.svg" alt="home" />,
       activeIcon: <img src="/home.svg" alt="home" />,
-      path: "/create_application",
+      path: "/create_loan",
     },
     body2: {
       id: "View Applications",
       icon: <img src="/home.svg" alt="home" />,
       activeIcon: <img src="/home.svg" alt="home" />,
-      path: "/applications",
+      path: "/loans",
     },
   },
 
