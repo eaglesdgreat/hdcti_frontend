@@ -23,7 +23,6 @@ import { useSnackbar } from 'notistack'
 import { PieChart } from "react-minimal-pie-chart";
 
 // import { useStateValue } from '../../StateProviders';
-import TableLayout from "./../../Components/Tables";
 import Layout from "./../../Components/Layout";
 import validations from './../../lib/validations'
 import { isAuthenticated } from "./../../lib/auth.helper";

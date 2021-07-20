@@ -846,21 +846,19 @@ export default function GroupDetails() {
       let newList = [];
 
       newList = currentList.filter((request) => {
-        const name = `${request.staffname ? request.staffname : ""} ${
-          request.email ? request.email : ""
-        } ${
-          request.is_superuser
+        const name = `${request.staffname ? request.staffname : ""} ${request.email ? request.email : ""
+          } ${request.is_superuser
             ? "Super User"
             : "" || request.is_credit_officer
-            ? "Credit Officer"
-            : "" || request.is_branch_manager
-            ? "Branch Manager"
-            : "" || request.is_senior_manager
-            ? "Senior Manager"
-            : "" || request.is_agency_bank
-            ? "Agency Bank"
-            : ""
-        }`.toLowerCase();
+              ? "Credit Officer"
+              : "" || request.is_branch_manager
+                ? "Branch Manager"
+                : "" || request.is_senior_manager
+                  ? "Senior Manager"
+                  : "" || request.is_agency_bank
+                    ? "Agency Bank"
+                    : ""
+          }`.toLowerCase();
 
         return name.includes(state.toLowerCase());
       });
@@ -925,28 +923,28 @@ export default function GroupDetails() {
                   members &&
                   members.results && (
                     members.results.result.find((mem) => mem.isLeader === true)
-                    ?
-                   ( <Link
-                      href={{
-                        pathname: `/group_management/member_details/[mdid]`,
-                        query: {
-                          mdid: 1,
-                        },
-                      }}
-                    >
-                      <a
-                        style={{
-                          textDecoration: "none",
-                          cursor: "pointer",
+                      ?
+                      (<Link
+                        href={{
+                          pathname: `/group_management/member_details/[mdid]`,
+                          query: {
+                            mdid: 1,
+                          },
                         }}
                       >
+                        <a
+                          style={{
+                            textDecoration: "none",
+                            cursor: "pointer",
+                          }}
+                        >
                           <Typography className={classes.groupTypo}>
                             {members.results.result.find((mem) => mem.isLeader === true).memberName}
-                        </Typography>
-                      </a>
-                    </Link>)
-                    :
-                   ( <Typography className={classes.groupTypo}>No Leader Found</Typography>)
+                          </Typography>
+                        </a>
+                      </Link>)
+                      :
+                      (<Typography className={classes.groupTypo}>No Leader Found</Typography>)
                   )
                 )}
               </Box>

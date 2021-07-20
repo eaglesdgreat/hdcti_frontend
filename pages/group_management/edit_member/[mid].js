@@ -28,7 +28,6 @@ import { PieChart } from "react-minimal-pie-chart";
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 
 import { useStateValue } from "../../../StateProviders";
-import TableLayout from "./../../../Components/Tables";
 import Layout from "./../../../Components/Layout";
 import validations from "./../../../lib/validations";
 import { isAuthenticated } from "./../../../lib/auth.helper";
