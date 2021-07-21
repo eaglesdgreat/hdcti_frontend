@@ -283,20 +283,38 @@ export default function Index() {
           if (getUser) {
             getUser.auth_token = response.data.auth_token;
 
-             setState(initialState);
+            const last_url = JSON.parse(localStorage.getItem("last_url"));
 
-             setLoading(false);
+            setState(initialState);
 
-             enqueueSnackbar(
-               `You are being redirected to your dashboard page.`,
-               {
-                 variant: "success",
-               }
-             );
+            setLoading(false);
 
-            authenticate(getUser, () => {
-              return router.push("/dashboard");
-            });
+            if (last_url) {
+              localStorage.removeItem("last_url");
+              localStorage.removeItem('alert');
+              
+              enqueueSnackbar(
+                `Welcome back.`,
+                {
+                  variant: "success",
+                }
+              );
+
+              authenticate(getUser, () => {
+                return router.push(`${last_url}`);
+              });
+            } else {
+              enqueueSnackbar(
+                `You are being redirected to your dashboard page.`,
+                {
+                  variant: "success",
+                }
+              );
+
+              authenticate(getUser, () => {
+                return router.push("/dashboard");
+              });
+            }
           }
           }
       } catch (e) {

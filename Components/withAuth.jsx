@@ -6,12 +6,12 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import {
   Box
 } from '@material-ui/core'
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 import { logout, isAuthenticated } from "./../lib/auth.helper";
+import SessionTimedOut from "./SessionTimedOut";
 
 const AuthContext = createContext();
-
-
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -23,40 +23,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-async function checkUser() {
-  const url = `https://hcdti.savitechnig.com/account/logged_in_user`;
-  let data = false;
-
-  try {
-    const response = await axios.get(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${isAuthenticated().auth_token}`,
-      },
-    });
-
-    // console.log(response)
-
-    if (response.status === 200) {
-      data = true;
-    }
-  } catch (e) {
-    if (e.response) {
-      // console.log(e.response)
-      if (e.response.status === 401) {
-        data = false;
-      }
-    }
-  }
-
-  return data;
-}
 
 function AuthProvider({ children }) {
   const { pathname, events } = useRouter();
   const checkUrl = ["/", "/staff_reset_password"];
   const classes = useStyles()
   const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState(true)
 
   // This check if the user is not authenticated or authorized to access a route and redirect them back to the login page
   useEffect(() => {
@@ -91,13 +64,6 @@ function AuthProvider({ children }) {
       }
     };
 
-    // Check if the session has expired
-    // if (isAuthenticated().auth_token && !checkUser()) {
-    //   logout(() => {
-    //     window.location.href = "/";
-    //   });
-    // }
-
     // Check that initial route is OK
     if (!checkUrl.includes(pathname) && !isAuthenticated().auth_token) {
       window.location.href = "/";
@@ -128,6 +94,21 @@ function AuthProvider({ children }) {
     };
   }, [pathname, loading]);
 
+  const logOutFnc = () => {
+    logout(() => {
+      setLoading(false);
+      
+      localStorage.removeItem("last_url");
+      localStorage.setItem(
+        "last_url",
+        JSON.stringify(pathname)
+      );
+      localStorage.setItem('alert', true)
+
+      window.location.href = "/";
+    })
+  }
+
   return (
     <>
       {loading ? (
@@ -147,6 +128,15 @@ function AuthProvider({ children }) {
         </>
       ) : (
         <AuthContext.Provider value={{ user: isAuthenticated().user }}>
+          <SessionTimedOut isAuthenticated={isAuthenticated()} logOut={logOutFnc} />
+          {localStorage.getItem('alert') && alert && (
+            <Box style={{margin: 'auto', width: '30%', height:'60px', padding: '20px'}}>
+                <Alert severity="info" onClose={() => { localStorage.removeItem('alert'); setAlert(false) }}>
+                <AlertTitle>Info</AlertTitle>
+                Your session has expired - <strong>login to continue.</strong>
+              </Alert>
+            </Box>
+          )}
           {children}
         </AuthContext.Provider>
       )}
