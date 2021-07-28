@@ -19,6 +19,17 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       width: "70%",
     },
+  },
+  infoBox: {
+    margin: 'auto', 
+    width: '30%', 
+    height: '60px', 
+    padding: '20px',
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      height: '30px',
+      padding: '10px',
+    }
   }
 }));
 
@@ -130,7 +141,7 @@ function AuthProvider({ children }) {
         <AuthContext.Provider value={{ user: isAuthenticated().user }}>
           <SessionTimedOut isAuthenticated={isAuthenticated()} logOut={logOutFnc} />
           {localStorage.getItem('alert') && alert && (
-            <Box style={{margin: 'auto', width: '30%', height:'60px', padding: '20px'}}>
+              <Box className={classes.infoBox}>
                 <Alert severity="info" onClose={() => { localStorage.removeItem('alert'); setAlert(false) }}>
                 <AlertTitle>Info</AlertTitle>
                 Your session has expired - <strong>login to continue.</strong>

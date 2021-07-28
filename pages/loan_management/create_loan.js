@@ -69,7 +69,7 @@ export default function CreateLoan () {
           <Grid container spacing={4}>
             <Grid item md={6} lg={6} xl={6}>
               <Box display="flex" flexDirection="column" className={classes.mainBox}>
-                <Link href="/loan_management/stepper_form">
+                <Link href={`/loan_management/stepper_form?exist_member=${true}`}>
                   <a style={{ textDecoration: 'none' }}>
                     <Typography
                       className={classes.typography}
@@ -93,7 +93,7 @@ export default function CreateLoan () {
 
             <Grid item md={6} lg={6} xl={6}>
               <Box display="flex" flexDirection="column" className={classes.mainBox}>
-                <Link href="/loan_management/stepper_form">
+                <Link href={`/loan_management/stepper_form?exist_member=${false}`}>
                   <a style={{ textDecoration: 'none' }}>
                     <Typography
                       className={classes.typography}

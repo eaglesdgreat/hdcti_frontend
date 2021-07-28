@@ -38,6 +38,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import moment from 'moment'
 import Link from 'next/link'
+import NumberFormat from 'react-number-format'
 
 import { useStateValue } from '../../StateProviders';
 import Layout from "./../../Components/Layout";
@@ -398,40 +399,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-const loans = [
-  {
-    id: 1,
-    app_no: 9021,
-    type: 'loan',
-    amount: '₦40,000.00',
-    borrower: 'Mirabel Grace',
-    date: '20/07/2021',
-  },
-  {
-    id: 3,
-    app_no: 9024,
-    type: 'loan',
-    amount: '₦40,000.00',
-    borrower: 'Mirabel Grace',
-    date: '20/07/2021',
-  },
-  {
-    id: 2,
-    app_no: 9025,
-    type: 'loan',
-    amount: '₦40,000.00',
-    borrower: 'Mirabel Grace',
-    date: '20/07/2021',
-  },
-  
-]
-
 const filter_list = [
   { id: 1, name: 'All', value: 'all' },
-  {id:2, name: 'Approved', value: [1]},
-  {id:3, name: 'Declined', value: [2]},
-  { id: 4, name: 'Pending', value: [3] },
+  {id:2, name: 'Approved', value: 'approved' },
+  {id:3, name: 'Declined', value: 'declined' },
+  { id: 4, name: 'Pending', value: 'pending' },
 ]
 
 
@@ -450,9 +422,9 @@ const fetcher = async (...arg) => {
 };
 
 
-const groupsData = () => {
-  // const url = `${process.env.BACKEND_URL}/account/allgroup?page=1`
-  const url = `https://hcdti.savitechnig.com/account/allgroup?page=1`;
+const loansData = () => {
+  // const url = `${process.env.BACKEND_URL}/account/all_loan`
+  const url = `https://hcdti.savitechnig.com/account/all_loan`;
   const token = isAuthenticated().auth_token;
 
   const { data, error } = useSWR([url, token], fetcher, {
@@ -460,7 +432,7 @@ const groupsData = () => {
   });
 
   return {
-    groups: data,
+    loans: data,
     isLoading: !error && !data,
     isError: error,
   };
@@ -474,8 +446,8 @@ export default function Loans() {
   const router = useRouter();
 
   // Fetching data from backend with SWR
-  // const { groups, isLoading, isError } = groupsData();
-  // console.log(groups);
+  const { loans, isLoading, isError } = loansData();
+  // console.log(loans);
 
   const [{ groupId }, dispatch] = useStateValue();
   const addToBasket = (data) => {
@@ -493,7 +465,7 @@ export default function Loans() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [idx, setIdx] = useState("");
   const [loading, setLoading] = useState(false);
-  const [groupName, setGroupName] = useState("");
+  const[groupName, setGroupName] = useState('')
 
   // handle change per page
   const handleChangePage = (event, newPage) => {
@@ -508,6 +480,7 @@ export default function Loans() {
 
   const handleChange = (event) => {
     const { name, value } = event.target
+
     console.log(value)
     setFilter(value)
   }
@@ -528,92 +501,12 @@ export default function Loans() {
     router.push(url);
   };
 
-  const handleEditClick = (id) => {
-    localStorage.removeItem("last_url");
-
-    const url = "/group_management/edit_group/" + id;
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/groups")
-    );
-
-    router.push(url);
-  };
-
-  const changeLeader = () => {
-    localStorage.removeItem("last_url");
-
-    const url = "/group_management/change_leader";
-
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/groups")
-    );
-
-    router.push(url);
-  };
-
-  const detailsPage = (id, gId) => {
-    localStorage.removeItem("group_id");
-
-    const url = `/group_management/group_details/${id}`;
-    localStorage.setItem('group_id', JSON.stringify(gId))
-
-    router.push(url);
-  }
-
-  // delete a group handler
-  const clickDelete = async (e) => {
-    e.preventDefault();
-
-    let isValid = true;
-
-    const tok = isAuthenticated().auth_token;
-
-    // const url = `${process.env.BACKEND_URL}/account/removegroup/${idx}`;
-    const url = `https://hcdti.savitechnig.com/account/removegroup/${idx}`;
-
-    if (isValid) {
-      setLoading(true);
-
-      try {
-        const response = await axios.delete(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${tok}`,
-          },
-        });
-        console.log(response);
-
-        setLoading(false);
-
-        enqueueSnackbar(`Group Account Has Been Deleted Succesfully.`, {
-          variant: "success",
-        });
-
-        handleDialogClose();
-
-        window.location.href = "/group_management/groups";
-      } catch (e) {
-        // console.log(e);
-
-        if (e.response) {
-          setLoading(false);
-
-          enqueueSnackbar(`Error Deleting Group Account. Try Again`, {
-            variant: "error",
-          });
-        }
-      }
-    }
-  };
-
   const onSearchChange = (event) => {
     setState(event.target.value);
   };
 
   const searchResult = () => {
-    const data = groups.results;
+    const data = loans.result;
 
     let currentList = data.map((request) => {
       return { ...request };
@@ -628,23 +521,12 @@ export default function Loans() {
       let newList = [];
 
       newList = currentList.filter((request) => {
-        const name = `${request.staffname ? request.staffname : ""} ${request.email ? request.email : ""
-          } ${request.is_superuser
-            ? "Super User"
-            : "" || request.is_credit_officer
-              ? "Credit Officer"
-              : "" || request.is_branch_manager
-                ? "Branch Manager"
-                : "" || request.is_senior_manager
-                  ? "Senior Manager"
-                  : "" || request.is_agency_bank
-                    ? "Agency Bank"
-                    : ""
-          }`.toLowerCase();
+        const name = `${request.fullname ? request.fullname : ""} ${request.app_type ? request.app_type : ""} ${request.application_id ? request.application_id : ""
+          } ${request.date_of_app ? moment(request.date_of_app).format('Do MMM YYYY') : ""} ${request.loan_applied_for ? request.loan_applied_for : ""}`.toLowerCase();
 
         return name.includes(state.toLowerCase());
       });
-      // console.log(newList)
+      console.log(newList)
 
       setSearch(newList);
     }
@@ -684,7 +566,7 @@ export default function Loans() {
                   }}
                 >
                   <Typography className={classes.typography4}>
-                    {loans ? loans.length : 0}{" "}Loan Application
+                    {loans && loans.result ? loans.result.length : 0}{" "}Loan Application
                   </Typography>
                 </div>
               </Box>
@@ -756,40 +638,63 @@ export default function Loans() {
             </Box>
 
             {
-            // isError ? (
-            //   <Box
-            //     display="flex"
-            //     justifyContent="center"
-            //     style={{
-            //       margin: "auto",
-            //       width: "100%",
-            //       borderRadius: "5px",
-            //       height: "100px",
-            //       padding: "100px",
-            //     }}
-            //   >
-            //     <Typography className={classes.typography}>
-            //       Error Fetching All Groups Data
-            //     </Typography>
-            //   </Box>
-            // ) : isLoading ? (
-            //   <Box
-            //     display="flex"
-            //     justifyContent="center"
-            //     style={{
-            //       width: "100%",
-            //       margin: "auto",
-            //       paddingLeft: 100,
-            //       paddingRight: 100,
-            //       paddingTop: 150,
-            //       paddingBottom: 150,
-            //     }}
-            //   >
-            //     <CircularProgress size="3em" style={{ color: "#362D73" }} />
-            //   </Box>
-            // ) : 
+            isError ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                style={{
+                  margin: "auto",
+                  width: "100%",
+                  borderRadius: "5px",
+                  height: "100px",
+                  padding: "100px",
+                }}
+              >
+                <Typography className={classes.typography}>
+                  Error Fetching All Loans Data
+                </Typography>
+              </Box>
+            ) : isLoading ? (
+              // <Dialog
+              //   open={isLoading}
+              //   onClose={handleDialogClose}
+              //   BackdropProps={{
+              //     style: {
+              //       opacity: 0.3,
+              //     },
+              //   }}
+              //   PaperProps={{
+              //     style: {
+              //       borderRadius: "8px",
+              //       width: "100%",
+              //       height: '100%',
+              //       paddingBottom: "5%",
+              //       paddingTop: "2.5%",
+              //       boxShadow: "none",
+              //       background: "#FFFFFF00"
+              //     },
+              //   }}
+              // >
+              //   <DialogContent>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    style={{
+                      width: "100%",
+                      margin: "auto",
+                      paddingLeft: 100,
+                      paddingRight: 100,
+                      paddingTop: 150,
+                      paddingBottom: 150,
+                    }}
+                  >
+                    <CircularProgress size="3em" style={{ color: "#362D73" }} />
+                  </Box>
+              //   // </DialogContent>
+              // </Dialog>
+            ) : 
             (
-              loans && (
+              loans && loans.result && (
                 <Table className={classes.table}>
                   <TableHead className={classes.thead}>
                     <TableRow
@@ -843,13 +748,13 @@ export default function Loans() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(search.length > 0 ? search : loans)
+                    {(search.length > 0 ? search : loans.result)
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
                       .map((loan, i) => (
-                        <TableRow key={loan.id}>
+                        <TableRow key={loan.application_id}>
                           <TableCell className={classes.tableCell}>
                             <Typography className={classes.sn}>
                               {i + 1}
@@ -858,19 +763,27 @@ export default function Loans() {
 
                           <TableCell className={classes.tableCell}>
                             <Typography className={classes.sn}>
-                              {loan.app_no}
+                              {loan.application_id}
                             </Typography>
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>
                             <Typography className={classes.sn}>
-                              {loan.type}
+                              {loan.app_type}
                             </Typography>
                           </TableCell>
 
                           <TableCell className={classes.tableCell}>
                             <Typography className={classes.sn}>
-                              {loan.amount}
+                              <NumberFormat
+                                value={loan.loan_applied_for}
+                                thousandSeparator={true}
+                                decimalScale={2}
+                                decimalSeparator="."
+                                prefix={'₦'}
+                                fixedDecimalScale={true}
+                                displayType="text"
+                              />
                             </Typography>
                           </TableCell>
 
@@ -879,22 +792,18 @@ export default function Loans() {
                               href={{
                                 pathname: `/loan_management/loan_details/[lid]`,
                                 query: {
-                                  lid: loan.id,
+                                  lid: loan.application_id,
                                 },
                               }}
                             >
                               <a
-                                // onClick={() => {
-                                //   // addToBasket(group.groupId)
-                                //   detailsPage(group.id, group.groupId);
-                                // }}
                                 style={{
                                   textDecoration: "none",
                                   cursor: "pointer",
                                 }}
                               >
                                 <Typography className={classes.typography2}>
-                                  {loan.borrower}
+                                  {loan.fullname}
                                 </Typography>
                               </a>
                             </Link>
@@ -902,7 +811,7 @@ export default function Loans() {
 
                           <TableCell className={classes.tableCell}>
                             <Typography className={classes.sn}>
-                              {loan.date}
+                              {moment(loan.date_of_app).format('Do MMM YYYY')}
                             </Typography>
                           </TableCell>
 
@@ -926,126 +835,6 @@ export default function Loans() {
                                 <DeleteOutlinedIcon />
                               </IconButton> */}
                             </Box>
-
-                            <Dialog
-                              open={open}
-                              onClose={handleDialogClose}
-                              BackdropProps={{
-                                style: {
-                                  opacity: 0.1,
-                                },
-                              }}
-                              PaperProps={{
-                                style: {
-                                  borderRadius: "8px",
-                                  width: "428px",
-                                  // height: '369px',
-                                  paddingBottom: "5%",
-                                  paddingTop: "2.5%",
-                                  boxShadow: "none",
-                                },
-                              }}
-                            >
-                              <DialogTitle>
-                                <Typography
-                                  className={classes.typography}
-                                  style={{
-                                    fontWeight: "700",
-                                    fontSize: "24px",
-                                    lineHeight: "28px",
-                                  }}
-                                >
-                                  Delete Group Account
-                                </Typography>
-                              </DialogTitle>
-
-                              <DialogContent>
-                                <Box
-                                  display="flex"
-                                  component="span"
-                                  style={{
-                                    whiteSpace: "initial",
-                                  }}
-                                >
-                                  <Typography className={classes.typography}>
-                                    You want to delete{" "}
-                                    <strong>{groupName} </strong>
-                                    account from this platform, click delete
-                                    button to proceed or cancel this action.
-                                  </Typography>
-                                </Box>
-                              </DialogContent>
-
-                              <DialogActions
-                                style={{
-                                  padding: "11px",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <Box display="flex" justifyContent="center">
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={clickDelete}
-                                    disableRipple
-                                    disabled={loading}
-                                    style={{
-                                      border: "2px solid #72A624",
-                                    }}
-                                  >
-                                    {loading ? (
-                                      <CircularProgress
-                                        size="1em"
-                                        style={{ color: "#72A624" }}
-                                      />
-                                    ) : (
-                                      <Typography
-                                        className={classes.typography}
-                                        style={{
-                                          textAlign: "center",
-                                          color: "#72A624",
-                                          fontSize: "13px",
-                                          fontWeight: "500",
-                                          lineHeight: "15px",
-                                          textTransform: "capitalize",
-                                          lineSpacing: "0.02em",
-                                        }}
-                                      >
-                                        Delete
-                                      </Typography>
-                                    )}
-                                  </Button>
-
-                                  <Button
-                                    size="large"
-                                    className={classes.button}
-                                    onClick={handleDialogClose}
-                                    disabled={loading}
-                                    disableRipple
-                                    style={{
-                                      border: "1px solid #72A624",
-                                      backgroundColor: "#72A624",
-                                      marginLeft: "20px",
-                                    }}
-                                  >
-                                    <Typography
-                                      className={classes.typography}
-                                      style={{
-                                        textAlign: "center",
-                                        color: "#FFFFFF",
-                                        fontSize: "13px",
-                                        fontWeight: "500",
-                                        lineHeight: "15px",
-                                        textTransform: "capitalize",
-                                        lineSpacing: "0.02em",
-                                      }}
-                                    >
-                                      cancel
-                                    </Typography>
-                                  </Button>
-                                </Box>
-                              </DialogActions>
-                            </Dialog>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -1053,12 +842,12 @@ export default function Loans() {
                 </Table>
               )
             )}
-            {loans && (
+            {loans && loans.result && (
               <TablePagination
                 rowsPerPageOptions={[10, 20, 30, 40]}
                 component="div"
                 count={
-                  search.length > 0 ? search.length : loans.length
+                  search.length > 0 ? search.length : loans.result.length
                 }
                 page={page}
                 style={{ paddingRight: 30 }}

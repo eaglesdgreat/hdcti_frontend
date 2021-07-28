@@ -11,6 +11,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
 import clsx from 'clsx'
+import moment from 'moment'
+import NumberFormat from 'react-number-format'
 
 
 
@@ -87,8 +89,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-export default function LoanApp() {
+export default function LoanApp({ isLoading, isError, loan}) {
   const classes = useStyles()
+  const myLoan = loan.result
 
   return (
     <Fragment>
@@ -101,7 +104,7 @@ export default function LoanApp() {
               </Typography>
 
               <Typography gutterBottom className={classes.typography2}>
-                Loan Application
+                {myLoan.app_type === 'new' ? 'New Loan Application' : 'Loan Application'}
               </Typography>
             </Box>
 
@@ -113,7 +116,7 @@ export default function LoanApp() {
               </Typography>
 
               <Typography gutterBottom className={classes.typography2}>
-                9021
+                {myLoan.application_id ? myLoan.application_id : ''}
               </Typography>
             </Box>
 
@@ -125,7 +128,7 @@ export default function LoanApp() {
               </Typography>
 
               <Typography gutterBottom className={classes.typography2}>
-                19/02/2021
+                {myLoan.date_of_app ? moment(myLoan.date_of_app).format('Do MMM YYYY') : ''}
               </Typography>
             </Box>
           </Box>
@@ -145,15 +148,30 @@ export default function LoanApp() {
               Principal/Amount Requested
             </Typography>
 
-            <Typography
-              className={clsx(classes.typography2, classes.text)}
-              style={{
-                font: 'normal normal bold 20px/30px Poppins',
-              }}
-              gutterBottom
-            >
-              ₦40,000.00
-            </Typography>
+            {
+              isError ? '' :
+                isLoading ? (<CircularProgress size="1em" style={{ color: "#362D73" }} />)
+              : myLoan &&
+              (
+                <Typography
+                  className={clsx(classes.typography2, classes.text)}
+                  style={{
+                    font: 'normal normal bold 20px/30px Poppins',
+                  }}
+                  gutterBottom
+                >
+                      <NumberFormat
+                        value={myLoan.loan_applied_for}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        decimalSeparator="."
+                        prefix={'₦'}
+                        fixedDecimalScale={true}
+                        displayType="text"
+                      />
+                </Typography>
+              )
+            }
           </Box>
 
           <Divider light orientation="vertical" flexItem />
@@ -163,15 +181,30 @@ export default function LoanApp() {
               Amount Approved
             </Typography>
 
-            <Typography
-              className={clsx(classes.typography2, classes.text)}
-              style={{
-                font: 'normal normal bold 20px/30px Poppins',
-              }}
-              gutterBottom
-            >
-              ₦40,000.00
-            </Typography>
+            {
+              isError ? '' :
+                isLoading ? (<CircularProgress size="1em" style={{ color: "#362D73" }} />)
+                  : myLoan &&
+                  (
+                    <Typography
+                      className={clsx(classes.typography2, classes.text)}
+                      style={{
+                        font: 'normal normal bold 20px/30px Poppins',
+                      }}
+                      gutterBottom
+                    >
+                      <NumberFormat
+                        value={myLoan.loan_applied_for}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        decimalSeparator="."
+                        prefix={'₦'}
+                        fixedDecimalScale={true}
+                        displayType="text"
+                      />
+                    </Typography>
+                  )
+            }
           </Box>
 
           <Divider light orientation="vertical" flexItem />
@@ -181,15 +214,30 @@ export default function LoanApp() {
               Amount Owed
             </Typography>
 
-            <Typography
-              className={clsx(classes.typography2, classes.text)}
-              style={{
-                font: 'normal normal bold 20px/30px Poppins',
-              }}
-              gutterBottom
-            >
-              ₦40,000.00
-            </Typography>
+            {
+              isError ? '' :
+                isLoading ? (<CircularProgress size="1em" style={{ color: "#362D73" }} />)
+                  : myLoan &&
+                  (
+                    <Typography
+                      className={clsx(classes.typography2, classes.text)}
+                      style={{
+                        font: 'normal normal bold 20px/30px Poppins',
+                      }}
+                      gutterBottom
+                    >
+                      <NumberFormat
+                        value={myLoan.loan_applied_for}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        decimalSeparator="."
+                        prefix={'₦'}
+                        fixedDecimalScale={true}
+                        displayType="text"
+                      />
+                    </Typography>
+                  )
+            }
           </Box>
         </Box>
       </Box>

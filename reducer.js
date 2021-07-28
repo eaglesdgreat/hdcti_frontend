@@ -5,6 +5,7 @@ export const initialState = {
   product: "",
   get_queryy: {},
   groupId: '',
+  exist_mem: false
 };
 
 export const reducer = (state, action) => {
@@ -43,6 +44,12 @@ export const reducer = (state, action) => {
         return {
           ...state,
           groupId: action.item ,
+        };
+
+      case "EXIST_MEMBER":
+        return {
+          ...state,
+          exist_mem: action.item,
         };
 
       default:

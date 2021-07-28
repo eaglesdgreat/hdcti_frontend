@@ -44,7 +44,6 @@ export default function SessionTimedOut({ isAuthenticated, logOut }) {
 
   const onIdle = () => {
     const delay = 1000 * 1
-    console.log('countdowm:', timeOutCountDown)
 
     if (isAuthenticated.auth_token && !startTimeOut) {
       timeOut = setInterval(() => {

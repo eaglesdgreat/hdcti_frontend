@@ -176,16 +176,6 @@ const groupsData = () => {
   };
 };
 
-const roles = [
-  // { id: 6, name: "Select Role", value: "", disabled: true },
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function ChangeLeader() {
   const path = "/groups";

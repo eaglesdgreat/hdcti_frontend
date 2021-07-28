@@ -8,15 +8,11 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Approved from './Approved'
-import Pending from './Pending'
-import { isAuthenticated } from "./../../lib/auth.helper";
-
 const useStyles = makeStyles((theme) => ({
   rootBox: {
     display: 'flex',
     justifyContent: 'space-between',
-    width: '100%', 
+    width: '100%',
     paddingTop: '30px',
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column'
@@ -77,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   },
   typography2: {
     font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-12)/var(--unnamed-line-spacing-14) var(--unnamed-font-family-helvetica-neue)',
-    letterSspacing:' var(--unnamed-character-spacing-0)',
+    letterSspacing: ' var(--unnamed-character-spacing-0)',
     color: 'var(--unnamed-color-0d0d0d)',
     textAlign: 'right',
     font: 'normal normal normal 12px/14px Helvetica Neue',
@@ -154,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
     opacity: 1,
   },
   buttonBox: {
-    padding: '20px', 
+    padding: '20px',
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
@@ -173,31 +169,54 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function ApproveComponent({ isLoading, isError, loan }) {
+export default function Approved({user, name}) {
   const classes = useStyles()
-  
-  const credit_officer_permission = isAuthenticated().is_credit_officer
-  const branch_manager_permission = isAuthenticated().is_branch_manager
-  const agency_bank_permission = isAuthenticated().is_agency_bank
-
-  const credit_officer_approved = loan.result.credit_officer_approve === 'PENDING' ? false : true
-  const branch_manager_approved = loan.result.branch_manager_approve === 'PENDING' ? false : true
-  const agency_bank_approved = loan.result.agency_bank_approve === 'PENDING' ? false : true
 
   return (
     <Fragment>
-      <Box className={classes.rootBox}>
-        {
-          credit_officer_approved ? (<Approved user={'Credit Officer'} name={loan.result.credit_officer_name} />) : (<Pending user={'Credit Officer'} permission={credit_officer_permission} level={'First'} />)
-        }
+      <Box className={classes.approvedBox}>
+        <Box display="flex" justifyContent="flex-end" style={{ width: '70%', padding: '30px' }}>
+          <Box display="flex" flexDirection="column" style={{ width: '100%' }}>
+            <Typography
+              variant="body1"
+              gutterBottom
+              className={classes.typography}
+            >
+              First Approval
+            </Typography>
 
-        {
-          branch_manager_approved ? (<Approved user={'Branch Manager'} name={loan.result.branch_manager_approved} />) : (<Pending user={'Branch Manager'} permission={branch_manager_permission} level={'Second'} />)
-        }
+            <Box display="flex" justifyContent="flex-end" style={{ width: '100%', paddingTop: '10px', paddingBottom: '30px' }}>
+              <Chip
+                // avatar={<Avatar>M</Avatar>}
+                label="Approved"
+                clickable={false}
+                className={classes.chip}
+              />
+            </Box>
 
-        {
-          agency_bank_approved ? (<Approved user={'Agency Bank'} name={loan.result.agency_bank_approved} />) : (<Pending user={'Agency Bank'} permission={agency_bank_permission} level={'Third'} />)
-        }
+            <Typography
+              variant="body1"
+              gutterBottom
+              className={classes.typography2}
+            >
+              By {user}
+            </Typography>
+
+            <Typography
+              variant="body1"
+              gutterBottom
+              className={classes.typography3}
+            >
+              {name}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box display="flex" justifyContent="flex-end" style={{ width: '25%', padding: '19px' }}>
+          <Box display="flex" className={classes.checkBox}>
+            <img src="/check.svg" alt="check" aria-controls="check" />
+          </Box>
+        </Box>
       </Box>
     </Fragment>
   )

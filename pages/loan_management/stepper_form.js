@@ -8,12 +8,55 @@ import {
   Button,
   NoSsr,
   Divider,
+  StepConnector,
 } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-import Check from '@material-ui/icons/Check'
+import clsx from 'clsx'
+import Check from '@material-ui/icons/Check';
+import {useRouter} from 'next/router'
 
 import Layout from './../../Components/Layout'
+import Stepper1 from './../../Components/stepper_components/Stepper1'
+import Stepper2 from './../../Components/stepper_components/Stepper2'
+import Stepper3 from './../../Components/stepper_components/Stepper3'
+import Stepper4 from './../../Components/stepper_components/Stepper4'
+import Stepper5 from './../../Components/stepper_components/Stepper5'
+import { useStateValue } from "./../../StateProviders";
+
+
+
+const QontoConnector = withStyles({
+  alternativeLabel: {
+    top: 10,
+    left: 'calc(-50% + 16px)',
+    right: 'calc(50% + 16px)',
+  },
+  active: {
+    '& $line': {
+      borderColor: '#362d73',
+      background: 'var(--unnamed-color-362d73) 0% 0% no-repeat padding-box',
+      background: '#362D73 0% 0% no-repeat padding-box',
+      opacity: 1,
+    },
+  },
+  completed: {
+    '& $line': {
+      borderColor: '#0d0d0d',
+      background: 'var(--unnamed-color-0d0d0d) 0% 0% no-repeat padding-box',
+      background: '#0D0D0DA0 0% 0% no-repeat padding-box',
+      opacity: 1,
+    },
+  },
+  line: {
+    borderColor: '#362D738B',
+    borderTopWidth: 3,
+    borderRadius: 1,
+
+    background: '#362D738B 0% 0% no-repeat padding-box',
+    opacity: 1,
+  },
+})(StepConnector);
 
 
 const useStyles = makeStyles((theme) => ({
@@ -25,63 +68,158 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
     opacity: 1,
     width: '97%',
-    height: '623px',
-    [theme.breakpoints.down('sm')]: {
-      height: 'max-content',
-    }
+    height: 'max-content',
   },
   box: {
     background: 'var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box',
     background: '#FFFFFF 0% 0% no-repeat padding-box',
     border: '3px solid #362D7312',
     opacity: 1,
-    height: '459px',
+    height: 'max-content',
   },
   uncheckText: {
     font: 'var(--unnamed-font-style-normal) normal bold 15px/18px var(--unnamed-font-family-helvetica-neue)',
     letteSpacing: 'var(--unnamed-character-spacing-0)',
-    textAlign: 'left',
+    textAlign: 'center',
     font: 'normal normal bold 15px/18px Helvetica Neue',
     letterSpacing: '0px',
     color: '#FFFFFFFD',
     opacity: 1,
   },
-  checkBox: {
-    background: '#28A745 0% 0% no-repeat padding-box',
+  check: {
+    color: '#ffffff',
+    zIndex: 1,
+    fontSize: 18, 
+    opacity: 1
+  },
+  root2: {
+    color: '#eaeaf0',
+    display: 'flex',
+    height: 22,
+    alignItems: 'center',
+  },
+  active: {
+    background: 'var(--unnamed-color-362d73) 0% 0% no-repeat padding-box',
+    background:' #362D73 0% 0% no-repeat padding-box',
+    border: '1px solid #362D738B',
     borderRadius: '4px',
     opacity: 1,
+    width: 22,
+    height: 22
+  },
+  circle: {
+    border: '1px solid #362D738B',
+    borderRadius: '4px',
+    opacity: 1,
+    width: 22,
+    height: 22,
+    padding: '1px',
   },
   completed: {
-    // color: '#784af4',
-    // zIndex: 1,
-    // fontSize: 18,
-    background: "transparent url('/check.png') 0% 0% no-repeat padding-box",
+    background: '#28A745 0% 0% no-repeat padding-box',
+    borderRadius: '4px',
+    padding: '1.5px',
     opacity: 1,
-  }, 
-  circle: {
+    width: 22,
+    height: 22
+  },
+  unactive: {
+    font: 'var(--unnamed-font-style-normal) normal bold 15px/18px var(--unnamed-font-family-helvetica-neue)',
+    letterSpacing: 'var(--unnamed-character-spacing-0)',
+    textAlign: 'center',
+    font: 'normal normal bold 15px / 18px Helvetica Neue',
+    letterSpacing: '0px',
+    color: '#362D7365',
+    opacity: 1,
+  },
+  prevButton: {
+    background: '#C9C9C9 0% 0% no-repeat padding-box',
+    borderRadius: '5px',
+    opacity: 1,
+    width: '92px',
+    height: '40px',
 
-  }
+    font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
+    letterSpacing: 'var(--unnamed-character-spacing-0)',
+    textAlign: 'center',
+    font: 'normal normal 600 14px/21px Poppins',
+    letterSpacing: '0px',
+    color: '#3E3E3E',
+    opacity: 1,
+
+    '&:hover': {
+      background: 'var(--unnamed-color-362d73) 0% 0% no-repeat padding-box',
+      background: '#362D73 0% 0% no-repeat padding-box',
+      borderRadius: '5px',
+      opacity: 1,
+
+      font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
+      letterSpacing: 'var(--unnamed-character-spacing-0)',
+      color: 'var(--unnamed-color-ffffff)',
+      textAlign: 'center',
+      font: 'normal normal 600 14px/21px Poppins',
+      letterSspacing: ' 0px',
+      color: '#FFFFFF',
+      opacity: 1,
+    }
+  },
+  button: {
+    background: '#72A624 0% 0% no-repeat padding-box',
+    borderRadius: '5px',
+    opacity: 1,
+    width: '64px',
+    height: '40px',
+    marginLeft: '13px',
+
+    font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
+    letterSpacing: 'var(--unnamed-character-spacing-0)',
+    color: 'var(--unnamed-color-ffffff)',
+    textAlign: 'center',
+    font: 'normal normal 600 14px/21px Poppins',
+    letterSspacing: ' 0px',
+    color: '#FFFFFF',
+    opacity: 1,
+
+    '&:hover': {
+      background: 'var(--unnamed-color-362d73) 0% 0% no-repeat padding-box',
+      background: '#362D73 0% 0% no-repeat padding-box',
+      borderRadius: '5px',
+      opacity: 1,
+
+      font: 'var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)',
+      letterSpacing: 'var(--unnamed-character-spacing-0)',
+      color: 'var(--unnamed-color-ffffff)',
+      textAlign: 'center',
+      font: 'normal normal 600 14px/21px Poppins',
+      letterSspacing: ' 0px',
+      color: '#FFFFFF',
+      opacity: 1,
+    }
+  },
 }))
 
 
 function QontoStepIcon(props) {
   const classes = useStyles();
-  const { active, completed, activeStep } = props;
+  const { active, completed, icon } = props;
+  // console.log(props)
 
   return (
     <div
-      className={clsx(classes.root, {
+      className={clsx(classes.root2, {
         [classes.active]: active,
       })}
     >
       {
         completed ? 
-          <div className={classes.checkBox}>
-            {/* <Check className={classes.completed} /> */}
+          <div className={classes.completed}>
+            <Check className={classes.check} />
           </div>
         :  
           <div className={classes.circle}>
-            <Typography className={classes.uncheckText}>{activeStep}</Typography>
+            {
+              active ? (<Typography className={classes.uncheckText}>{icon}</Typography>) : (<Typography className={classes.unactive}>{icon}</Typography>)
+            }
           </div>
       }
     </div>
@@ -107,20 +245,39 @@ function getSteps() {
   return ['Details', 'Applicant Info', 'Business Info', 'Loan Details', "Guarantor's Details"];
 }
 
+function getSteps2() {
+  return ['Details', 'Applicant Info', 'Loan Details', "Guarantor's Info"];
+}
+
 function getStepContent(step) {
   switch (step) {
     case 0:
-      return 'Select campaign settings...';
+      return (<Stepper1 />);
     case 1:
-      return 'What is an ad group anyways?';
+      return (<Stepper2 />);
     case 2:
-      return 'This is the bit I really care about!';
+      return (<Stepper3 />);
     case 3:
-      return 'Stepper 4'
+      return (<Stepper4 />);
     case 4:
-      return 'Stepper 5'
+      return (<Stepper5 />);
     default:
-      return 'Unknown step';
+      return;
+  }
+}
+
+function getStepContent2(step, member_exist) {
+  switch (step) {
+    case 0:
+      return (<Stepper1 />);
+    case 1:
+      return (<Stepper2 new_member={member_exist} />);
+    case 2:
+      return (<Stepper4 />);
+    case 3:
+      return (<Stepper5 />);
+    default:
+      return;
   }
 }
 
@@ -128,8 +285,28 @@ function getStepContent(step) {
 export default function StepperForm() {
   const path = '/loans'
   const classes = useStyles()
-  const [activeStep, setActiveStep] = useState(0);
-  const steps = getSteps();
+  const router = useRouter()
+
+  const member_exist = router.query.exist_member === 'true' ? true : false
+
+  const [{ exist_mem }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "EXIST_MEMBER",
+      item: data,
+    });
+  };
+
+  const [activeStep, setActiveStep] = useState(0); 
+  useEffect(() => {
+    if (member_exist) {
+      addToBasket(member_exist)
+    } else {
+      addToBasket(member_exist)
+    }
+  }, [member_exist])
+  const steps = member_exist ? getSteps2() : getSteps();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -143,11 +320,11 @@ export default function StepperForm() {
     <Layout path={path}>
       <NoSsr>
         <Box className={classes.root}>
-          <Stepper activeStep={activeStep}>
+          <Stepper activeStep={activeStep} connector={<QontoConnector />}>
             {
               steps.map((label, i) => (
                 <Step key={i}>
-                  <StepLabel>
+                  <StepLabel StepIconComponent={QontoStepIcon}>
                     {label}
                   </StepLabel>
                 </Step>
@@ -157,27 +334,56 @@ export default function StepperForm() {
 
           <Divider light />
           
-          <Box style={{ width:'85%', margin: 'auto', paddingTop: '40px'}}>
+          <Box style={{ width: '85%', margin: 'auto', paddingTop: '40px', paddingBottom: '40px'}}>
             <Box className={classes.box}>
-              <Typography>{getStepContent(activeStep)}</Typography>
+              <Typography>{member_exist ? getStepContent2(activeStep, member_exist) : getStepContent(activeStep)}</Typography>
 
-              <Box>
+              <Box display="flex" justifyContent="flex-end" style={{padding: '30px', width:'91%', margin:'auto'}}>
                 {
                   activeStep === 0 ? '' : (
-                    <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
+                    <Button 
+                      disabled={activeStep === 0} 
+                      onClick={handleBack} 
+                      className={classes.prevButton}
+                      disableFocusRipple
+                      disableRipple
+                      disableTouchRipple
+                    >
                       Previous
                     </Button>
                   )
                 }
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
+                {
+                  activeStep === steps.length - 1 
+                  ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        // onClick={handleNext}
+                        className={classes.button}
+                        disableFocusRipple
+                        disableRipple
+                        disableTouchRipple
+                      >
+                        Finish
+                      </Button>
+                  ) 
+                   
+                  : (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        className={classes.button}
+                        disableFocusRipple
+                        disableRipple
+                        disableTouchRipple
+                      >
+                        Next
+                      </Button>
+                  )
+                }
               </Box>
             </Box>
           </Box>
