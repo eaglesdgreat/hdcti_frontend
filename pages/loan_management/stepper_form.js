@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
+import axios from "axios";
 import clsx from 'clsx'
 import Check from '@material-ui/icons/Check';
 import { useRouter } from 'next/router'
@@ -420,6 +421,7 @@ export default function StepperForm() {
 
     if (isValid) {
       setLoading(true);
+      console.log(token, url)
 
       try {
         const response = await axios.post(url, body, {
@@ -428,9 +430,6 @@ export default function StepperForm() {
             Authorization: `Token ${token}`,
           },
         });
-
-        // setMessages({ ...messages, success: response.data.success.message });
-        // setState(initialState);
 
         console.log(response)
 
