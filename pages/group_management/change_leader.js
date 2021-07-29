@@ -276,7 +276,7 @@ export default function ChangeLeader() {
 
     const body = { ...state }
 
-    console.log(body, token);
+    // console.log(body, token);
 
     // const url = `${process.env.BACKEND_URL}/account/${state.groupId}/${state.number}`;
     const url = `https://hcdti.savitechnig.com/account/changeleader/${state.groupId}/${state.number}`;

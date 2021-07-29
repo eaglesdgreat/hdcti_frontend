@@ -11,6 +11,8 @@ import {
   MenuItem,
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
+
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -150,7 +152,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 const roles = [
-  { id: 6, name: "Select Role", value: "", disabled: true },
   { id: 1, name: "Super User", value: "super", disabled: false },
   { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
   { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
@@ -163,15 +164,38 @@ const roles = [
 export default function Stepper5() {
   const classes = useStyles()
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [personName, setPersonName] = useState("");
+  const initialState = {
+    name_of_guarantor: '',
+    relationship_with_borrower: '',
+    guarantor_occupation: '',
+    guarantor_home_address: '',
+    guarantor_office_address: '',
+    recommendation: '',
+  }
+
+  const [state, setState] = useState({});
+
+  useEffect(() => {
+    const prevState = JSON.parse(localStorage.getItem("stepper5"))
+
+    if (prevState) {
+      setState(prevState)
+    } else {
+      setState(initialState)
+    }
+  }, [])
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
-  };
+    localStorage.removeItem("stepper5");
+    const { name, value } = event.target
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+    if (name === "indept") {
+      setState({ ...state, [name]: parseInt(value) });
+    } else {
+      setState({ ...state, [name]: value });
+    }
+
+    localStorage.setItem("stepper5", JSON.stringify(state));
   };
 
   return (
@@ -197,12 +221,11 @@ export default function Stepper5() {
                 margin="none"
                 style={{ width: '95%' }}
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.name_of_guarantor}
+                name="name_of_guarantor"
+                onChange={(event) => handleChange(event)}
                 placeholder="Enter the name of the Guarantor"
-                id="full_name"
+                id="name_of_guarantor"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -232,12 +255,11 @@ export default function Stepper5() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.relationship_with_borrower}
+                name="relationship_with_borrower"
+                onChange={(event) => handleChange(event)}
                 placeholder="Enter guarantor’s relationship with borrower"
-                id="phone"
+                id="relationship_with_borrower"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -267,12 +289,11 @@ export default function Stepper5() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.guarantor_occupation}
+                onChange={(event) => handleChange(event)}
+                name="guarantor_occupation"
                 placeholder="Enter guarantor’s occupation"
-                id="phone"
+                id="guarantor_occupation"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -301,8 +322,9 @@ export default function Stepper5() {
                 placeholder="Enter the residential address"
                 minRows={3}
                 style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
+                value={state.guarantor_home_address}
+                name="guarantor_home_address"
+                onChange={(event) => handleChange(event)}
               />
             </Grid>
 
@@ -318,8 +340,9 @@ export default function Stepper5() {
                 placeholder="Enter the residential address"
                 minRows={3}
                 style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
+                value={state.guarantor_office_address}
+                name="guarantor_office_address"
+                onChange={(event) => handleChange(event)}
               />
             </Grid>
 
@@ -330,24 +353,50 @@ export default function Stepper5() {
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
-              <FormControl size="small" className={classes.select}>
-                <Select
-                  id="status"
-                  // value={age}
-                  // onChange={handleChange}
-                  input={<BootstrapInput />}
-                  placeholder="Select a group member"
-                >
-                  {/* <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem> */}
-                  {roles.map((val) => (
-                    <MenuItem key={val.id} value={val.name}>
-                      {val.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Autocomplete
+                id="recommendation"
+                options={roles}
+                getOptionSelected={(option, value) =>
+                  option.name === value.name
+                }
+                getOptionLabel={(option) => option.name}
+                classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                style={{ width: '90%' }}
+                // value={state.member_name}
+                onChange={(event, newValue) => {
+                  localStorage.removeItem("stepper5");
+
+                  const id = event.target.id;
+                  const name = id.split("-")[0];
+
+                  if (newValue !== null) {
+                    setState({
+                      ...state,
+                      [name]: newValue.name,
+                    });
+
+                    localStorage.setItem("stepper5", JSON.stringify(state));
+                  } else {
+                    setState({
+                      ...state,
+                      recommendation: "",
+                    });
+
+                    localStorage.setItem("stepper5", JSON.stringify(state));
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    // label="Select Group Name"
+                    placeholder="Select a group member"
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    margin="none"
+                  />
+                )}
+              />
             </Grid>
           </Grid>
         </form>

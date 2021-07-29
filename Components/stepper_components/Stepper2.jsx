@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { useStateValue } from "./../../StateProviders";
+import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 
 
 
@@ -149,6 +150,18 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "28px",
     letterSpacing: "0.1px",
   },
+  menuPlaceholder: {
+    fontSize: "12px",
+    fontWeight: "500",
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-868d96)",
+    textAlign: "left",
+    font: "normal normal normal 14px/23px Poppins",
+    letterSpacing: "0px",
+    color: "#868D96",
+    opacity: "1",
+  },
 }))
 
 
@@ -166,17 +179,40 @@ const roles = [
 export default function Stepper2() {
   const classes = useStyles()
   const [{ exist_mem }, dispatch] = useStateValue();
-  console.log('exist', exist_mem)
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [personName, setPersonName] = useState("");
+  const initialState = {
+    full_name: '',
+    father_husband_name: '',
+    res_address: '',
+    perm_address: '',
+    phone: '',
+    next_kin_phone: '',
+    marital_status: '',
+    formal_education: '',
+    buz_address: '',
+    next_kin_name: '',
+    member_name: '',
+    member_exist: exist_mem,
+  }
+
+  const [state, setState] = useState({});
+  useEffect(() => {
+    const prevState = JSON.parse(localStorage.getItem("stepper2"))
+
+    if (prevState) {
+      setState(prevState)
+    } else {
+      setState(initialState)
+    }
+  }, [])
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
-  };
+    localStorage.removeItem("stepper2");
+    const { name, value } = event.target
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+    setState({ ...state, [name]: value })
+
+    localStorage.setItem("stepper2", JSON.stringify(state));
   };
 
   return (
@@ -204,10 +240,9 @@ export default function Stepper2() {
                     margin="none"
                     style={{ width: '95%' }}
                     className={classes.roots}
-                    // value={state}
-                    // onChange={(event) => onSearchChange(event)}
-                    // onKeyPress={enterSearch}
-                    // onKeyUp={searchResult}
+                    name="full_name"
+                    value={state.full_name}
+                    onChange={(event) => handleChange(event)}
                     placeholder="Enter the full name of the applicant"
                     id="full_name"
                     InputProps={{
@@ -243,12 +278,11 @@ export default function Stepper2() {
                   margin="none"
                   className={classes.roots}
                   style={{ width: '95%' }}
-                  // value={state}
-                  // onChange={(event) => onSearchChange(event)}
-                  // onKeyPress={enterSearch}
-                  // onKeyUp={searchResult}
+                  name="father_husband_name"
+                  value={state.father_husband_name}
+                  onChange={(event) => handleChange(event)}
                   placeholder="Enter the full name of the father/husband"
-                  id="father"
+                  id="father_husband_name"
                   InputProps={{
                     className: classes.input,
                     classes: {
@@ -279,8 +313,9 @@ export default function Stepper2() {
                   placeholder="Enter the residential address"
                   minRows={3}
                   style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                  // value={state}
-                  // onChange={(event) => onSearchChange(event)}
+                  value={state.res_address}
+                  name="res_address"
+                  onChange={(event) => handleChange(event)}
                 />
               </Grid>
             )}
@@ -298,8 +333,9 @@ export default function Stepper2() {
                   placeholder="Enter permanent address"
                   minRows={3}
                   style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                  // value={state}
-                  // onChange={(event) => onSearchChange(event)}
+                  value={state.perm_address}
+                  name="perm_address"
+                  onChange={(event) => handleChange(event)}
                 />
               </Grid>
             )}
@@ -319,10 +355,9 @@ export default function Stepper2() {
                     variant="outlined"
                     margin="none"
                     className={classes.roots}
-                    // value={state}
-                    // onChange={(event) => onSearchChange(event)}
-                    // onKeyPress={enterSearch}
-                    // onKeyUp={searchResult}
+                    value={state.phone}
+                    name="phone"
+                    onChange={(event) => handleChange(event)}
                     placeholder="Enter the phone Number"
                     id="phone"
                     InputProps={{
@@ -357,12 +392,11 @@ export default function Stepper2() {
                   variant="outlined"
                   margin="none"
                   className={classes.roots}
-                  // value={state}
-                  // onChange={(event) => onSearchChange(event)}
-                  // onKeyPress={enterSearch}
-                  // onKeyUp={searchResult}
+                  value={state.next_kin_phone}
+                  name="next_kin_phone"
+                  onChange={(event) => handleChange(event)}
                   placeholder="Enter the Phone Number of Next of Kin"
-                  id="phone"
+                  id="next_kin_phone"
                   InputProps={{
                     className: classes.input,
                     classes: {
@@ -391,15 +425,23 @@ export default function Stepper2() {
 
                   <FormControl size="small" className={classes.select}>
                     <Select
-                      id="status"
-                      // value={age}
-                      // onChange={handleChange}
+                      id="marital_status"
+                      value={state.marital_status}
+                      name="marital_status"
+                      displayEmpty
+                      onChange={handleChange}
                       input={<BootstrapInput />}
-                      placeholder="Select Marital Status"
                     >
-                      {/* <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem> */}
+                      <MenuItem disabled={roles.length > 0} value="">
+                        <Typography
+                          noWrap
+                          variant="body1"
+                          className={classes.menuPlaceholder}
+                        >
+                          Select Marital Status
+                        </Typography>
+                      </MenuItem>
+
                       {roles.map((val) => (
                         <MenuItem key={val.id} value={val.name}>
                           {val.name}
@@ -417,24 +459,50 @@ export default function Stepper2() {
                       </Typography><span style={{ color: 'red' }}>*</span>
                     </Box>
 
-                    <FormControl size="small" className={classes.select}>
-                      <Select
-                        id="status"
-                        // value={age}
-                        // onChange={handleChange}
-                        input={<BootstrapInput />}
-                        placeholder="Select Member"
-                      >
-                        {/* <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem> */}
-                        {roles.map((val) => (
-                          <MenuItem key={val.id} value={val.name}>
-                            {val.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      id="member_name"
+                      options={roles}
+                      getOptionSelected={(option, value) =>
+                        option.name === value.name
+                      }
+                      getOptionLabel={(option) => option.name}
+                      classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                      style={{ width: '90%' }}
+                      // value={state.member_name}
+                      onChange={(event, newValue) => {
+                        localStorage.removeItem("stepper2");
+
+                        const id = event.target.id;
+                        const name = id.split("-")[0];
+
+                        if (newValue !== null) {
+                          setState({
+                            ...state,
+                            [name]: newValue.name,
+                          });
+
+                          localStorage.setItem("stepper2", JSON.stringify(state));
+                        } else {
+                          setState({
+                            ...state,
+                            member_name: "",
+                          });
+
+                          localStorage.setItem("stepper2", JSON.stringify(state));
+                        }
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          // label="Select Group Name"
+                          placeholder="Select Member"
+                          size="small"
+                          variant="outlined"
+                          fullWidth
+                          margin="none"
+                        />
+                      )}
+                    />
                   </Grid>
               )
             }
@@ -450,14 +518,22 @@ export default function Stepper2() {
                 <FormControl size="small" className={classes.select}>
                   <Select
                     id="education"
-                    // value={age}
-                    // onChange={handleChange}
+                    value={state.formal_education}
+                    name="formal_education"
+                    displayEmpty
+                    onChange={handleChange}
                     input={<BootstrapInput />}
-                    placeholder="Select Education level"
                   >
-                    {/* <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem> */}
+                    <MenuItem disabled={roles.length > 0} value="">
+                      <Typography
+                        noWrap
+                        variant="body1"
+                        className={classes.menuPlaceholder}
+                      >
+                        Select Education level
+                      </Typography>
+                    </MenuItem>
+
                     {roles.map((val) => (
                       <MenuItem key={val.id} value={val.name}>
                         {val.name}
@@ -483,12 +559,11 @@ export default function Stepper2() {
                   margin="none"
                   style={{ width: '95%' }}
                   className={classes.roots}
-                  // value={state}
-                  // onChange={(event) => onSearchChange(event)}
-                  // onKeyPress={enterSearch}
-                  // onKeyUp={searchResult}
+                  value={state.next_kin_name}
+                  name="next_kin_name"
+                  onChange={(event) => handleChange(event)}
                   placeholder="Enter the full name of the next of kin"
-                  id="full_name"
+                  id="next_kin_name"
                   InputProps={{
                     className: classes.input,
                     classes: {
@@ -519,8 +594,9 @@ export default function Stepper2() {
                   aria-label="business"
                   placeholder="Enter the Business address"
                   style={{ width: '95%', borderRadius: '5px', height: '95px' }}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
+                  value={state.buz_address}
+                  name="buz_address"
+                  onChange={(event) => handleChange(event)}
                 />
               </Grid>
             )}

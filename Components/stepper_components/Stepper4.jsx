@@ -173,15 +173,45 @@ const roles = [
 export default function Stepper4() {
   const classes = useStyles()
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [personName, setPersonName] = useState("");
+  const initialState = {
+    last_loan_received: '',
+    repay_last_loan_date: new Date(),
+    indept: 2,
+    business_address: '',
+    loan_applied: '',
+  }
+
+  const [state, setState] = useState({});
+
+  useEffect(() => {
+    const prevState = JSON.parse(localStorage.getItem("stepper4"))
+
+    if (prevState) {
+      setState(prevState)
+    } else {
+      setState(initialState)
+    }
+  }, [])
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    localStorage.removeItem("stepper4");
+    const { name, value } = event.target
+
+    if (name === "indept") {
+      setState({ ...state, [name]: parseInt(value) });
+    } else {
+      setState({ ...state, [name]: value });
+    }
+
+    localStorage.setItem("stepper4", JSON.stringify(state));
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    localStorage.removeItem("stepper4");
+
+    setState({ ...state, date_of_membership: date })
+
+    localStorage.setItem("stepper4", JSON.stringify(state));
   };
 
   return (
@@ -200,57 +230,30 @@ export default function Stepper4() {
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
-              <Autocomplete
-                id="groupId"
-                options={roles}
-                getOptionSelected={(option, value) =>
-                  option.name === value.name
-                }
-                getOptionLabel={(option) => option.name}
-                classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
-                // PaperComponent={({ children }) => (
-                //   <Paper elevation={0} style={{ background: "yellow" }}>{children}</Paper>
-                // )}
-                style={{ width: '90%' }}
-                // value={state.groupId}
-                // selectOnFocus
-                // onInput={clearError}
-                // onChange={(event, newValue) => {
-                //   const id = event.target.id;
-                //   const name = id.split("-")[0];
-
-                //   if (newValue !== null) {
-                //     getMembers(newValue.groupId);
-                //     clearError(event);
-                //     setState({
-                //       ...state,
-                //       [name]: newValue.groupId,
-                //     });
-                //   } else {
-                //     setShow(true);
-                //     setState({
-                //       ...state,
-                //       groupId: "",
-                //       number: "",
-                //     });
-                //   }
-                // }}
-                // inputValue={inputValue}
-                // onInputChange={(event, newInputValue) => {
-                //   setInputValue(newInputValue.name);
-                // }}
-                // style={{ width: "100%", height: "40px" }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    // label="Select Group Name"
-                    placeholder="Enter amount of last loan received"
-                    size="small"
-                    variant="outlined"
-                    fullWidth
-                    margin="none"
-                  />
-                )}
+              <TextField
+                type="text"
+                fullWidth
+                variant="outlined"
+                margin="none"
+                className={classes.roots}
+                value={state.last_loan_received}
+                name="last_loan_received"
+                onChange={(event) => handleChange(event)}
+                placeholder="Enter amount of last loan received"
+                id="last_loan_received"
+                InputProps={{
+                  className: classes.input,
+                  classes: {
+                    root: classes.cssOutlinedInput,
+                    focused: classes.cssFocused,
+                    notchedOutline: classes.notchedOutline,
+                  },
+                  // startAdornment: (
+                  //   <InputAdornment position="start">
+                  //     {/* <img src="/search.svg" alt="search" /> */}
+                  //   </InputAdornment>
+                  // ),
+                }}
               />
             </Grid>
 
@@ -263,12 +266,10 @@ export default function Stepper4() {
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                  margin="normal"
                   id="date-picker-dialog"
-                  // label="Date picker dialog"
+                  label="Date of full repayment"
                   format="dd/MM/yyyy"
-                  value={selectedDate}
-                  variant="otlined"
+                  value={state.repay_last_loan_date}
                   onChange={handleDateChange}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
@@ -291,12 +292,11 @@ export default function Stepper4() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.loan_applied}
+                name="loan_applied"
+                onChange={(event) => handleChange(event)}
                 placeholder="How much is the customer applying for (principal)"
-                id="phone"
+                id="loan_applied"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -328,14 +328,14 @@ export default function Stepper4() {
                 <RadioGroup
                   row
                   aria-label="position"
-                  name="isLeader"
-                  id="isLeader"
-                // value={state.isLeader}
-                // onChange={handleChange}
+                  name="indept"
+                  id="indept"
+                  value={state.indept}
+                  onChange={handleChange}
                 // style={{justifyContent: 'spaace-between'}}
                 >
                   <FormControlLabel
-                    value={true}
+                    value={'1'}
                     control={
                       <Radio
                         disableRipple
@@ -348,7 +348,7 @@ export default function Stepper4() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    value={false}
+                    value={'2'}
                     control={
                       <Radio
                         disableRipple
@@ -376,8 +376,9 @@ export default function Stepper4() {
                 aria-label="business"
                 placeholder="Enter the Business address"
                 style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-              // value={state}
-              // onChange={(event) => onSearchChange(event)}
+                value={state.business_address}
+                name="business_address"
+                onChange={(event) => handleChange(event)}
               />
             </Grid>
           </Grid>

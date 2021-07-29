@@ -156,11 +156,22 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "28px",
     letterSpacing: "0.1px",
   },
+  menuPlaceholder: {
+    fontSize: "12px",
+    fontWeight: "500",
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-23) var(--unnamed-font-family-poppins)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-868d96)",
+    textAlign: "left",
+    font: "normal normal normal 14px/23px Poppins",
+    letterSpacing: "0px",
+    color: "#868D96",
+    opacity: "1",
+  },
 }))
 
 
 const roles = [
-  { id: 6, name: "Select Role", value: "", disabled: true },
   { id: 1, name: "Super User", value: "super", disabled: false },
   { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
   { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
@@ -173,15 +184,49 @@ const roles = [
 export default function Stepper3() {
   const classes = useStyles()
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [personName, setPersonName] = useState("");
+  const initialState = {
+    group_of_application: '',
+    date_of_membership: new Date(),
+    type_of_business: '',
+    family_member_in_hcdti: 2,
+    amount_of_savings: '',
+    business_length: '',
+    bank: '',
+    account_number: '',
+  }
+
+  const [state, setState] = useState({});
+  useEffect(() => {
+    const prevState = JSON.parse(localStorage.getItem("stepper3"))
+
+    if (prevState) {
+      console.log('prev', prevState)
+      setState(prevState)
+    } else {
+      console.log('init', initialState)
+      setState(initialState)
+    }
+  }, [])
 
   const handleChange = (event) => {
-    setPersonName(event.target.value);
+    localStorage.removeItem("stepper3");
+    const { name, value } = event.target
+
+    if (name === "family_member_in_hcdti") {
+      setState({ ...state, [name]: parseInt(value) });
+    } else {
+      setState({ ...state, [name]: value });
+    }
+
+    localStorage.setItem("stepper3", JSON.stringify(state));
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    localStorage.removeItem("stepper3");
+
+    setState({ ...state, date_of_membership: date })
+
+    localStorage.setItem("stepper3", JSON.stringify(state));
   };
 
   return (
@@ -201,7 +246,7 @@ export default function Stepper3() {
               </Box>
 
 							<Autocomplete
-								id="groupId"
+                id="group_of_application"
 								options={roles}
 								getOptionSelected={(option, value) =>
 									option.name === value.name
@@ -215,31 +260,29 @@ export default function Stepper3() {
 								// value={state.groupId}
 								// selectOnFocus
 								// onInput={clearError}
-								// onChange={(event, newValue) => {
-								//   const id = event.target.id;
-								//   const name = id.split("-")[0];
+								onChange={(event, newValue) => {
+                  localStorage.removeItem("stepper3");
+                  const id = event.target.id;
+								  const name = id.split("-")[0];
 
-								//   if (newValue !== null) {
-								//     getMembers(newValue.groupId);
-								//     clearError(event);
-								//     setState({
-								//       ...state,
-								//       [name]: newValue.groupId,
-								//     });
-								//   } else {
-								//     setShow(true);
-								//     setState({
-								//       ...state,
-								//       groupId: "",
-								//       number: "",
-								//     });
-								//   }
-								// }}
+								  if (newValue !== null) {
+								    setState({
+								      ...state,
+                      [name]: newValue.name,
+								    });
+                    localStorage.setItem("stepper3", JSON.stringify(state));
+                  } else {
+								    setState({
+								      ...state,
+                      group_of_application: "",
+								    });
+                    localStorage.setItem("stepper3", JSON.stringify(state));
+                  }
+								}}
 								// inputValue={inputValue}
 								// onInputChange={(event, newInputValue) => {
 								//   setInputValue(newInputValue.name);
 								// }}
-								// style={{ width: "100%", height: "40px" }}
 								renderInput={(params) => (
 									<TextField
 										{...params}
@@ -263,12 +306,10 @@ export default function Stepper3() {
 
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
 								<KeyboardDatePicker
-									margin="normal"
-									id="date-picker-dialog"
-									// label="Date picker dialog"
+                  id="date_of_membership"
+                  label="Date of Membership"
 									format="dd/MM/yyyy"
-									value={selectedDate}
-									variant="otlined"
+									value={state.date_of_membership}
 									onChange={handleDateChange}
 									KeyboardButtonProps={{
 										'aria-label': 'change date',
@@ -292,12 +333,11 @@ export default function Stepper3() {
                 margin="none"
                 className={classes.roots}
                 style={{ width: '95%' }}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.type_of_business}
+                name="type_of_business"
+                onChange={(event) => handleChange(event)}
 								placeholder="Enter the type of business"
-                id="father"
+                id="type_of_business"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -329,14 +369,14 @@ export default function Stepper3() {
 								<RadioGroup
 									row
 									aria-label="position"
-									name="isLeader"
-									id="isLeader"
-									// value={state.isLeader}
-									// onChange={handleChange}
+                  name="family_member_in_hcdti"
+                  id="family_member_in_hcdti"
+									value={state.family_member_in_hcdti}
+									onChange={handleChange}
 								// style={{justifyContent: 'spaace-between'}}
 								>
 									<FormControlLabel
-										value={true}
+										value="1"
 										control={
 											<Radio
 												disableRipple
@@ -349,7 +389,7 @@ export default function Stepper3() {
 										labelPlacement="end"
 									/>
 									<FormControlLabel
-										value={false}
+										value="2"
 										control={
 											<Radio
 												disableRipple
@@ -378,12 +418,11 @@ export default function Stepper3() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.amount_of_savings}
+                name="amount_of_savings"
+                onChange={(event) => handleChange(event)}
 								placeholder="Enter amount of savings in passbook"
-                id="phone"
+                id="amount_of_savings"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -413,12 +452,11 @@ export default function Stepper3() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.business_length}
+                name="business_length"
+                onChange={(event) => handleChange(event)}
 								placeholder="For how long has customer been running the business"
-                id="phone"
+                id="business_length"
                 InputProps={{
                   className: classes.input,
                   classes: {
@@ -442,24 +480,78 @@ export default function Stepper3() {
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
-              <FormControl size="small" className={classes.select}>
+              {/* <FormControl size="small" className={classes.select}>
                 <Select
-                  id="status"
-                  // value={age}
-                  // onChange={handleChange}
+                  id="bank"
+                  value={state.bank}
+                  displayEmpty
+                  name="bank"
+                  onChange={handleChange}
                   input={<BootstrapInput />}
 									placeholder="Select Bank"
                 >
-                  {/* <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem> */}
+                  <MenuItem disabled={roles.length > 0} value="">
+                    <Typography
+                      noWrap
+                      variant="body1"
+                      className={classes.menuPlaceholder}
+                    >
+                      Select Bank
+                    </Typography>
+                  </MenuItem>
+
                   {roles.map((val) => (
                     <MenuItem key={val.id} value={val.name}>
                       {val.name}
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
+
+              <Autocomplete
+                id="bank"
+                options={roles}
+                getOptionSelected={(option, value) =>
+                  option.name === value.name
+                }
+                getOptionLabel={(option) => option.name}
+                classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                style={{ width: '90%' }}
+                // value={state.member_name}
+                onChange={(event, newValue) => {
+                  localStorage.removeItem("stepper3");
+
+                  const id = event.target.id;
+                  const name = id.split("-")[0];
+
+                  if (newValue !== null) {
+                    setState({
+                      ...state,
+                      [name]: newValue.name,
+                    });
+
+                    localStorage.setItem("stepper3", JSON.stringify(state));
+                  } else {
+                    setState({
+                      ...state,
+                      bank: "",
+                    });
+
+                    localStorage.setItem("stepper3", JSON.stringify(state));
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    // label="Select Group Name"
+                    placeholder="Select Bank"
+                    size="small"
+                    variant="outlined"
+                    fullWidth
+                    margin="none"
+                  />
+                )}
+              />
             </Grid>
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -475,12 +567,11 @@ export default function Stepper3() {
                 variant="outlined"
                 margin="none"
                 className={classes.roots}
-                // value={state}
-                // onChange={(event) => onSearchChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
+                value={state.account_number}
+                name="account_number"
+                onChange={(event) => handleChange(event)}
 								placeholder="Enter customer account number"
-                id="full_name"
+                id="account_number"
                 InputProps={{
                   className: classes.input,
                   classes: {

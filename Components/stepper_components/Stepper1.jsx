@@ -158,7 +158,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const roles = [
-  { id: 6, name: "Select Role", value: "", disabled: true },
+  // { id: 6, name: "Select Role", value: "", disabled: true },
   { id: 1, name: "Super User", value: "super", disabled: false },
   { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
   { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
@@ -176,23 +176,35 @@ export default function Stepper1() {
     form_no: '',
     state: '',
     branch: '',
-    date_of_application: '',
+    date_of_application: new Date(),
   }
 
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState({});
+  useEffect(() => { 
+    const prevState = JSON.parse(localStorage.getItem("stepper1"))
+
+    if(prevState) {
+      setState(prevState)
+    } else {
+      setState(initialState)
+    }
+  }, [])
 
   const handleChange = (event) => {
+    localStorage.removeItem("stepper1");
     const { name, value } = event.target
 
     setState({...state, [name]: value})
 
-    console.log(state)
+    localStorage.setItem("stepper1", JSON.stringify(state));
   };
 
   const handleDateChange = (date) => {
+    localStorage.removeItem("stepper1");
+
     setState({ ...state, date_of_application: date })
 
-    console.log(state)
+    localStorage.setItem("stepper1", JSON.stringify(state));
   };
 
   return (
@@ -285,8 +297,10 @@ export default function Stepper1() {
                 getOptionLabel={(option) => option.name}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                value={state.state}
+                // value={state.state}
                 onChange={(event, newValue) => {
+                  localStorage.removeItem("stepper1");
+
                   const id = event.target.id;
                   const name = id.split("-")[0];
 
@@ -295,11 +309,15 @@ export default function Stepper1() {
                       ...state,
                       [name]: newValue.name,
                     });
+
+                    localStorage.setItem("stepper1", JSON.stringify(state));
                   } else {
                     setState({
                       ...state,
                       state: "",
                     });
+
+                    localStorage.setItem("stepper1", JSON.stringify(state));
                   }
                 }}
                 renderInput={(params) => (
@@ -332,8 +350,11 @@ export default function Stepper1() {
                 getOptionLabel={(option) => option.name}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                value={state.branch}
+                // defaultValue={state.branch}
+                // value={state.branch}
                 onChange={(event, newValue) => {
+                  localStorage.removeItem("stepper1");
+
                   const id = event.target.id;
                   const name = id.split("-")[0];
 
@@ -342,11 +363,15 @@ export default function Stepper1() {
                       ...state,
                       [name]: newValue.name,
                     });
+
+                    localStorage.setItem("stepper1", JSON.stringify(state));
                   } else {
                     setState({
                       ...state,
                       branch: "",
                     });
+
+                    localStorage.setItem("stepper1", JSON.stringify(state));
                   }
                 }}
                 renderInput={(params) => (
@@ -364,19 +389,17 @@ export default function Stepper1() {
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
+                <Typography variant="body1" className={classes.text}>
                   Date Of Application
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
-                  margin="normal"
-                  id="date-picker-dialog"
-                  // label="Date picker dialog"
+                  id="date_of_application"
+                  label="Date of Application"
                   format="dd/MM/yyyy"
                   value={state.date_of_application}
-                  variant="otlined"
                   onChange={handleDateChange}
                   KeyboardButtonProps={{
                     'aria-label': 'change date',

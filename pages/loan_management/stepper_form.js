@@ -9,12 +9,14 @@ import {
   NoSsr,
   Divider,
   StepConnector,
+  CircularProgress,
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import Check from '@material-ui/icons/Check';
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
+import { useSnackbar } from "notistack";
 
 import Layout from './../../Components/Layout'
 import Stepper1 from './../../Components/stepper_components/Stepper1'
@@ -23,6 +25,8 @@ import Stepper3 from './../../Components/stepper_components/Stepper3'
 import Stepper4 from './../../Components/stepper_components/Stepper4'
 import Stepper5 from './../../Components/stepper_components/Stepper5'
 import { useStateValue } from "./../../StateProviders";
+import validations from "./../../lib/validations";
+import { isAuthenticated } from "./../../lib/auth.helper";
 
 
 
@@ -285,7 +289,9 @@ function getStepContent2(step, member_exist) {
 export default function StepperForm() {
   const path = '/loans'
   const classes = useStyles()
-  const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+  const token = isAuthenticated().auth_token;
 
   const member_exist = router.query.exist_member === 'true' ? true : false
 
@@ -298,7 +304,9 @@ export default function StepperForm() {
     });
   };
 
-  const [activeStep, setActiveStep] = useState(0); 
+  const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (member_exist) {
       addToBasket(member_exist)
@@ -306,6 +314,7 @@ export default function StepperForm() {
       addToBasket(member_exist)
     }
   }, [member_exist])
+
   const steps = member_exist ? getSteps2() : getSteps();
 
   const handleNext = () => {
@@ -315,6 +324,159 @@ export default function StepperForm() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    const stepper1 = JSON.parse(localStorage.getItem("stepper1"))
+    const stepper2 = JSON.parse(localStorage.getItem("stepper2"))
+    const stepper3 = JSON.parse(localStorage.getItem("stepper3"))
+    const stepper4 = JSON.parse(localStorage.getItem("stepper4"))
+    const stepper5 = JSON.parse(localStorage.getItem("stepper5"))
+
+    const obj = { ...stepper1, ...stepper2, ...stepper3, ...stepper4, ...stepper5 }
+
+    let body = {};
+    let url = ''
+
+    if(obj.member_exist) {
+      body.phoneNextOfKin = obj.next_kin_phone
+      body.groupOfApp = ''
+      body.bank = obj.bank
+      body.accountNo = obj.account_number
+      body.typeOfBusiness = obj.type_of_business
+      body.businessDuration = obj.business_length
+      body.amtSavingsInPassbook = obj.amount_of_savings
+      body.busnessAddress = obj.business_address
+      body.familyOnHcdtiGroup = obj.family_member_in_hcdti === 1 ? true : false
+      body.lastLoanRecieved = obj.last_loan_received
+      body.dateLastLoanRepaid = obj.repay_last_loan_date
+      body.loanAppliedFor = obj.loan_applied
+      body.indeptedToMfbMfi = obj.indept === 1 ? true : false
+      body.outsanding = ''
+      body.nameOfGuarantor = obj.name_of_guarantor
+      body.guarantorRelationship = obj.relationship_with_borrower
+      body.guarantorOccupation = obj.guarantor_occupation
+      body.guarantorHomeAddress = obj.guarantor_home_address
+      body.guarantorOfficeAddress = obj.guarantor_office_address
+      body.recFromGroup1 = obj.recommendation
+      body.recFromGroup2 = ''
+      body.appType = obj.app_type
+      body.formNo = obj.form_no
+      body.state = obj.state
+      body.memberNo = obj.phone
+      body.branch = obj.branch
+      body.nameOfFather = obj.father_husband_name
+      body.residenceAddress = obj.res_address
+      body.permanentAddress = obj.perm_address
+      body.maritalStatus = obj.marital_status
+      body.formalEdu = obj.formal_education
+      body.nextOfKin = obj.next_kin_name
+
+      // url = `${process.env.BACKEND_URL}/account/oldloan`;
+      url = `https://hcdti.savitechnig.com/account/oldloan`;
+    } else {
+      body.phoneNextOfKin = obj.next_kin_phone
+      body.groupOfApp = ''
+      body.bank = obj.bank
+      body.accountNo = obj.account_number
+      body.typeOfBusiness = obj.type_of_business
+      body.businessDuration = obj.business_length
+      body.amtSavingsInPassbook = obj.amount_of_savings
+      body.busnessAddress = obj.business_address
+      body.familyOnHcdtiGroup = obj.family_member_in_hcdti === 1 ? true : false
+      body.lastLoanRecieved = obj.last_loan_received
+      body.dateLastLoanRepaid = obj.repay_last_loan_date
+      body.loanAppliedFor = obj.loan_applied
+      body.indeptedToMfbMfi = obj.indept === 1 ? true : false
+      body.outsanding = ''
+      body.nameOfGuarantor = obj.name_of_guarantor
+      body.guarantorRelationship = obj.relationship_with_borrower
+      body.guarantorOccupation = obj.guarantor_occupation
+      body.guarantorHomeAddress = obj.guarantor_home_address
+      body.guarantorOfficeAddress = obj.guarantor_office_address
+      body.recFromGroup1 = obj.recommendation
+      body.recFromGroup2 = ''
+      body.appType = obj.app_type
+      body.formNo = obj.form_no
+      body.state = obj.state
+      body.memberNo = obj.phone
+      body.branch = obj.branch
+      body.nameOfFather = obj.father_husband_name
+      body.residenceAddress = obj.res_address
+      body.permanentAddress = obj.perm_address
+      body.maritalStatus = obj.marital_status
+      body.formalEdu = obj.formal_education
+      body.nextOfKin = obj.next_kin_name
+      body.fullname = obj.full_name
+      body.phoneNo = obj.phone
+
+      // url = `${process.env.BACKEND_URL}/account/newloan`;
+      url = `https://hcdti.savitechnig.com/account/newloan`;
+    }
+    console.log(body)
+
+    if (isValid) {
+      setLoading(true);
+
+      try {
+        const response = await axios.post(url, body, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${token}`,
+          },
+        });
+
+        // setMessages({ ...messages, success: response.data.success.message });
+        // setState(initialState);
+
+        console.log(response)
+
+        if (response.data) {
+          setLoading(false);
+
+          localStorage.removeItem("stepper1");
+          localStorage.removeItem("stepper2");
+          localStorage.removeItem("stepper3");
+          localStorage.removeItem("stepper4");
+          localStorage.removeItem("stepper5");
+
+          enqueueSnackbar(`${response.data.message}`, {
+            variant: "success",
+          });
+
+          router.push(`loan_management/loans`);
+        }
+      } catch (e) {
+        if (e.response) {
+          console.log(e.response)
+          setLoading(false);
+
+          if (e.response.data.detail) {
+            enqueueSnackbar(`${e.response.data.detail}, Try again`, {
+              variant: "error",
+            });
+          }
+
+          if (e.response.data.reason) {
+            enqueueSnackbar(`${e.response.data.reason}, Try again`, {
+              variant: "error",
+            });
+          } else {
+            enqueueSnackbar(`Loan could not be processed but your previous data are saved, Try again`, {
+              variant: "error",
+            });
+
+            router.push(`loan_management/create_loan`);
+          }
+
+          // setState(initialState);
+        }
+      }
+    }
+  }
   
   return (
     <Layout path={path}>
@@ -360,13 +522,21 @@ export default function StepperForm() {
                       <Button
                         variant="contained"
                         color="primary"
-                        // onClick={handleNext}
+                        onClick={handleSubmit}
+                        disabled={loading}
                         className={classes.button}
                         disableFocusRipple
                         disableRipple
                         disableTouchRipple
                       >
-                        Finish
+                        {loading ? (
+                            <CircularProgress
+                              size="2em"
+                              style={{ color: "#fff" }}
+                            />
+                          ) : 
+                          'Finish'
+                        }
                       </Button>
                   ) 
                    
