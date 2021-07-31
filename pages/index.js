@@ -448,6 +448,7 @@ export default function Index() {
                         >
                           <Button
                             onClick={changeType}
+                            disabled={loading}
                             className={classes.showPass}
                             style={{ fontSize: "10px", marginTop: "-11px" }}
                           >
@@ -468,6 +469,7 @@ export default function Index() {
                     >
                       <Button
                         type="submit"
+                        disabled={loading}
                         fullWidth
                         variant="contained"
                         style={{
@@ -516,17 +518,30 @@ export default function Index() {
                         paddingTop: "48px",
                       }}
                     >
-                      <Link href="/staff_reset_password">
-                        <a>
+                      {
+                        loading ? (
                           <Button
-                            // onClick={changeType}
+                            disabled={loading}
                             className={classes.showPass}
                             style={{ fontSize: "10px" }}
                           >
                             forget password?
                           </Button>
-                        </a>
-                      </Link>
+                        )
+                        : (
+                            <Link href="/staff_reset_password">
+                              <a>
+                                <Button
+                                  // onClick={changeType}
+                                  className={classes.showPass}
+                                  style={{ fontSize: "10px" }}
+                                >
+                                  forget password?
+                                </Button>
+                              </a>
+                            </Link>
+                        )
+                      }
                     </div>
                   </Box>
                 </form>
