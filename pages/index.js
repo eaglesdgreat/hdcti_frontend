@@ -382,14 +382,13 @@ export default function Index() {
                       </Typography>
                       <TextField
                         className={classes.textField}
-                        // type="email"
                         placeholder="Enter your email"
                         id="email"
                         name="email"
                         type="email"
                         variant="outlined"
                         size="small"
-                        autoFocus
+                        autoFocus={true}
                         required
                         fullWidth
                         margin="normal"
@@ -419,7 +418,7 @@ export default function Index() {
                         name="password"
                         variant="outlined"
                         size="small"
-                        autoFocus
+                        // autoFocus
                         required
                         fullWidth
                         margin="normal"
