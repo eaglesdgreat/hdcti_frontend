@@ -238,7 +238,7 @@ export default function ChangeLeader() {
       });
       // console.log(response)
 
-      setMembers(response.data.results.result)
+      setMembers(response.data.result)
       setShow(false)
     } catch (e){
       console.log(e)
@@ -423,7 +423,7 @@ export default function ChangeLeader() {
                             groups && (
                               <Autocomplete
                                 id="groupId"
-                                options={groups.results}
+                                options={groups}
                                 getOptionSelected={(option, value) =>
                                   option.groupName === value.groupName
                                 }

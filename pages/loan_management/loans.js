@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Grid,
@@ -22,7 +22,11 @@ import {
   TableRow,
   IconButton,
   NoSsr,
+  MenuList,
   Paper,
+  ClickAwayListener,
+  Popper,
+  Grow,
   Dialog,
   DialogActions,
   DialogContent,
@@ -34,8 +38,7 @@ import axios from "axios";
 import useSWR, { mutate } from "swr";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import EditIcon from "@material-ui/icons/Edit";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import moment from 'moment'
 import Link from 'next/link'
 import NumberFormat from 'react-number-format'
@@ -397,12 +400,49 @@ const useStyles = makeStyles((theme) => ({
       width: "26%",
     },
   },
+  icon: {
+    width: '36px',
+    height: '36px',
+    '&:hover': {
+      background: '#DAF2B6 0% 0% no-repeat padding-box',
+      // borderRadius: '5px',
+      opacity: 0.42,
+    }
+  },
+  dropdown: {
+    background: 'var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box',
+    background: '#FFFFFF 0% 0% no-repeat padding-box',
+    border: '1px solid #362D7365',
+    opacity: 1,
+    height: '78px',
+    width: '130px',
+  },
+  details: {
+    font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) 13px/20px var(--unnamed-font-family-poppins)',
+    color: 'var(--unnamed-color-362d73)',
+    textAlign: 'center',
+    font: 'normal normal bold 13px/20px Poppins',
+    letterSpacing: '0.65px',
+    color: '#362D73',
+    opacity: 1
+  },
+  dialogText: {
+    font: "var(--unnamed-font-style-normal) normal bold 13px/var(--unnamed-line-spacing-16) var(--unnamed-font-family-helvetica-neue)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "center",
+    font: "normal normal bold 13px/16px Helvetica Neue",
+    letterSpacing: "0px",
+    color: "#0D0D0DA0",
+    textTransform: "capitalize",
+    opacity: 1,
+  },
 }));
 
 const filter_list = [
   { id: 1, name: 'All', value: 'all' },
   {id:2, name: 'Approved', value: 'approved' },
-  {id:3, name: 'Declined', value: 'declined' },
+  // {id:3, name: 'Declined', value: 'declined' },
   { id: 4, name: 'Pending', value: 'pending' },
 ]
 
@@ -445,27 +485,42 @@ export default function Loans() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
-  // Fetching data from backend with SWR
-  const { loans, isLoading, isError } = loansData();
-  // console.log(loans);
+  const [{ openDialog }, dispatch] = useStateValue();
 
-  const [{ groupId }, dispatch] = useStateValue();
   const addToBasket = (data) => {
     dispatch({
-      type: "GET_GROUP_ID",
+      type: "OPEN_DIALOG_BOX",
       item: data,
     });
   };
+
+  // Fetching data from backend with SWR
+  const { loans, isLoading, isError } = loansData();
+  console.log(loans);
 
   const [state, setState] = useState("");
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState([]);
   const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [idx, setIdx] = useState("");
   const [loading, setLoading] = useState(false);
-  const[groupName, setGroupName] = useState('')
+  const [loanId, setLoanId] = useState('')
+  const [borrowerName, setBorrowerName] = useState('')
+  const [filterData, setFilterData] = useState([])
+
+  const anchorRef = useRef(null);
+
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = useRef(open);
+  useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = open;
+  }, [open]);
 
   // handle change per page
   const handleChangePage = (event, newPage) => {
@@ -481,24 +536,108 @@ export default function Loans() {
   const handleChange = (event) => {
     const { name, value } = event.target
 
-    console.log(value)
-    setFilter(value)
+    if(value === 'all') {
+      setFilter(value)
+      setFilterData([])
+    }
+
+    if(value === 'pending') {
+      const data = loans.filter(x => x.approve.length === 0)
+      console.log('pending', data)
+
+      setFilterData(data)
+      setFilter(value)
+    }
+
+    if (value === 'approved') {
+      const data = loans.filter(x => x.approve.length > 0)
+      console.log('approved', data)
+
+      setFilterData(data)
+      setFilter(value)
+    }
+  }
+
+  const handleToggle = (e, id, name) => {
+    setLoanId(id)
+    setBorrowerName(name)
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
   }
 
   // click open dialog pop up
-  const handleDialogClick = () => {
-    setOpen(true);
+  const handleDialogClick = (e) => {
+    // setOpenDialog(true);
+    addToBasket(true)
+
+    handleClose(e)
   };
 
   // handle dialog close changes
   const handleDialogClose = () => {
-    setOpen(false);
+    // setOpenDialog(false);
+
+    addToBasket(false)
   };
 
-  const handleClick = () => {
-    const url = "/group_management/create_group";
+  // delete a group handler
+  const clickDelete = async (e) => {
+    e.preventDefault();
 
-    router.push(url);
+    let isValid = true;
+
+    const tok = isAuthenticated().auth_token;
+
+    // const url = `${process.env.BACKEND_URL}/account/removegroup/${idx}`;
+    const url = `https://hcdti.savitechnig.com/account/removegroup/${idx}`;
+
+    if (isValid) {
+      setLoading(true);
+
+      try {
+        const response = await axios.delete(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${tok}`,
+          },
+        });
+        console.log(response);
+
+        setLoading(false);
+
+        enqueueSnackbar(`Group Account Has Been Deleted Succesfully.`, {
+          variant: "success",
+        });
+
+        handleDialogClose();
+
+        window.location.href = "/group_management/groups";
+      } catch (e) {
+        // console.log(e);
+
+        if (e.response) {
+          setLoading(false);
+
+          enqueueSnackbar(`Error Deleting Group Account. Try Again`, {
+            variant: "error",
+          });
+        }
+      }
+    }
   };
 
   const onSearchChange = (event) => {
@@ -655,27 +794,6 @@ export default function Loans() {
                 </Typography>
               </Box>
             ) : isLoading ? (
-              // <Dialog
-              //   open={isLoading}
-              //   onClose={handleDialogClose}
-              //   BackdropProps={{
-              //     style: {
-              //       opacity: 0.3,
-              //     },
-              //   }}
-              //   PaperProps={{
-              //     style: {
-              //       borderRadius: "8px",
-              //       width: "100%",
-              //       height: '100%',
-              //       paddingBottom: "5%",
-              //       paddingTop: "2.5%",
-              //       boxShadow: "none",
-              //       background: "#FFFFFF00"
-              //     },
-              //   }}
-              // >
-              //   <DialogContent>
                   <Box
                     display="flex"
                     justifyContent="center"
@@ -690,8 +808,6 @@ export default function Loans() {
                   >
                     <CircularProgress size="3em" style={{ color: "#362D73" }} />
                   </Box>
-              //   // </DialogContent>
-              // </Dialog>
             ) : 
             (
               loans && loans.result && (
@@ -748,7 +864,7 @@ export default function Loans() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(search.length > 0 ? search : loans.result)
+                    {(search.length > 0 ? search : filterData.length > 0 ? filterData : loans.result)
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -790,9 +906,9 @@ export default function Loans() {
                           <TableCell className={classes.tableCell}>
                             <Link
                               href={{
-                                pathname: `/loan_management/loan_details/[lid]`,
+                                pathname: `/group_management/member_details/[mdid]`,
                                 query: {
-                                  lid: loan.application_id,
+                                  mdid: 1,
                                 },
                               }}
                             >
@@ -817,23 +933,186 @@ export default function Loans() {
 
                           <TableCell className={classes.tableCell}>
                             <Box display="flex" justifyContent="center">
-                              {/* <IconButton
-                                onClick={() => {
-                                  handleEditClick(group.id);
-                                }}
+                              <IconButton
+                                ref={anchorRef}
+                                aria-controls={open ? 'menu-list-grow' : undefined}
+                                aria-haspopup="true"
+                                onClick={(e) => handleToggle(e, loan.application_id, loan.fullname)}
+                                className={classes.icon}
                               >
-                                <EditIcon />
+                                <FiberManualRecordIcon style={{ fontSize: '0.5rem', color:'#72A624' }} />
+                                <FiberManualRecordIcon style={{ fontSize: '0.5rem', color: '#72A624' }} />
+                                <FiberManualRecordIcon style={{ fontSize: '0.5rem', color: '#72A624' }} />
                               </IconButton>
 
-                              <IconButton
-                                onClick={() => {
-                                  setIdx(group.id);
-                                  setGroupName(group.groupName);
-                                  handleDialogClick();
+                              <Dialog
+                                open={openDialog}
+                                onClose={handleDialogClose}
+                                BackdropProps={{
+                                  style: {
+                                    opacity: 0.1,
+                                  },
+                                }}
+                                PaperProps={{
+                                  style: {
+                                    borderRadius: "8px",
+                                    width: "428px",
+                                    // height: '369px',
+                                    paddingBottom: "5%",
+                                    paddingTop: "2.5%",
+                                    boxShadow: "none",
+                                  },
                                 }}
                               >
-                                <DeleteOutlinedIcon />
-                              </IconButton> */}
+                                <DialogTitle>
+                                  <Typography
+                                    className={classes.dialogText}
+                                    style={{
+                                      fontWeight: "700",
+                                      fontSize: "24px",
+                                      lineHeight: "28px",
+                                    }}
+                                  >
+                                    Delete Loan
+                                  </Typography>
+                                </DialogTitle>
+
+                                <DialogContent>
+                                  <Box
+                                    display="flex"
+                                    component="span"
+                                    style={{
+                                      whiteSpace: "initial",
+                                    }}
+                                  >
+                                    <Typography className={classes.dialogText}>
+                                      You want to delete the loan for{" "}
+                                      <strong>{borrowerName} </strong>, click delete
+                                      button to proceed or cancel this action.
+                                    </Typography>
+                                  </Box>
+                                </DialogContent>
+
+                                <DialogActions
+                                  style={{
+                                    padding: "11px",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Box display="flex" justifyContent="center">
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={clickDelete}
+                                      disableRipple
+                                      disabled={loading}
+                                      style={{
+                                        border: "2px solid #72A624",
+                                      }}
+                                    >
+                                      {loading ? (
+                                        <CircularProgress
+                                          size="1em"
+                                          style={{ color: "#72A624" }}
+                                        />
+                                      ) : (
+                                        <Typography
+                                            className={classes.dialogText}
+                                          style={{
+                                            textAlign: "center",
+                                            color: "#72A624",
+                                            fontSize: "13px",
+                                            fontWeight: "500",
+                                            lineHeight: "15px",
+                                            textTransform: "capitalize",
+                                            lineSpacing: "0.02em",
+                                          }}
+                                        >
+                                          Delete
+                                        </Typography>
+                                      )}
+                                    </Button>
+
+                                    <Button
+                                      size="large"
+                                      className={classes.button}
+                                      onClick={handleDialogClose}
+                                      disabled={loading}
+                                      disableRipple
+                                      style={{
+                                        border: "1px solid #72A624",
+                                        backgroundColor: "#72A624",
+                                        marginLeft: "20px",
+                                      }}
+                                    >
+                                      <Typography
+                                        className={classes.dialogText}
+                                        style={{
+                                          textAlign: "center",
+                                          color: "#FFFFFF",
+                                          fontSize: "13px",
+                                          fontWeight: "500",
+                                          lineHeight: "15px",
+                                          textTransform: "capitalize",
+                                          lineSpacing: "0.02em",
+                                        }}
+                                      >
+                                        cancel
+                                      </Typography>
+                                    </Button>
+                                  </Box>
+                                </DialogActions>
+                              </Dialog>
+
+                              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                  <Grow
+                                    {...TransitionProps}
+                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                                  >
+                                    <Paper>
+                                      <ClickAwayListener onClickAway={handleClose}>
+                                        <MenuList className={classes.dropdown} autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                                          <Link
+                                            href={{
+                                              pathname: `/loan_management/loan_details/[lid]`,
+                                              query: {
+                                                lid: loanId,
+                                              },
+                                            }}
+                                          >
+                                            <a
+                                              style={{
+                                                textDecoration: "none",
+                                                cursor: "pointer",
+                                              }}
+                                            >
+                                              <MenuItem onClick={handleClose}>
+                                                <Typography gutterBottom className={classes.details}>
+                                                  View Details
+                                                </Typography>
+                                              </MenuItem>
+                                            </a>
+                                          </Link>
+
+                                          <Divider light />
+
+                                          <MenuItem 
+                                            onClick={(e) => {
+                                              handleDialogClick(e)
+                                              // handleClose(e)
+                                            }}
+                                          >
+                                            <Typography gutterBottom className={classes.details}>
+                                              Delete
+                                            </Typography>
+                                          </MenuItem>
+                                        </MenuList>
+                                      </ClickAwayListener>
+                                    </Paper>
+                                  </Grow>
+                                )}
+                              </Popper>
                             </Box>
                           </TableCell>
                         </TableRow>
@@ -847,7 +1126,7 @@ export default function Loans() {
                 rowsPerPageOptions={[10, 20, 30, 40]}
                 component="div"
                 count={
-                  search.length > 0 ? search.length : loans.result.length
+                  search.length > 0 ? search.length : filterData.length > 0 ? filterData.length : loans.result.length
                 }
                 page={page}
                 style={{ paddingRight: 30 }}

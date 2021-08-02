@@ -564,7 +564,7 @@ export default function Groups() {
   };
 
   const searchResult = () => {
-    const data = groups.results;
+    const data = groups;
 
     let currentList = data.map((request) => {
       return { ...request };
@@ -579,21 +579,7 @@ export default function Groups() {
       let newList = [];
 
       newList = currentList.filter((request) => {
-        const name = `${request.staffname ? request.staffname : ""} ${
-          request.email ? request.email : ""
-        } ${
-          request.is_superuser
-            ? "Super User"
-            : "" || request.is_credit_officer
-            ? "Credit Officer"
-            : "" || request.is_branch_manager
-            ? "Branch Manager"
-            : "" || request.is_senior_manager
-            ? "Senior Manager"
-            : "" || request.is_agency_bank
-            ? "Agency Bank"
-            : ""
-        }`.toLowerCase();
+        const name = `${request.groupName ? request.leaderName : ""}  ${request.dateCreated ? moment(request.dateCreated).format('Do MMM YYYY') : ""}`.toLowerCase();
 
         return name.includes(state.toLowerCase());
       });
@@ -637,8 +623,8 @@ export default function Groups() {
                   }}
                 >
                   <Typography className={classes.typography4}>
-                    {groups ? groups.results.length : 0}{" "}
-                    {groups && groups.results.length > 1 ? "Groups" : "Group"}
+                    {groups ? groups.length : 0}{" "}
+                    {groups && groups.length > 1 ? "Groups" : "Group"}
                   </Typography>
                 </div>
               </Box>
@@ -786,7 +772,7 @@ export default function Groups() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(search.length > 0 ? search : groups.results)
+                    {(search.length > 0 ? search : groups)
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -836,9 +822,9 @@ export default function Groups() {
                             {group.leaderName ? (
                               <Link
                                 href={{
-                                  pathname: `/group_management/group_details/[gid]`,
+                                  pathname: `/group_management/member_details/[mdid]`,
                                   query: {
-                                    gid: group.id,
+                                    mdid: group.id,
                                   },
                                 }}
                               >
@@ -892,7 +878,7 @@ export default function Groups() {
                                   handleEditClick(group.id);
                                 }}
                               >
-                                <EditIcon />
+                                <EditIcon style={{ fontSize: '1.2rem', color: '#72A624' }} />
                               </IconButton>
 
                               <IconButton
@@ -902,7 +888,7 @@ export default function Groups() {
                                   handleDialogClick();
                                 }}
                               >
-                                <DeleteOutlinedIcon />
+                                <DeleteOutlinedIcon style={{ fontSize: '1.2rem', color: 'red' }} />
                               </IconButton>
                             </Box>
 
@@ -1037,7 +1023,7 @@ export default function Groups() {
                 rowsPerPageOptions={[10, 20, 30, 40]}
                 component="div"
                 count={
-                  search.length > 0 ? search.length : groups.results.length
+                  search.length > 0 ? search.length : groups.length
                 }
                 page={page}
                 style={{ paddingRight: 30 }}

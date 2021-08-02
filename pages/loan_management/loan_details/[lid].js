@@ -81,17 +81,17 @@ export default function LoanDetails() {
 
   // Fetching data from backend with SWR
   const { loan, isLoading, isError } = loanData();
-  // console.log(loan);
+  console.log(loan);
 
   return (
     <Layout path={path}>
       <NoSsr>
         <Box className={classes.root}>
-          <LoanApp isLoading={isLoading} isError={isError} loan={loan} />
+          <LoanApp isLoading={isLoading} isError={isError} loan={loan ? loan : {result: {}}} />
 
-          <ApproveComponent isLoading={isLoading} isError={isError} loan={loan} />
+          <ApproveComponent isLoading={isLoading} isError={isError} loan={loan ? loan : { result: {} }} />
 
-          <BorrowerDetails isLoading={isLoading} isError={isError} loan={loan} />
+          <BorrowerDetails isLoading={isLoading} isError={isError} loan={loan ? loan : { result: {} }} />
         </Box>
       </NoSsr>
     </Layout>

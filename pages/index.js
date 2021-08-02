@@ -276,6 +276,7 @@ export default function Index() {
       try {
         const response = await axios.post(url, body)
         // console.log(response)
+        setState(initialState);
 
         if (response.data) {
           let getUser = await checkUser(response.data.auth_token);
@@ -321,6 +322,7 @@ export default function Index() {
         if (e.response) {
           console.log(e.response)
           setLoading(false); 
+          setState(body);
 
           // setMessages({ ...messages, failure: e.response.data.errors.message })
           enqueueSnackbar(
@@ -384,6 +386,7 @@ export default function Index() {
                         className={classes.textField}
                         placeholder="Enter your email"
                         id="email"
+                        disabled={loading}
                         name="email"
                         type="email"
                         variant="outlined"
@@ -412,6 +415,7 @@ export default function Index() {
                       </Typography>
                       <TextField
                         className={classes.textField}
+                        disabled={loading}
                         type={newType}
                         placeholder="Enter your password"
                         id="password"

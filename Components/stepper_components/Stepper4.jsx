@@ -203,15 +203,15 @@ export default function Stepper4() {
       setState({ ...state, [name]: value });
     }
 
-    localStorage.setItem("stepper4", JSON.stringify(state));
+    localStorage.setItem("stepper4", JSON.stringify({ ...state, [name]: value }));
   };
 
   const handleDateChange = (date) => {
     localStorage.removeItem("stepper4");
 
-    setState({ ...state, date_of_membership: date })
+    setState({ ...state, repay_last_loan_date: date })
 
-    localStorage.setItem("stepper4", JSON.stringify(state));
+    localStorage.setItem("stepper4", JSON.stringify({ ...state, repay_last_loan_date: date }));
   };
 
   return (

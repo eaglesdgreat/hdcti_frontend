@@ -14,6 +14,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { useStateValue } from "./../../StateProviders";
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 
+import { maritalStatuses, educations } from './../../lib/places'
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -165,16 +166,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const roles = [
-  { id: 6, name: "Select Role", value: "", disabled: true },
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function Stepper2() {
   const classes = useStyles()
@@ -196,13 +187,17 @@ export default function Stepper2() {
   }
 
   const [state, setState] = useState({});
+  const [inputValue, setInputValue] = useState({})
+
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper2"))
 
     if (prevState) {
       setState(prevState)
+      setInputValue(prevState)
     } else {
       setState(initialState)
+      setInputValue(initialState)
     }
   }, [])
 
@@ -311,7 +306,7 @@ export default function Stepper2() {
                 <TextareaAutosize
                   aria-label="residential"
                   placeholder="Enter the residential address"
-                  minRows={3}
+                  minrows={3}
                   style={{ width: '90%', borderRadius: '5px', height: '95px' }}
                   value={state.res_address}
                   name="res_address"
@@ -331,7 +326,7 @@ export default function Stepper2() {
                 <TextareaAutosize
                   aria-label="permanent"
                   placeholder="Enter permanent address"
-                  minRows={3}
+                  minrows={3}
                   style={{ width: '90%', borderRadius: '5px', height: '95px' }}
                   value={state.perm_address}
                   name="perm_address"
@@ -423,32 +418,54 @@ export default function Stepper2() {
                     </Typography><span style={{ color: 'red' }}>*</span>
                   </Box>
 
-                  <FormControl size="small" className={classes.select}>
-                    <Select
-                      id="marital_status"
-                      value={state.marital_status}
-                      name="marital_status"
-                      displayEmpty
-                      onChange={handleChange}
-                      input={<BootstrapInput />}
-                    >
-                      <MenuItem disabled={roles.length > 0} value="">
-                        <Typography
-                          noWrap
-                          variant="body1"
-                          className={classes.menuPlaceholder}
-                        >
-                          Select Marital Status
-                        </Typography>
-                      </MenuItem>
+                  <Autocomplete
+                    id="marital_status"
+                    options={maritalStatuses}
+                    // getOptionSelected={(option, value) =>
+                    //   option.name === value.name
+                    // }
+                    getOptionLabel={(option) => option}
+                    classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                    style={{ width: '90%' }}
+                    value={state.marital_status}
+                    onChange={(event, newValue) => {
+                      localStorage.removeItem("stepper2");
 
-                      {roles.map((val) => (
-                        <MenuItem key={val.id} value={val.name}>
-                          {val.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                      const id = event.target.id;
+                      const name = id.split("-")[0];
+
+                      if (newValue !== null) {
+                        setState({
+                          ...state,
+                          [name]: newValue,
+                        });
+
+                        localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue }));
+                      } else {
+                        setState({
+                          ...state,
+                          marital_status: "",
+                        });
+
+                        localStorage.setItem("stepper2", JSON.stringify({ ...state, marital_status: '' }));
+                      }
+                    }}
+                    inputValue={inputValue.marital_status}
+                    onInputChange={(_, newInputValue) => {
+                      setInputValue({ ...inputValue, marital_status: newInputValue })
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        // label="Select Group Name"
+                        placeholder="Select State"
+                        size="small"
+                        variant="outlined"
+                        fullWidth
+                        margin="none"
+                      />
+                    )}
+                  />
                 </Grid>
               )
               : (
@@ -462,13 +479,13 @@ export default function Stepper2() {
                     <Autocomplete
                       id="member_name"
                       options={roles}
-                      getOptionSelected={(option, value) =>
-                        option.name === value.name
-                      }
+                      // getOptionSelected={(option, value) =>
+                      //   option.name === value.name
+                      // }
                       getOptionLabel={(option) => option.name}
                       classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                       style={{ width: '90%' }}
-                      // value={state.member_name}
+                      value={state.member_name}
                       onChange={(event, newValue) => {
                         localStorage.removeItem("stepper2");
 
@@ -481,15 +498,19 @@ export default function Stepper2() {
                             [name]: newValue.name,
                           });
 
-                          localStorage.setItem("stepper2", JSON.stringify(state));
+                          localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue.name }));
                         } else {
                           setState({
                             ...state,
                             member_name: "",
                           });
 
-                          localStorage.setItem("stepper2", JSON.stringify(state));
+                          localStorage.setItem("stepper2", JSON.stringify({ ...state, member_name: '' }));
                         }
+                      }}
+                      inputValue={inputValue.member_name}
+                      onInputChange={(_, newInputValue) => {
+                        setInputValue({ ...inputValue, member_name: newInputValue.name })
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -515,32 +536,55 @@ export default function Stepper2() {
                   </Typography><span style={{ color: 'red' }}>*</span>
                 </Box>
 
-                <FormControl size="small" className={classes.select}>
-                  <Select
-                    id="education"
-                    value={state.formal_education}
-                    name="formal_education"
-                    displayEmpty
-                    onChange={handleChange}
-                    input={<BootstrapInput />}
-                  >
-                    <MenuItem disabled={roles.length > 0} value="">
-                      <Typography
-                        noWrap
-                        variant="body1"
-                        className={classes.menuPlaceholder}
-                      >
-                        Select Education level
-                      </Typography>
-                    </MenuItem>
+                <Autocomplete
+                  id="marital_status"
+                  options={educations}
+                  // getOptionSelected={(option, value) =>
+                  //   option.name === value.name
+                  // }
+                  getOptionLabel={(option) => option}
+                  classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                  style={{ width: '90%' }}
+                  value={state.formal_education}
+                  onChange={(event, newValue) => {
+                    localStorage.removeItem("stepper2");
 
-                    {roles.map((val) => (
-                      <MenuItem key={val.id} value={val.name}>
-                        {val.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    const id = event.target.id;
+                    const name = id.split("-")[0];
+
+                    if (newValue !== null) {
+                      setState({
+                        ...state,
+                        [name]: newValue,
+                      });
+
+                      localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue }));
+                      console.log(JSON.parse(localStorage.getItem("stepper2")), state)
+                    } else {
+                      setState({
+                        ...state,
+                        formal_education: "",
+                      });
+
+                      localStorage.setItem("stepper2", JSON.stringify({ ...state, formal_education: '' }));
+                    }
+                  }}
+                  inputValue={inputValue.formal_education}
+                  onInputChange={(_, newInputValue) => {
+                    setInputValue({ ...inputValue, formal_education: newInputValue })
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      // label="Select Group Name"
+                      placeholder="Select State"
+                      size="small"
+                      variant="outlined"
+                      fullWidth
+                      margin="none"
+                    />
+                  )}
+                />
               </Grid>
             )}
 
@@ -590,7 +634,7 @@ export default function Stepper2() {
                 </Box>
 
                 <TextareaAutosize
-                  minRows={3}
+                  minrows={3}
                   aria-label="business"
                   placeholder="Enter the Business address"
                   style={{ width: '95%', borderRadius: '5px', height: '95px' }}

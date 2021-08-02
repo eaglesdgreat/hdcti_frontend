@@ -255,7 +255,7 @@ export default function Index() {
 
   // Fetching data from backend with SWR
   const { users, isLoading, isError } = usersData()
-  console.log(users)
+  // console.log(users)
 
   // const addToBasket = () => {
   //   dispatch({

@@ -19,6 +19,8 @@ import DateFnsUtils from '@date-io/date-fns';
 // import MomentUtils from '@date-io/moment';
 // import moment from 'moment'
 
+import {states, branches} from './../../lib/places'
+
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -157,16 +159,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const roles = [
-  // { id: 6, name: "Select Role", value: "", disabled: true },
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function Stepper1() {
   const classes = useStyles()
@@ -180,13 +172,17 @@ export default function Stepper1() {
   }
 
   const [state, setState] = useState({});
+  const [inputValue, setInputValue] = useState({})
+
   useEffect(() => { 
     const prevState = JSON.parse(localStorage.getItem("stepper1"))
 
     if(prevState) {
       setState(prevState)
+      setInputValue(prevState)
     } else {
       setState(initialState)
+      setInputValue(initialState)
     }
   }, [])
 
@@ -196,7 +192,7 @@ export default function Stepper1() {
 
     setState({...state, [name]: value})
 
-    localStorage.setItem("stepper1", JSON.stringify(state));
+    localStorage.setItem("stepper1", JSON.stringify({ ...state, [name]: value }));
   };
 
   const handleDateChange = (date) => {
@@ -204,7 +200,7 @@ export default function Stepper1() {
 
     setState({ ...state, date_of_application: date })
 
-    localStorage.setItem("stepper1", JSON.stringify(state));
+    localStorage.setItem("stepper1", JSON.stringify({ ...state, date_of_application: date }));
   };
 
   return (
@@ -290,14 +286,14 @@ export default function Stepper1() {
 
               <Autocomplete
                 id="state"
-                options={roles}
-                getOptionSelected={(option, value) =>
-                  option.name === value.name
-                }
-                getOptionLabel={(option) => option.name}
+                options={states}
+                // getOptionSelected={(option, value) =>
+                //   option.name === value.name
+                // }
+                getOptionLabel={(option) => option}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                // value={state.state}
+                value={state.state}
                 onChange={(event, newValue) => {
                   localStorage.removeItem("stepper1");
 
@@ -307,18 +303,22 @@ export default function Stepper1() {
                   if (newValue !== null) {
                     setState({
                       ...state,
-                      [name]: newValue.name,
+                      [name]: newValue,
                     });
 
-                    localStorage.setItem("stepper1", JSON.stringify(state));
+                    localStorage.setItem("stepper1", JSON.stringify({ ...state, [name]: newValue }));
                   } else {
                     setState({
                       ...state,
                       state: "",
                     });
 
-                    localStorage.setItem("stepper1", JSON.stringify(state));
+                    localStorage.setItem("stepper1", JSON.stringify({ ...state, state: '' }));
                   }
+                }}
+                inputValue={inputValue.state}
+                onInputChange={(_, newInputValue) => {
+                  setInputValue({ ...inputValue, state: newInputValue })
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -343,15 +343,15 @@ export default function Stepper1() {
 
               <Autocomplete
                 id="branch"
-                options={roles}
-                getOptionSelected={(option, value) =>
-                  option.name === value.name
-                }
-                getOptionLabel={(option) => option.name}
+                options={branches}
+                // getOptionSelected={(option, value) =>
+                //   option.name === value.name
+                // }
+                getOptionLabel={(option) => option}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
                 // defaultValue={state.branch}
-                // value={state.branch}
+                value={state.branch}
                 onChange={(event, newValue) => {
                   localStorage.removeItem("stepper1");
 
@@ -361,18 +361,22 @@ export default function Stepper1() {
                   if (newValue !== null) {
                     setState({
                       ...state,
-                      [name]: newValue.name,
+                      [name]: newValue,
                     });
 
-                    localStorage.setItem("stepper1", JSON.stringify(state));
+                    localStorage.setItem("stepper1", JSON.stringify({ ...state, [name]: newValue}));
                   } else {
                     setState({
                       ...state,
                       branch: "",
                     });
 
-                    localStorage.setItem("stepper1", JSON.stringify(state));
+                    localStorage.setItem("stepper1", JSON.stringify({ ...state, branch: '' }));
                   }
+                }}
+                inputValue={inputValue.branch}
+                onInputChange={(_, newInputValue) => {
+                  setInputValue({ ...inputValue, branch: newInputValue})
                 }}
                 renderInput={(params) => (
                   <TextField

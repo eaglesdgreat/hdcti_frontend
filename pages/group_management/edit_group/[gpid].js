@@ -173,6 +173,7 @@ const groupData = () => {
     error,
     mutate: groupMutate,
   } = useSWR([url, token], fetcher, { ...options });
+  console.log(error)
 
   return {
     group: data,

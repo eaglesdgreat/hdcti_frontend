@@ -5,7 +5,8 @@ export const initialState = {
   product: "",
   get_queryy: {},
   groupId: '',
-  exist_mem: false
+  exist_mem: false,
+  openDialog: false,
 };
 
 export const reducer = (state, action) => {
@@ -50,6 +51,12 @@ export const reducer = (state, action) => {
         return {
           ...state,
           exist_mem: action.item,
+        };
+
+      case "OPEN_DIALOG_BOX":
+        return {
+          ...state,
+          openDialog: action.item,
         };
 
       default:

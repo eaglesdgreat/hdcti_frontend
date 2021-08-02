@@ -344,7 +344,7 @@ export default function StepperForm() {
 
     if(obj.member_exist) {
       body.phoneNextOfKin = obj.next_kin_phone
-      body.groupOfApp = ''
+      body.groupOfApp = obj.group_of_application
       body.bank = obj.bank
       body.accountNo = obj.account_number
       body.typeOfBusiness = obj.type_of_business
@@ -368,6 +368,7 @@ export default function StepperForm() {
       body.formNo = obj.form_no
       body.state = obj.state
       body.memberNo = obj.phone
+      body.fullname = obj.member_name
       body.branch = obj.branch
       body.nameOfFather = obj.father_husband_name
       body.residenceAddress = obj.res_address
@@ -375,12 +376,13 @@ export default function StepperForm() {
       body.maritalStatus = obj.marital_status
       body.formalEdu = obj.formal_education
       body.nextOfKin = obj.next_kin_name
+      body.date_of_app = obj.date_of_application
 
       // url = `${process.env.BACKEND_URL}/account/oldloan`;
       url = `https://hcdti.savitechnig.com/account/oldloan`;
     } else {
       body.phoneNextOfKin = obj.next_kin_phone
-      body.groupOfApp = ''
+      body.groupOfApp = obj.group_of_application
       body.bank = obj.bank
       body.accountNo = obj.account_number
       body.typeOfBusiness = obj.type_of_business
@@ -413,6 +415,7 @@ export default function StepperForm() {
       body.nextOfKin = obj.next_kin_name
       body.fullname = obj.full_name
       body.phoneNo = obj.phone
+      body.date_of_app = obj.date_of_application
 
       // url = `${process.env.BACKEND_URL}/account/newloan`;
       url = `https://hcdti.savitechnig.com/account/newloan`;
@@ -421,7 +424,6 @@ export default function StepperForm() {
 
     if (isValid) {
       setLoading(true);
-      console.log(token, url)
 
       try {
         const response = await axios.post(url, body, {
@@ -463,12 +465,14 @@ export default function StepperForm() {
             enqueueSnackbar(`${e.response.data.reason}, Try again`, {
               variant: "error",
             });
-          } else {
+          } 
+
+          if (!e.response.data.reason && !e.response.data.detail) {
             enqueueSnackbar(`Loan could not be processed but your previous data are saved, Try again`, {
               variant: "error",
             });
 
-            router.push(`loan_management/create_loan`);
+            router.push(`/loan_management/create_loan`);
           }
 
           // setState(initialState);

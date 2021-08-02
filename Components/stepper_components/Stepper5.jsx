@@ -195,7 +195,7 @@ export default function Stepper5() {
       setState({ ...state, [name]: value });
     }
 
-    localStorage.setItem("stepper5", JSON.stringify(state));
+    localStorage.setItem("stepper5", JSON.stringify({ ...state, [name]: value }));
   };
 
   return (
@@ -375,14 +375,14 @@ export default function Stepper5() {
                       [name]: newValue.name,
                     });
 
-                    localStorage.setItem("stepper5", JSON.stringify(state));
+                    localStorage.setItem("stepper5", JSON.stringify({ ...state, [name]: newValue.name}));
                   } else {
                     setState({
                       ...state,
                       recommendation: "",
                     });
 
-                    localStorage.setItem("stepper5", JSON.stringify(state));
+                    localStorage.setItem("stepper5", JSON.stringify({ ...state, recommendation: "" }));
                   }
                 }}
                 renderInput={(params) => (

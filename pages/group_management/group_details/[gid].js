@@ -407,6 +407,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
     opacity: 1,
     width: "65%",
+    height: 'max-content',
     "@media only screen and (max-width: 280px)": {
       marginTop: "69px",
       width: "240px",
@@ -831,7 +832,7 @@ export default function GroupDetails() {
   };
 
   const searchResult = () => {
-    const data = members.results.result;
+    const data = members.result;
 
     let currentList = data.map((request) => {
       return { ...request };
@@ -920,9 +921,8 @@ export default function GroupDetails() {
                 ) : isMemberLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  members &&
-                  members.results && (
-                    members.results.result.find((mem) => mem.isLeader === true)
+                  members && (
+                    members.result.find((mem) => mem.isLeader === true)
                       ?
                       (<Link
                         href={{
@@ -939,7 +939,7 @@ export default function GroupDetails() {
                           }}
                         >
                           <Typography className={classes.groupTypo}>
-                            {members.results.result.find((mem) => mem.isLeader === true).memberName}
+                            {members.result.find((mem) => mem.isLeader === true).memberName}
                           </Typography>
                         </a>
                       </Link>)
@@ -1231,8 +1231,8 @@ export default function GroupDetails() {
                     }}
                   >
                     <Typography className={classes.typography4}>
-                      {members ? members.results.result.length : 0}{" "}
-                      {members && members.results.result.length > 1
+                      {members ? members.result.length : 0}{" "}
+                      {members && members.result.length > 1
                         ? "Members"
                         : "Member"}
                     </Typography>
@@ -1370,7 +1370,7 @@ export default function GroupDetails() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {(search.length > 0 ? search : members.results.result)
+                      {(search.length > 0 ? search : members.result)
                         .slice(
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage
@@ -1378,9 +1378,25 @@ export default function GroupDetails() {
                         .map((member, i) => (
                           <TableRow key={i}>
                             <TableCell className={classes.tableCell}>
-                              <Typography className={classes.nameTypo}>
-                                {member.memberName}
-                              </Typography>
+                              <Link
+                                href={{
+                                  pathname: `/group_management/member_details/[mdid]`,
+                                  query: {
+                                    mdid: 1,
+                                  },
+                                }}
+                              >
+                                <a
+                                  style={{
+                                    textDecoration: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <Typography className={classes.nameTypo}>
+                                    {member.memberName}
+                                  </Typography>
+                                </a>
+                              </Link>
                             </TableCell>
 
                             <TableCell className={classes.tableCell}>
@@ -1404,7 +1420,7 @@ export default function GroupDetails() {
                                     handleEditClick(member.id);
                                   }}
                                 >
-                                  <EditIcon />
+                                  <EditIcon style={{ fontSize: '1.2rem', color: '#72A624' }} />
                                 </IconButton>
 
                                 <IconButton
@@ -1414,7 +1430,7 @@ export default function GroupDetails() {
                                     handleDialogClick();
                                   }}
                                 >
-                                  <DeleteOutlinedIcon />
+                                  <DeleteOutlinedIcon style={{ fontSize: '1.2rem', color: 'red' }} />
                                 </IconButton>
                               </Box>
 
@@ -1554,7 +1570,7 @@ export default function GroupDetails() {
                   count={
                     search.length > 0
                       ? search.length
-                      : members.results.result.length
+                      : members.result.length
                   }
                   page={page}
                   style={{ paddingRight: 30 }}

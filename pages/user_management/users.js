@@ -1008,20 +1008,20 @@ export default function Users() {
                               <Box display="flex" justifyContent="center">
                                 <IconButton
                                   onClick={() => {
-                                    handleEditClick(user.id);
+                                    handleEditClick(group.id);
                                   }}
                                 >
-                                  <EditIcon />
+                                  <EditIcon style={{ fontSize: '1.2rem', color: '#72A624' }} />
                                 </IconButton>
 
                                 <IconButton
                                   onClick={() => {
-                                    setIdx(user.id);
-                                    setUserName(user.staffname);
+                                    setIdx(group.id);
+                                    setGroupName(group.groupName);
                                     handleDialogClick();
                                   }}
                                 >
-                                  <DeleteOutlinedIcon />
+                                  <DeleteOutlinedIcon style={{ fontSize: '1.2rem', color: 'red' }} />
                                 </IconButton>
                               </Box>
 

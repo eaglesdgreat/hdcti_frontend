@@ -20,6 +20,10 @@ import {
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 import DateFnsUtils from '@date-io/date-fns';
+import axios from 'axios'
+
+import { banks } from './../../lib/places'
+import { isAuthenticated } from "../../lib/auth.helper";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -171,15 +175,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const roles = [
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function Stepper3() {
   const classes = useStyles()
@@ -196,16 +191,37 @@ export default function Stepper3() {
   }
 
   const [state, setState] = useState({});
+  const [groups, setGroups] = useState([]);
+
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper3"))
 
     if (prevState) {
-      console.log('prev', prevState)
       setState(prevState)
     } else {
-      console.log('init', initialState)
       setState(initialState)
     }
+  }, [])
+
+  useEffect(async() => {
+    // const url = `${process.env.BACKEND_URL}/account/allgroup`
+    const url = `https://hcdti.savitechnig.com/account/allgroup`;
+    const token = isAuthenticated().auth_token
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      console.log(response.data)
+
+      if(response.data) {
+        setGroups(response.data)
+      }
+    } catch(e) {
+      console.log(e)
+    }   
   }, [])
 
   const handleChange = (event) => {
@@ -218,7 +234,7 @@ export default function Stepper3() {
       setState({ ...state, [name]: value });
     }
 
-    localStorage.setItem("stepper3", JSON.stringify(state));
+    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: value }));
   };
 
   const handleDateChange = (date) => {
@@ -226,7 +242,7 @@ export default function Stepper3() {
 
     setState({ ...state, date_of_membership: date })
 
-    localStorage.setItem("stepper3", JSON.stringify(state));
+    localStorage.setItem("stepper3", JSON.stringify({ ...state, date_of_membership: date }));
   };
 
   return (
@@ -247,11 +263,11 @@ export default function Stepper3() {
 
 							<Autocomplete
                 id="group_of_application"
-								options={roles}
+								options={groups}
 								getOptionSelected={(option, value) =>
-									option.name === value.name
+                  option.groupName === value.groupName
 								}
-								getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.groupName}
 								classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
 								// PaperComponent={({ children }) => (
 								//   <Paper elevation={0} style={{ background: "yellow" }}>{children}</Paper>
@@ -268,15 +284,15 @@ export default function Stepper3() {
 								  if (newValue !== null) {
 								    setState({
 								      ...state,
-                      [name]: newValue.name,
+                      [name]: newValue.groupName,
 								    });
-                    localStorage.setItem("stepper3", JSON.stringify(state));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue.groupName }));
                   } else {
 								    setState({
 								      ...state,
                       group_of_application: "",
 								    });
-                    localStorage.setItem("stepper3", JSON.stringify(state));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, group_of_application: "" }));
                   }
 								}}
 								// inputValue={inputValue}
@@ -371,7 +387,7 @@ export default function Stepper3() {
 									aria-label="position"
                   name="family_member_in_hcdti"
                   id="family_member_in_hcdti"
-									value={state.family_member_in_hcdti}
+                  value={state.family_member_in_hcdti ? state.family_member_in_hcdti : ''}
 									onChange={handleChange}
 								// style={{justifyContent: 'spaace-between'}}
 								>
@@ -480,41 +496,13 @@ export default function Stepper3() {
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
-              {/* <FormControl size="small" className={classes.select}>
-                <Select
-                  id="bank"
-                  value={state.bank}
-                  displayEmpty
-                  name="bank"
-                  onChange={handleChange}
-                  input={<BootstrapInput />}
-									placeholder="Select Bank"
-                >
-                  <MenuItem disabled={roles.length > 0} value="">
-                    <Typography
-                      noWrap
-                      variant="body1"
-                      className={classes.menuPlaceholder}
-                    >
-                      Select Bank
-                    </Typography>
-                  </MenuItem>
-
-                  {roles.map((val) => (
-                    <MenuItem key={val.id} value={val.name}>
-                      {val.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl> */}
-
               <Autocomplete
                 id="bank"
-                options={roles}
+                options={banks}
                 getOptionSelected={(option, value) =>
-                  option.name === value.name
+                  option === value
                 }
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
                 // value={state.member_name}
@@ -527,17 +515,17 @@ export default function Stepper3() {
                   if (newValue !== null) {
                     setState({
                       ...state,
-                      [name]: newValue.name,
+                      [name]: newValue,
                     });
 
-                    localStorage.setItem("stepper3", JSON.stringify(state));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue }));
                   } else {
                     setState({
                       ...state,
                       bank: "",
                     });
 
-                    localStorage.setItem("stepper3", JSON.stringify(state));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, bank: "" }));
                   }
                 }}
                 renderInput={(params) => (
