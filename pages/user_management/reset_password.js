@@ -352,7 +352,7 @@ export default function Index() {
             variant: "error",
           });
 
-          setState(initialState);
+          // setState(initialState);
         }
       }
     }
