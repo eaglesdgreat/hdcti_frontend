@@ -807,7 +807,7 @@ export default function Users() {
                                     handleEditClick(user.id);
                                   }}
                                 >
-                                  <EditIcon />
+                                  <EditIcon style={{ fontSize: '1.2rem', color: '#72A624' }} />
                                 </IconButton>
 
                                 <IconButton
@@ -817,7 +817,7 @@ export default function Users() {
                                     handleDialogClick();
                                   }}
                                 >
-                                  <DeleteOutlinedIcon />
+                                  <DeleteOutlinedIcon style={{ fontSize: '1.2rem', color: 'red' }} />
                                 </IconButton>
                               </Box>
 
@@ -1008,7 +1008,7 @@ export default function Users() {
                               <Box display="flex" justifyContent="center">
                                 <IconButton
                                   onClick={() => {
-                                    handleEditClick(group.id);
+                                    handleEditClick(user.id);
                                   }}
                                 >
                                   <EditIcon style={{ fontSize: '1.2rem', color: '#72A624' }} />
@@ -1016,8 +1016,8 @@ export default function Users() {
 
                                 <IconButton
                                   onClick={() => {
-                                    setIdx(group.id);
-                                    setGroupName(group.groupName);
+                                    setIdx(user.id);
+                                    setUserName(user.staffname);
                                     handleDialogClick();
                                   }}
                                 >

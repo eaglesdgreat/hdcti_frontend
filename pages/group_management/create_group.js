@@ -208,6 +208,7 @@ export default function CreateGroup() {
           setLoading(false);
           setOpen(true);
           setMessages({ ...messages, success: "Groups Created Successfully" });
+          setState(initialState)
 
           enqueueSnackbar(`${response.data.reason}`, {
             variant: "success",

@@ -569,8 +569,8 @@ const groupData = () => {
 const membersData = (groupId) => {
   const router = useRouter();
 
-  // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}?page=1`
-  const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}?page=1`;
+  // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}`
+  const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}`;
   const token = isAuthenticated().auth_token;
 
   const { data, error } = useSWR([url, token], fetcher, {
@@ -787,7 +787,7 @@ export default function GroupDetails() {
 
     const { gid } = router.query;
     const tok = isAuthenticated().auth_token;
-    console.log(tok)
+    // console.log(tok)
 
     // const url = `${process.env.BACKEND_URL}/account/removemember/${idx}`;
     const url = `https://hcdti.savitechnig.com/account/removemember/${idx}`;
@@ -847,19 +847,8 @@ export default function GroupDetails() {
       let newList = [];
 
       newList = currentList.filter((request) => {
-        const name = `${request.staffname ? request.staffname : ""} ${request.email ? request.email : ""
-          } ${request.is_superuser
-            ? "Super User"
-            : "" || request.is_credit_officer
-              ? "Credit Officer"
-              : "" || request.is_branch_manager
-                ? "Branch Manager"
-                : "" || request.is_senior_manager
-                  ? "Senior Manager"
-                  : "" || request.is_agency_bank
-                    ? "Agency Bank"
-                    : ""
-          }`.toLowerCase();
+        const name = `${request.memberName ? request.memberName : ""} ${request.mobileNumber ? request.mobileNumber : ""}  
+          ${request.dateJoined ? moment(request.dateJoined).format('Do MMM YYYY') : ""}`.toLowerCase();
 
         return name.includes(state.toLowerCase());
       });
@@ -928,7 +917,7 @@ export default function GroupDetails() {
                         href={{
                           pathname: `/group_management/member_details/[mdid]`,
                           query: {
-                            mdid: 1,
+                            mdid: members.result.find((mem) => mem.isLeader === true).id,
                           },
                         }}
                       >
@@ -1382,7 +1371,7 @@ export default function GroupDetails() {
                                 href={{
                                   pathname: `/group_management/member_details/[mdid]`,
                                   query: {
-                                    mdid: 1,
+                                    mdid: member.id,
                                   },
                                 }}
                               >

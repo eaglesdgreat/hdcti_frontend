@@ -256,6 +256,17 @@ const useStyles = makeStyles((theme) => ({
       width: "510px",
     },
   },
+  dialogText: {
+    font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-17) var(--unnamed-font-family-helvetica-neue)",
+    letterSpacing: "var(--unnamed-character-spacing-0)",
+    color: "var(--unnamed-color-0d0d0d)",
+    textAlign: "center",
+    font: "normal normal medium 14px/17px Helvetica Neue",
+    letterSpacing: "0px",
+    color: "#0D0D0DA0",
+    textTransform: "capitalize",
+    opacity: "1",
+  },
   typography: {
     font: "var(--unnamed-font-style-normal) normal bold 13px/var(--unnamed-line-spacing-16) var(--unnamed-font-family-helvetica-neue)",
     letterSpacing: "var(--unnamed-character-spacing-0)",
@@ -579,7 +590,7 @@ export default function Groups() {
       let newList = [];
 
       newList = currentList.filter((request) => {
-        const name = `${request.groupName ? request.leaderName : ""}  ${request.dateCreated ? moment(request.dateCreated).format('Do MMM YYYY') : ""}`.toLowerCase();
+        const name = `${request.groupName ? request.groupName : ""} ${request.leaderName ? request.leaderName : ""} ${request.dateCreated ? moment(request.dateCreated).format('Do MMM YYYY') : ""}`.toLowerCase();
 
         return name.includes(state.toLowerCase());
       });
@@ -824,7 +835,7 @@ export default function Groups() {
                                 href={{
                                   pathname: `/group_management/member_details/[mdid]`,
                                   query: {
-                                    mdid: group.id,
+                                    mdid: group.leaderKey,
                                   },
                                 }}
                               >
@@ -913,7 +924,7 @@ export default function Groups() {
                             >
                               <DialogTitle>
                                 <Typography
-                                  className={classes.typography}
+                                  className={classes.dialogText}
                                   style={{
                                     fontWeight: "700",
                                     fontSize: "24px",
@@ -932,7 +943,7 @@ export default function Groups() {
                                     whiteSpace: "initial",
                                   }}
                                 >
-                                  <Typography className={classes.typography}>
+                                  <Typography className={classes.dialogText}>
                                     You want to delete{" "}
                                     <strong>{groupName} </strong>
                                     account from this platform, click delete
@@ -965,7 +976,7 @@ export default function Groups() {
                                       />
                                     ) : (
                                       <Typography
-                                        className={classes.typography}
+                                          className={classes.dialogText}
                                         style={{
                                           textAlign: "center",
                                           color: "#72A624",
@@ -994,7 +1005,7 @@ export default function Groups() {
                                     }}
                                   >
                                     <Typography
-                                      className={classes.typography}
+                                      className={classes.dialogText}
                                       style={{
                                         textAlign: "center",
                                         color: "#FFFFFF",

@@ -458,7 +458,7 @@ export default function Stepper2() {
                       <TextField
                         {...params}
                         // label="Select Group Name"
-                        placeholder="Select State"
+                        placeholder="Select Marital Status"
                         size="small"
                         variant="outlined"
                         fullWidth
@@ -537,7 +537,7 @@ export default function Stepper2() {
                 </Box>
 
                 <Autocomplete
-                  id="marital_status"
+                  id="formal_education"
                   options={educations}
                   // getOptionSelected={(option, value) =>
                   //   option.name === value.name
@@ -577,7 +577,7 @@ export default function Stepper2() {
                     <TextField
                       {...params}
                       // label="Select Group Name"
-                      placeholder="Select State"
+                      placeholder="Select Formal Education"
                       size="small"
                       variant="outlined"
                       fullWidth

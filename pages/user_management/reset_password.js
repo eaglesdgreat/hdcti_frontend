@@ -21,10 +21,12 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import useSWR, { mutate } from 'swr'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 import { useSnackbar } from 'notistack'
 
 import Layout from "./../../Components/Layout";
-import { authenticate, isAuthenticated } from './../../lib/auth.helper'
+import { isAuthenticated } from './../../lib/auth.helper'
+import validations from './../../lib/validations'
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -79,9 +81,9 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     width: "100%",
-    height: "421px",
+    height: "max-content",
     // paddingTop: '5%',
-    // paddingBottom: '5%',
+    paddingBottom: '4%',
     // margin: 'auto',
     // alignItems: 'center',
     // borderRadius: '10px'
@@ -192,30 +194,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /(?=.*?[0-9])(?=.*?[A-Za-z]).+/;
-
-// validate input field 
-const validations = (value, name, required = true, type, secondValue) => {
-
-  // validation for required field 
-  if (required && !value) {
-    return { message: `${name} is required`, status: true }
-  }
-
-  // validation for email field 
-  if (type === 'email' && !emailRegex.test(value)) {
-    return { message: `${name} is invalid`, status: true }
-  }
-
-  // validation for password 
-  if (type === 'password' && !passwordRegex.test(value)) {
-    return { message: `${name} must contain at least a number and a letter`, status: true }
-  }
-
-  return { message: '', status: false };
-}
-
 
 const fetcher = async (...arg) => {
   const [url, token] = arg
@@ -275,7 +253,8 @@ export default function Index() {
 
   const initialState = {
     user: '',
-    password: ''
+    password: '',
+    confirm_password: '',
   }
 
   const [state, setState] = useState(initialState)
@@ -323,14 +302,23 @@ export default function Index() {
       }
     }
 
+    if (isValid) {
+      const validateConfirmPass = validations(state.confirm_password, " Confirm Password", true, 'compare', state.password);
+      if (validateConfirmPass.status) {
+        setMessages({ ...messages, confirm_password: validateConfirmPass.message });
+        isValid = false;
+      }
+    }
+
     const body = {
-      email: state.user || null,
-      password: state.password || null, ///
+      id: state.user || null,
+      new_password: state.password || null,
+      re_password: state.confirm_password || null,
     };
-    console.log(body, authToken);
+    // console.log(body, authToken);
 
     // const url = `${process.env.BACKEND_URL}/account/admin_reset_password/${authToken.id}`;
-    const url = `https://hcdti.savitechnig.com/account/admin_reset_password/${authToken.id}`;
+    const url = `https://hcdti.savitechnig.com/account/admin_reset_password/${state.user}`;
 
     if (isValid) {
       setLoading(true);
@@ -353,6 +341,7 @@ export default function Index() {
           });
 
           setState(initialState);
+          setMessages({ ...initialState, success: '', failure: '' })
         }
       } catch (e) {
         if (e.response) {
@@ -463,7 +452,7 @@ export default function Index() {
                                       </Typography>
                                     </MenuItem>
                                     {users.users.map((user) => (
-                                      <MenuItem key={user.id} value={user.email}>
+                                      <MenuItem key={user.id} value={user.id}>
                                         <Typography
                                           noWrap
                                           className={classes.typography}
@@ -514,19 +503,19 @@ export default function Index() {
                                 >
                                   <div
                                     style={{
-                                      width: "50%",
+                                      width: "80%",
                                     }}
                                   >
                                     {messages.password && (
-                                      <span style={errorMessageStyle}>
-                                        {messages.password}
-                                      </span>
+                                      <Alert severity="error">
+                                          {messages.password}
+                                      </Alert>
                                     )}
                                   </div>
 
                                   <div
                                     style={{
-                                      width: "50%",
+                                      width: "20%",
                                       display: "flex",
                                       justifyContent: "flex-end",
                                     }}
@@ -543,6 +532,38 @@ export default function Index() {
                                     </Button>
                                   </div>
                                 </Box>
+                              </Grid>
+
+                              <Grid item xs={12} sm={12}>
+                                <Typography
+                                  className={classes.typography}
+                                  style={{
+                                    marginBottom: "-11px",
+                                  }}
+                                >
+                                  Confirm Password
+                                </Typography>
+                                <TextField
+                                  className={classes.textField}
+                                  type={newType}
+                                  placeholder="Enter confirm password"
+                                  id="confirm_password"
+                                  name="confirm_password"
+                                  variant="outlined"
+                                  size="small"
+                                  autoFocus
+                                  required
+                                  fullWidth
+                                  margin="normal"
+                                  value={state.confirm_password}
+                                  onChange={handleChange}
+                                // onKeyUp={''}
+                                />
+                                {messages.confirm_password && (
+                                  <Alert severity="error">
+                                      {messages.confirm_password}
+                                  </Alert>
+                                )}
                               </Grid>
                             </Grid>
 

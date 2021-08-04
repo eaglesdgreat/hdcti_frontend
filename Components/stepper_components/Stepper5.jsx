@@ -12,6 +12,9 @@ import {
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
+import axios from 'axios'
+
+import { isAuthenticated } from "../../lib/auth.helper";
 
 
 const BootstrapInput = withStyles((theme) => ({
@@ -182,6 +185,28 @@ export default function Stepper5() {
       setState(prevState)
     } else {
       setState(initialState)
+    }
+  }, [])
+
+  useEffect(async () => {
+    const groupId = JSON.parse(localStorage.getItem("stepper3")).groupId
+    // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}?`
+    const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}?`;
+    const token = isAuthenticated().auth_token
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      console.log(response.data)
+
+      if (response.data) {
+        setGroups(response.data)
+      }
+    } catch (e) {
+      console.log(e)
     }
   }, [])
 

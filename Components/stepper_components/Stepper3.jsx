@@ -188,6 +188,7 @@ export default function Stepper3() {
     business_length: '',
     bank: '',
     account_number: '',
+    groupId: '',
   }
 
   const [state, setState] = useState({});
@@ -285,14 +286,15 @@ export default function Stepper3() {
 								    setState({
 								      ...state,
                       [name]: newValue.groupName,
+                      groupId: newValue.groupId
 								    });
-                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue.groupName }));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue.groupName, groupId: newValue.groupId }));
                   } else {
 								    setState({
 								      ...state,
                       group_of_application: "",
 								    });
-                    localStorage.setItem("stepper3", JSON.stringify({ ...state, group_of_application: "" }));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, group_of_application: "", groupId: "" }));
                   }
 								}}
 								// inputValue={inputValue}
