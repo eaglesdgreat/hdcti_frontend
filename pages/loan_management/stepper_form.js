@@ -417,8 +417,8 @@ export default function StepperForm() {
       body.phoneNo = obj.phone
       body.date_of_app = obj.date_of_application
 
-      // url = `${process.env.BACKEND_URL}/account/newloan`;
-      url = `https://hcdti.savitechnig.com/account/newloan`;
+      // url = `${process.env.BACKEND_URL}/account/newloan/`;
+      url = `https://hcdti.savitechnig.com/account/newloan/`;
     }
     console.log(body)
 
@@ -433,7 +433,7 @@ export default function StepperForm() {
           },
         });
 
-        console.log(response)
+        // console.log(response)
 
         if (response.data) {
           setLoading(false);
@@ -448,7 +448,7 @@ export default function StepperForm() {
             variant: "success",
           });
 
-          router.push(`loan_management/loans`);
+          router.push(`/loan_management/loans`);
         }
       } catch (e) {
         if (e.response) {

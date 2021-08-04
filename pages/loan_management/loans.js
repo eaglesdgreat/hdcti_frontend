@@ -496,7 +496,7 @@ export default function Loans() {
 
   // Fetching data from backend with SWR
   const { loans, isLoading, isError } = loansData();
-  console.log(loans);
+  // console.log(loans);
 
   const [state, setState] = useState("");
   const [filter, setFilter] = useState('all')
@@ -542,16 +542,14 @@ export default function Loans() {
     }
 
     if(value === 'pending') {
-      const data = loans.filter(x => x.approve.length === 0)
-      console.log('pending', data)
+      const data = loans.result.filter(x => x.approve.length === 0)
 
       setFilterData(data)
       setFilter(value)
     }
 
     if (value === 'approved') {
-      const data = loans.filter(x => x.approve.length > 0)
-      console.log('approved', data)
+      const data = loans.result.filter(x => x.approve.length > 0)
 
       setFilterData(data)
       setFilter(value)
@@ -603,7 +601,7 @@ export default function Loans() {
     const tok = isAuthenticated().auth_token;
 
     // const url = `${process.env.BACKEND_URL}/account/removegroup/${idx}`;
-    const url = `https://hcdti.savitechnig.com/account/removegroup/${idx}`;
+    const url = `https://hcdti.savitechnig.com/account/removeloan/${loanId}`;
 
     if (isValid) {
       setLoading(true);
@@ -615,7 +613,7 @@ export default function Loans() {
             Authorization: `Token ${tok}`,
           },
         });
-        console.log(response);
+        // console.log(response);
 
         setLoading(false);
 
@@ -625,7 +623,7 @@ export default function Loans() {
 
         handleDialogClose();
 
-        window.location.href = "/group_management/groups";
+        window.location.href = "/loan_management/loans";
       } catch (e) {
         // console.log(e);
 
