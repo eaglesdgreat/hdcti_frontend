@@ -176,7 +176,7 @@ export default function Stepper4() {
   const initialState = {
     last_loan_received: '',
     repay_last_loan_date: new Date(),
-    indept: 2,
+    indept: false,
     business_address: '',
     loan_applied: '',
   }
@@ -187,7 +187,13 @@ export default function Stepper4() {
     const prevState = JSON.parse(localStorage.getItem("stepper4"))
 
     if (prevState) {
-      setState(prevState)
+      if (prevState.indept === 'true') {
+        prevState.indept = true
+      } else {
+        prevState.indept = false
+      }
+
+      setState({ ...initialState, ...prevState})
     } else {
       setState(initialState)
     }
@@ -198,7 +204,8 @@ export default function Stepper4() {
     const { name, value } = event.target
 
     if (name === "indept") {
-      setState({ ...state, [name]: parseInt(value) });
+      console.log(value)
+      setState({ ...state, [name]: !state.indept });
     } else {
       setState({ ...state, [name]: value });
     }
@@ -330,12 +337,12 @@ export default function Stepper4() {
                   aria-label="position"
                   name="indept"
                   id="indept"
-                  value={state.indept}
+                  value={state.indept === true ? true : false}
                   onChange={handleChange}
                 // style={{justifyContent: 'spaace-between'}}
                 >
                   <FormControlLabel
-                    value={'1'}
+                    value={true}
                     control={
                       <Radio
                         disableRipple
@@ -348,7 +355,7 @@ export default function Stepper4() {
                     labelPlacement="end"
                   />
                   <FormControlLabel
-                    value={'2'}
+                    value={false}
                     control={
                       <Radio
                         disableRipple

@@ -183,7 +183,7 @@ export default function Stepper3() {
     group_of_application: '',
     date_of_membership: new Date(),
     type_of_business: '',
-    family_member_in_hcdti: 2,
+    family_member_in_hcdti: false,
     amount_of_savings: '',
     business_length: '',
     bank: '',
@@ -198,7 +198,13 @@ export default function Stepper3() {
     const prevState = JSON.parse(localStorage.getItem("stepper3"))
 
     if (prevState) {
-      setState(prevState)
+      if (prevState.family_member_in_hcdti === 'true') {
+        prevState.family_member_in_hcdti = true
+      } else {
+        prevState.family_member_in_hcdti = false
+      }
+
+      setState({ ...initialState, ...prevState })
     } else {
       setState(initialState)
     }
@@ -215,13 +221,13 @@ export default function Stepper3() {
           Authorization: `Token ${token}`,
         },
       });
-      console.log(response.data)
+      // console.log(response.data)
 
       if(response.data) {
         setGroups(response.data)
       }
     } catch(e) {
-      console.log(e)
+      // console.log(e)
     }   
   }, [])
 
@@ -230,7 +236,7 @@ export default function Stepper3() {
     const { name, value } = event.target
 
     if (name === "family_member_in_hcdti") {
-      setState({ ...state, [name]: parseInt(value) });
+      setState({ ...state, [name]: !state.family_member_in_hcdti });
     } else {
       setState({ ...state, [name]: value });
     }
@@ -386,15 +392,15 @@ export default function Stepper3() {
 							>
 								<RadioGroup
 									row
-									aria-label="position"
+									aria-label="position-family"
                   name="family_member_in_hcdti"
                   id="family_member_in_hcdti"
-                  value={state.family_member_in_hcdti ? state.family_member_in_hcdti : ''}
+                  value={state.family_member_in_hcdti === true ? true : false}
 									onChange={handleChange}
 								// style={{justifyContent: 'spaace-between'}}
 								>
 									<FormControlLabel
-										value="1"
+										value={true}
 										control={
 											<Radio
 												disableRipple
@@ -407,7 +413,7 @@ export default function Stepper3() {
 										labelPlacement="end"
 									/>
 									<FormControlLabel
-										value="2"
+										value={false}
 										control={
 											<Radio
 												disableRipple

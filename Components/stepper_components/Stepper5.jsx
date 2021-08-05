@@ -190,8 +190,8 @@ export default function Stepper5() {
 
   useEffect(async () => {
     const groupId = JSON.parse(localStorage.getItem("stepper3")).groupId
-    // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}?`
-    const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}?`;
+    // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}`
+    const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}`;
     const token = isAuthenticated().auth_token
 
     try {
