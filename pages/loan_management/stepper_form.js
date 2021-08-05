@@ -351,11 +351,11 @@ export default function StepperForm() {
       body.businessDuration = obj.business_length
       body.amtSavingsInPassbook = obj.amount_of_savings
       body.busnessAddress = obj.business_address
-      body.familyOnHcdtiGroup = obj.family_member_in_hcdti === 1 ? true : false
+      body.familyOnHcdtiGroup = obj.family_member_in_hcdti
       body.lastLoanRecieved = obj.last_loan_received
       body.dateLastLoanRepaid = obj.repay_last_loan_date
       body.loanAppliedFor = obj.loan_applied
-      body.indeptedToMfbMfi = obj.indept === 1 ? true : false
+      body.indeptedToMfbMfi = obj.indept
       body.outsanding = ''
       body.nameOfGuarantor = obj.name_of_guarantor
       body.guarantorRelationship = obj.relationship_with_borrower
@@ -389,11 +389,11 @@ export default function StepperForm() {
       body.businessDuration = obj.business_length
       body.amtSavingsInPassbook = obj.amount_of_savings
       body.busnessAddress = obj.business_address
-      body.familyOnHcdtiGroup = obj.family_member_in_hcdti === 1 ? true : false
+      body.familyOnHcdtiGroup = obj.family_member_in_hcdti
       body.lastLoanRecieved = obj.last_loan_received
       body.dateLastLoanRepaid = obj.repay_last_loan_date
       body.loanAppliedFor = obj.loan_applied
-      body.indeptedToMfbMfi = obj.indept === 1 ? true : false
+      body.indeptedToMfbMfi = obj.indept
       body.outsanding = ''
       body.nameOfGuarantor = obj.name_of_guarantor
       body.guarantorRelationship = obj.relationship_with_borrower
