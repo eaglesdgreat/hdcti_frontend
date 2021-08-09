@@ -22,46 +22,10 @@ import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 import DateFnsUtils from '@date-io/date-fns';
 import axios from 'axios'
 
+import { useStateValue } from "./../../StateProviders";
+import validations from './../../lib/validations'
 import { banks } from './../../lib/places'
 import { isAuthenticated } from "../../lib/auth.helper";
-
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
-    background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
-    borderRadius: "5px",
-    opacity: "1",
-    // color: "#182C51",
-    fontSize: "16px",
-    // fontWeight: "bold",
-    fontFamily: "Source Sans Pro",
-    fontStyle: "normal",
-    lineHeight: "20px",
-
-    borderRadius: '5px',
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
-
-    // transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(InputBase);
 
 
 
@@ -179,20 +143,35 @@ const useStyles = makeStyles((theme) => ({
 export default function Stepper3() {
   const classes = useStyles()
 
+  const [{ validate_stepper3 }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "STEPPER_3_VALIDATIONS",
+      item: data,
+    });
+  };
+
   const initialState = {
-    group_of_application: '',
+    group_of_application: null,
     date_of_membership: new Date(),
     type_of_business: '',
     family_member_in_hcdti: false,
     amount_of_savings: '',
     business_length: '',
-    bank: '',
+    bank: null,
     account_number: '',
     groupId: '',
   }
 
-  const [state, setState] = useState({});
+  const [state, setState] = useState(initialState);
+  const [check, setCheck] = useState(false)
   const [groups, setGroups] = useState([]);
+  const [messages, setMessages] = useState({
+    ...initialState,
+    success: "",
+    failure: "",
+  });
 
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper3"))
@@ -204,7 +183,8 @@ export default function Stepper3() {
         prevState.family_member_in_hcdti = false
       }
 
-      setState({ ...initialState, ...prevState })
+      setCheck(true)
+      setState(prevState)
     } else {
       setState(initialState)
     }
@@ -224,12 +204,72 @@ export default function Stepper3() {
       // console.log(response.data)
 
       if(response.data) {
-        setGroups(response.data)
+        // const all_groups = response.data.map(x => x.groupName)
+        const all_groups = response.data
+
+        setGroups(all_groups)
       }
     } catch(e) {
       // console.log(e)
     }   
   }, [])
+
+  useEffect(() => {
+      if (state.group_of_application && state.date_of_membership && state.type_of_business
+        && (state.family_member_in_hcdti === true || state.family_member_in_hcdti === false) 
+        && state.amount_of_savings && state.business_length && state.account_number && state.bank && check
+      ) {
+        // setCheck(true)
+        addToBasket(true)
+      } else {
+        // setCheck(false)
+        addToBasket(false)
+      }
+  }, [
+    check, state.group_of_application, state.date_of_membership, state.type_of_business,
+    state.family_member_in_hcdti, state.amount_of_savings, state.business_length,
+    state.account_number, state.bank,
+  ])
+
+  const clearError = (e) => {
+    const { name } = e.target;
+
+    if (name === 'account_number') {
+      const validatePass = validations(state.account_number, "Account Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+
+    if (name === 'amount_of_savings') {
+      const validatePass = validations(state.amount_of_savings, "Savings Amount", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+
+    if (name === 'business_length') {
+      const validatePass = validations(state.business_length, "Business Length", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+  };
 
   const handleChange = (event) => {
     localStorage.removeItem("stepper3");
@@ -270,19 +310,18 @@ export default function Stepper3() {
 
 							<Autocomplete
                 id="group_of_application"
-								options={groups}
-								getOptionSelected={(option, value) =>
-                  option.groupName === value.groupName
-								}
+                options={groups}
+								// getOptionSelected={(option, value) =>
+                //   option.groupName === value.groupName
+								// }
                 getOptionLabel={(option) => option.groupName}
 								classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
 								// PaperComponent={({ children }) => (
 								//   <Paper elevation={0} style={{ background: "yellow" }}>{children}</Paper>
 								// )}
 								style={{ width: '90%' }}
-								// value={state.groupId}
+                value={state.group_of_application}
 								// selectOnFocus
-								// onInput={clearError}
 								onChange={(event, newValue) => {
                   localStorage.removeItem("stepper3");
                   const id = event.target.id;
@@ -291,10 +330,10 @@ export default function Stepper3() {
 								  if (newValue !== null) {
 								    setState({
 								      ...state,
-                      [name]: newValue.groupName,
+                      [name]: newValue,
                       groupId: newValue.groupId
 								    });
-                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue.groupName, groupId: newValue.groupId }));
+                    localStorage.setItem("stepper3", JSON.stringify({ ...state, [name]: newValue, groupId: newValue.groupId }));
                   } else {
 								    setState({
 								      ...state,
@@ -444,6 +483,7 @@ export default function Stepper3() {
                 className={classes.roots}
                 value={state.amount_of_savings}
                 name="amount_of_savings"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
 								placeholder="Enter amount of savings in passbook"
                 id="amount_of_savings"
@@ -454,19 +494,20 @@ export default function Stepper3() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
+
+              {messages.amount_of_savings && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.amount_of_savings}
+                </Alert>
+              )}
             </Grid>
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <Box display="flex">
                 <Typography variant="body1" gutterBottom className={classes.text}>
-									How long is this business?
+									How long is this business (years)?
                 </Typography><span style={{ color: 'red' }}>*</span>
               </Box>
 
@@ -478,6 +519,7 @@ export default function Stepper3() {
                 className={classes.roots}
                 value={state.business_length}
                 name="business_length"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
 								placeholder="For how long has customer been running the business"
                 id="business_length"
@@ -488,13 +530,14 @@ export default function Stepper3() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
+
+              {messages.business_length && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.business_length}
+                </Alert>
+              )}
             </Grid>
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -507,13 +550,13 @@ export default function Stepper3() {
               <Autocomplete
                 id="bank"
                 options={banks}
-                getOptionSelected={(option, value) =>
-                  option === value
-                }
+                // getOptionSelected={(option, value) =>
+                //   option === value
+                // }
                 getOptionLabel={(option) => option}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                // value={state.member_name}
+                value={state.bank}
                 onChange={(event, newValue) => {
                   localStorage.removeItem("stepper3");
 
@@ -565,6 +608,7 @@ export default function Stepper3() {
                 className={classes.roots}
                 value={state.account_number}
                 name="account_number"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
 								placeholder="Enter customer account number"
                 id="account_number"
@@ -575,13 +619,14 @@ export default function Stepper3() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
+
+              {messages.account_number && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.account_number}
+                </Alert>
+              )}
             </Grid>
           </Grid>
         </form>

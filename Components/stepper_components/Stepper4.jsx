@@ -21,44 +21,8 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 import DateFnsUtils from '@date-io/date-fns';
 
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
-    background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
-    borderRadius: "5px",
-    opacity: "1",
-    // color: "#182C51",
-    fontSize: "16px",
-    // fontWeight: "bold",
-    fontFamily: "Source Sans Pro",
-    fontStyle: "normal",
-    lineHeight: "20px",
-
-    borderRadius: '5px',
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
-
-    // transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(InputBase);
-
+import validations from './../../lib/validations'
+import { useStateValue } from "./../../StateProviders";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -159,19 +123,18 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const roles = [
-  { id: 6, name: "Select Role", value: "", disabled: true },
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function Stepper4() {
   const classes = useStyles()
+
+  const [{ exist_mem, validate_stepper4 }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "STEPPER_4_VALIDATIONS",
+      item: data,
+    });
+  };
 
   const initialState = {
     last_loan_received: '',
@@ -181,30 +144,86 @@ export default function Stepper4() {
     loan_applied: '',
   }
 
+  const [check, setCheck] = useState(false)
   const [state, setState] = useState({});
+  const [messages, setMessages] = useState({
+    ...initialState,
+    success: "",
+    failure: "",
+  });
 
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper4"))
 
     if (prevState) {
-      if (prevState.indept === 'true') {
-        prevState.indept = true
-      } else {
-        prevState.indept = false
+      if(!exist_mem) {
+        if (prevState.indept === 'true') {
+          prevState.indept = true
+        } else {
+          prevState.indept = false
+        }
       }
 
-      setState({ ...initialState, ...prevState})
+      setCheck(true)
+      setState(prevState)
     } else {
       setState(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if(exist_mem) {
+      if (state.last_loan_received && state.repay_last_loan_date && state.loan_applied && check) {
+        // setCheck(true)
+        addToBasket(true)
+      } else {
+        // setCheck(false)
+        addToBasket(false)
+      }
+    } else {
+      if (state.last_loan_received && state.repay_last_loan_date && (state.indept === true || state.indept === false) && state.business_address && state.loan_applied && check) {
+        // setCheck(true)
+        addToBasket(true)
+      } else {
+        // setCheck(false)
+        addToBasket(false)
+      }
+    }
+  }, [check, state.last_loan_received, state.repay_last_loan_date, state.indept, state.business_address, state.loan_applied])
+
+  const clearError = (e) => {
+    const { name } = e.target;
+
+    if (name === 'loan_applied') {
+      const validatePass = validations(state.loan_applied, "Loan Amount", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+
+    if (name === 'last_loan_received') {
+      const validatePass = validations(state.last_loan_received, "Last Loan Amount", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+  };
 
   const handleChange = (event) => {
     localStorage.removeItem("stepper4");
     const { name, value } = event.target
 
     if (name === "indept") {
-      console.log(value)
       setState({ ...state, [name]: !state.indept });
     } else {
       setState({ ...state, [name]: value });
@@ -245,6 +264,7 @@ export default function Stepper4() {
                 className={classes.roots}
                 value={state.last_loan_received}
                 name="last_loan_received"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
                 placeholder="Enter amount of last loan received"
                 id="last_loan_received"
@@ -255,13 +275,14 @@ export default function Stepper4() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
+
+              {messages.last_loan_received && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.last_loan_received}
+                </Alert>
+              )}
             </Grid>
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -301,6 +322,7 @@ export default function Stepper4() {
                 className={classes.roots}
                 value={state.loan_applied}
                 name="loan_applied"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
                 placeholder="How much is the customer applying for (principal)"
                 id="loan_applied"
@@ -311,83 +333,88 @@ export default function Stepper4() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
+
+              {messages.loan_applied && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.loan_applied}
+                </Alert>
+              )}
             </Grid>
 
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Indebted to any MFB/MFI?
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
+            {!exist_mem && (
+              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Box display="flex">
+                  <Typography variant="body1" gutterBottom className={classes.text}>
+                    Indebted to any MFB/MFI?
+                  </Typography><span style={{ color: 'red' }}>*</span>
+                </Box>
 
-              <FormControl
-                variant="outlined"
-                style={{ width: "90%" }}
-                className={classes.formControl}
-              >
-                <RadioGroup
-                  row
-                  aria-label="position"
-                  name="indept"
-                  id="indept"
-                  value={state.indept === true ? true : false}
-                  onChange={handleChange}
-                // style={{justifyContent: 'spaace-between'}}
+                <FormControl
+                  variant="outlined"
+                  style={{ width: "90%" }}
+                  className={classes.formControl}
                 >
-                  <FormControlLabel
-                    value={true}
-                    control={
-                      <Radio
-                        disableRipple
-                        disableTouchRipple
-                        disableFocusRipple
-                        color="primary"
-                      />
-                    }
-                    label="Yes"
-                    labelPlacement="end"
-                  />
-                  <FormControlLabel
-                    value={false}
-                    control={
-                      <Radio
-                        disableRipple
-                        disableTouchRipple
-                        disableFocusRipple
-                        color="primary"
-                      />
-                    }
-                    label="No"
-                    labelPlacement="end"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
+                  <RadioGroup
+                    row
+                    aria-label="position"
+                    name="indept"
+                    id="indept"
+                    value={state.indept === true ? true : false}
+                    onChange={handleChange}
+                  // style={{justifyContent: 'spaace-between'}}
+                  >
+                    <FormControlLabel
+                      value={true}
+                      control={
+                        <Radio
+                          disableRipple
+                          disableTouchRipple
+                          disableFocusRipple
+                          color="primary"
+                        />
+                      }
+                      label="Yes"
+                      labelPlacement="end"
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={
+                        <Radio
+                          disableRipple
+                          disableTouchRipple
+                          disableFocusRipple
+                          color="primary"
+                        />
+                      }
+                      label="No"
+                      labelPlacement="end"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            )}
 
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Business Address
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
+            {!exist_mem && (
+              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Box display="flex">
+                  <Typography variant="body1" gutterBottom className={classes.text}>
+                    Business Address
+                  </Typography><span style={{ color: 'red' }}>*</span>
+                </Box>
 
-              <TextareaAutosize
-                minRows={3}
-                aria-label="business"
-                placeholder="Enter the Business address"
-                style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                value={state.business_address}
-                name="business_address"
-                onChange={(event) => handleChange(event)}
-              />
-            </Grid>
+                <TextareaAutosize
+                  minRows={3}
+                  aria-label="business"
+                  placeholder="Enter the Business address"
+                  style={{ width: '90%', borderRadius: '5px', height: '95px' }}
+                  value={state.business_address}
+                  name="business_address"
+                  onChange={(event) => handleChange(event)}
+                />
+              </Grid>
+            )}
           </Grid>
         </form>
       </Box>

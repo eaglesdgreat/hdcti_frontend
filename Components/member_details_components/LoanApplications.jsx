@@ -582,7 +582,7 @@ const members = [
 
 
 
-export default function LoanApplications() {
+export default function LoanApplications(member, isError, isLoading) {
   const classes = useStyles();
 
   const [page, setPage] = useState(0);
@@ -714,40 +714,40 @@ export default function LoanApplications() {
         </Box>
 
         {
-        // isMemberError ? (
-        //   <Box
-        //     display="flex"
-        //     justifyContent="center"
-        //     style={{
-        //       margin: "auto",
-        //       width: "100%",
-        //       borderRadius: "5px",
-        //       height: "100px",
-        //       padding: "100px",
-        //     }}
-        //   >
-        //     <Typography className={classes.typography}>
-        //       Error Fetching All Members Data
-        //     </Typography>
-        //   </Box>
-        // ) : isMemberLoading ? (
-        //   <Box
-        //     display="flex"
-        //     justifyContent="center"
-        //     style={{
-        //       width: "100%",
-        //       margin: "auto",
-        //       paddingLeft: 100,
-        //       paddingRight: 100,
-        //       paddingTop: 150,
-        //       paddingBottom: 150,
-        //     }}
-        //   >
-        //     <CircularProgress size="3em" style={{ color: "#362D73" }} />
-        //   </Box>
-        // ) : 
+        isError ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            style={{
+              margin: "auto",
+              width: "100%",
+              borderRadius: "5px",
+              height: "100px",
+              padding: "100px",
+            }}
+          >
+            <Typography className={classes.typography}>
+              Error Fetching All Members Data
+            </Typography>
+          </Box>
+        ) : isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            style={{
+              width: "100%",
+              margin: "auto",
+              paddingLeft: 100,
+              paddingRight: 100,
+              paddingTop: 150,
+              paddingBottom: 150,
+            }}
+          >
+            <CircularProgress size="3em" style={{ color: "#362D73" }} />
+          </Box>
+        ) : 
         (
-          members && (
+          member && member.loanHistory && (
             <Table className={classes.table}>
               <TableHead className={classes.thead}>
                 <TableRow>
@@ -787,7 +787,7 @@ export default function LoanApplications() {
               <TableBody>
                 {
                     // (search.length > 0 ? search : members.results.result)
-                  members
+                  member.loanHistory
                   .slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
@@ -796,20 +796,20 @@ export default function LoanApplications() {
                     <TableRow key={member.id}>
                       <TableCell className={classes.tableCell}>
                         <Typography className={classes.sn}>
-                          {member.app_no}
+                          {member.application_id}
                         </Typography>
                       </TableCell>
 
                       <TableCell className={classes.tableCell}>
                         <Typography className={classes.sn}>
-                          {member.type}
+                          {member.app_type}
                         </Typography>
                       </TableCell>
 
                       <TableCell className={classes.tableCell}>
                         <Typography className={classes.sn}>
                           <NumberFormat
-                            value={member.amount}
+                            value={member.loan_applied_for}
                             thousandSeparator={true}
                             decimalScale={2}
                             decimalSeparator="."
@@ -817,161 +817,17 @@ export default function LoanApplications() {
                             fixedDecimalScale={true}
                             displayType="text"
                           />
-                          {/* {member.amount} */}
                         </Typography>
                       </TableCell>
 
                       <TableCell className={classes.tableCell}>
                         <Typography className={classes.sn}>
-                          {moment(member.date).format(
-                            "Do MMM YYYY"
-                          )}
+                          {moment(member.date_of_app).format("Do MMM YYYY")}
                         </Typography>
                       </TableCell>
 
                       <TableCell className={classes.tableCell}>
-                        {/* <Box display="flex" justifyContent="center">
-                          <IconButton
-                            onClick={() => {
-                              handleEditClick(member.id);
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-
-                          <IconButton
-                            onClick={() => {
-                              setIdx(member.id);
-                              setGroupName(member.memberName);
-                              handleDialogClick();
-                            }}
-                          >
-                            <DeleteOutlinedIcon />
-                          </IconButton>
-                        </Box>
-
-                        <Dialog
-                          open={open}
-                          onClose={handleDialogClose}
-                          BackdropProps={{
-                            style: {
-                              opacity: 0.1,
-                            },
-                          }}
-                          PaperProps={{
-                            style: {
-                              borderRadius: "8px",
-                              width: "428px",
-                              paddingBottom: "5%",
-                              paddingTop: "2.5%",
-                              boxShadow: "none",
-                            },
-                          }}
-                        >
-                          <DialogTitle>
-                            <Typography
-                              className={classes.dialogTypo}
-                              style={{
-                                fontWeight: "700",
-                                fontSize: "24px",
-                                lineHeight: "28px",
-                              }}
-                            >
-                              Delete Member From Group
-                            </Typography>
-                          </DialogTitle>
-
-                          <DialogContent>
-                            <Box
-                              display="flex"
-                              component="span"
-                              style={{
-                                whiteSpace: "initial",
-                              }}
-                            >
-                              <Typography className={classes.dialogTypo}>
-                                You want to delete{" "}
-                                <strong>{groupName} </strong>
-                                as a member of this group, click delete
-                                button to proceed or cancel this action.
-                              </Typography>
-                            </Box>
-                          </DialogContent>
-
-                          <DialogActions
-                            style={{
-                              padding: "11px",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Box display="flex" justifyContent="center">
-                              <Button
-                                size="large"
-                                className={classes.button2}
-                                onClick={deleteMember}
-                                disableFocusRipple
-                                disableRipple
-                                disableTouchRipple
-                                disabled={loading}
-                                style={{
-                                  border: "2px solid #72A624",
-                                }}
-                              >
-                                {loading ? (
-                                  <CircularProgress
-                                    size="1em"
-                                    style={{ color: "#72A624" }}
-                                  />
-                                ) : (
-                                  <Typography
-                                    className={classes.dialogTypo}
-                                    style={{
-                                      textAlign: "center",
-                                      color: "#72A624",
-                                      fontSize: "13px",
-                                      fontWeight: "500",
-                                      lineHeight: "15px",
-                                      textTransform: "capitalize",
-                                      lineSpacing: "0.02em",
-                                    }}
-                                  >
-                                    Delete
-                                  </Typography>
-                                )}
-                              </Button>
-
-                              <Button
-                                size="large"
-                                className={classes.button2}
-                                onClick={handleDialogClose}
-                                disabled={loading}
-                                disableFocusRipple
-                                disableRipple
-                                disableTouchRipple
-                                style={{
-                                  border: "1px solid #72A624",
-                                  backgroundColor: "#72A624",
-                                  marginLeft: "20px",
-                                }}
-                              >
-                                <Typography
-                                  className={classes.dialogTypo}
-                                  style={{
-                                    textAlign: "center",
-                                    color: "#FFFFFF",
-                                    fontSize: "13px",
-                                    fontWeight: "500",
-                                    lineHeight: "15px",
-                                    textTransform: "capitalize",
-                                    lineSpacing: "0.02em",
-                                  }}
-                                >
-                                  cancel
-                                </Typography>
-                              </Button>
-                            </Box>
-                          </DialogActions>
-                        </Dialog> */}
+                        
                       </TableCell>
                     </TableRow>
                   ))}
@@ -979,7 +835,7 @@ export default function LoanApplications() {
             </Table>
           )
         )}
-        {members && (
+        {member && member.loanHistory && (
           <TablePagination
             rowsPerPageOptions={[10, 20, 30, 40]}
             component="div"
@@ -988,7 +844,7 @@ export default function LoanApplications() {
             //     ? search.length
             //     : members.results.result.length
             // }
-            count={ members.length }
+            count={ member.loanHistory.length }
             page={page}
             style={{ paddingRight: 30 }}
             onChangePage={handleChangePage}

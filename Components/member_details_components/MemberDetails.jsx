@@ -9,9 +9,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  CircularProgress
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+import Link from 'next/link'
 import axios from "axios";
 import useSWR, { mutate } from "swr";
 import { useRouter } from "next/router";
@@ -107,14 +111,17 @@ const useStyles = makeStyles((theme) => ({
     font: "var(--unnamed-font-style-normal) normal 600 var(--unnamed-font-size-14)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-poppins)",
     letterSpacing: "var(--unnamed-character-spacing-0)",
     color: "var(--unnamed-color-362d73)",
-    textAlign: "left",
+    // textAlign: "left",
     font: "normal normal 600 14px/21px Poppins",
     letterSpacing: "0px",
     color: "#362D73",
     opacity: 1,
     // width: '100%',
-    "&:hover,&:focus,&:active": {
+  },
+  button: {
+    "&:hover": {
       background: "#ffffff00",
+      opacity: 0.42,
     },
   },
   dialogTypo: {
@@ -133,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function MemberDetails() {
+export default function MemberDetails({member, isError, isLoading}) {
   const classes = useStyles()
   
   const [openMenu, setOpenMenu] = useState(false)
@@ -144,10 +151,6 @@ export default function MemberDetails() {
   };
 
   const handleClose = (event) => {
-    // if (anchorRef.current && anchorRef.current.contains(event.target)) {
-    //   return;
-    // }
-
     setOpenMenu(false);
   };
 
@@ -166,9 +169,19 @@ export default function MemberDetails() {
           Name
         </Typography>
 
-        <Typography className={classes.typography3}>
-          Name Unavailable
-        </Typography>
+        {isError ? (
+          <Typography className={classes.typography3}>
+            Name Unavailable
+          </Typography>
+        ) : isLoading ? (
+          <CircularProgress size="1em" style={{ color: "#362D73" }} />
+        ) : (
+          member && (
+            <Typography className={classes.typography3}>
+              {member.memberInfo.memberName}
+            </Typography>
+          )
+        )}
       </Box>
 
       <Box style={{ padding: "20px" }}>
@@ -176,9 +189,35 @@ export default function MemberDetails() {
           Group
         </Typography>
 
-        <Typography className={classes.groupTypo}>
-          Group Unavailable
-        </Typography>
+        {isError ? (
+          <Typography className={classes.groupTypo}>
+            Group Unavailable
+          </Typography>
+        ) : isLoading ? (
+          <CircularProgress size="1em" style={{ color: "#362D73" }} />
+        ) : (
+          member && (
+            <Link
+              href={{
+                pathname: `/group_management/group_details/[gid]`,
+                query: {
+                  gid: 1,
+                },
+              }}
+            >
+              <a
+                style={{
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <Typography className={classes.groupTypo}>
+                      {member.memberInfo.groupName}
+                </Typography>
+              </a>
+            </Link>
+          )
+        )}
       </Box>
 
       <Box style={{ padding: "20px", paddingTop: "7px" }}>
@@ -186,9 +225,19 @@ export default function MemberDetails() {
           Phone
         </Typography>
 
-        <Typography className={classes.typography3}>
-          Phone Unavailable
-        </Typography>
+        {isError ? (
+          <Typography className={classes.typography3}>
+            Date Unavailable
+          </Typography>
+        ) : isLoading ? (
+          <CircularProgress size="1em" style={{ color: "#362D73" }} />
+        ) : (
+          member && (
+            <Typography className={classes.typography3}>
+                  {member.memberInfo.mobileNumber}
+            </Typography>
+          )
+        )}
       </Box>
 
       <Box
@@ -218,147 +267,131 @@ export default function MemberDetails() {
             flexDirection="column"
             className={classes.menuBox}
           >
-            <Box
-              display="flex"
-              justifyContent="flex-start"
-              style={{ paddingLeft: "10px" }}
-            >
-              <Button
-                disableFocusRipple
-                disableRipple
-                disableTouchRipple
-                // onClick={changeType}
-                className={classes.menuText}
-              >
-                Edit Member Details
-              </Button>
-            </Box>
-
-            <Box
-              display="flex"
-              justifyContent="flex-start"
-              style={{ paddingLeft: "10px" }}
-            >
-              <Button
-                disableFocusRipple
-                disableRipple
-                disableTouchRipple
-                // onClick={handleDialogClickGroup}
-                className={classes.menuText}
-              >
-                Suspend Member
-              </Button>
-
-              <Dialog
-                // open={groupOpen}
-                // onClose={handleDialogCloseGroup}
-                BackdropProps={{
-                  style: {
-                    opacity: 0.1,
-                  },
-                }}
-                PaperProps={{
-                  style: {
-                    borderRadius: "8px",
-                    width: "428px",
-                    // height: '369px',
-                    paddingBottom: "5%",
-                    paddingTop: "2.5%",
-                    boxShadow: "none",
+            <List component="nav" aria-label="secondar">
+              <Link
+                href={{
+                  pathname: `/group_management/edit_member/[mid]`,
+                  query: {
+                    mid: 1,
                   },
                 }}
               >
-                <DialogTitle>
-                  <Typography
-                    className={classes.dialogTypo}
-                    style={{
-                      fontWeight: "700",
-                      fontSize: "24px",
-                      lineHeight: "28px",
-                    }}
-                  >
-                    Delete Group Account
-                  </Typography>
-                </DialogTitle>
-
-                <DialogContent>
-                  <Box
-                    display="flex"
-                    component="span"
-                    style={{
-                      whiteSpace: "initial",
-                    }}
-                  >
-                    <Typography className={classes.dialogTypo}>
-                      You want to delete{" "}
-                      <strong>{group.result.groupName} </strong>
-                      group account from this platform, click delete
-                      button to proceed or cancel this action.
-                    </Typography>
-                  </Box>
-                </DialogContent>
-
-                <DialogActions
+                <a
                   style={{
-                    padding: "11px",
-                    justifyContent: "center",
+                    textDecoration: "none",
+                    cursor: "pointer",
                   }}
                 >
-                  <Box display="flex" justifyContent="center">
-                    <Button
-                      size="large"
-                      className={classes.button2}
-                      onClick={clickDelete}
-                      disableFocusRipple
-                      disableRipple
-                      disableTouchRipple
-                      disabled={loading}
-                      style={{
-                        border: "2px solid #72A624",
-                      }}
-                    >
-                      {loading ? (
-                        <CircularProgress
-                          size="1em"
-                          style={{ color: "#72A624" }}
-                        />
-                      ) : (
-                        <Typography
-                          className={classes.dialogTypo}
-                          style={{
-                            textAlign: "center",
-                            color: "#72A624",
-                            fontSize: "13px",
-                            fontWeight: "500",
-                            lineHeight: "15px",
-                            textTransform: "capitalize",
-                            lineSpacing: "0.02em",
-                          }}
-                        >
-                          Delete
-                        </Typography>
-                      )}
-                    </Button>
+                  <ListItem
+                    style={{ paddingTop: '0px' }}
+                    className={classes.button}
+                    button
+                    onClick={handleClose}
+                    disableRipple
+                  >
+                    <ListItemText>
+                      <Typography className={classes.menuText}>
+                        Edit Member Details
+                      </Typography>
+                    </ListItemText>
+                  </ListItem>
+                </a>
+              </Link>
 
-                    <Button
-                      size="large"
-                      className={classes.button2}
-                      // onClick={handleDialogCloseGroup}
-                      disabled={loading}
-                      disableFocusRipple
-                      disableRipple
-                      disableTouchRipple
-                      style={{
-                        border: "1px solid #72A624",
-                        backgroundColor: "#72A624",
-                        marginLeft: "20px",
-                      }}
-                    >
+              <ListItem
+                disableRipple
+                style={{ paddingTop: '0px' }}
+                className={classes.button}
+                button
+                // onClick={handleDialogClick}
+              >
+                <ListItemText>
+                  <Typography className={classes.menuText}>
+                    Suspend Member
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+            </List>
+
+            <Dialog
+              // open={groupOpen}
+              // onClose={handleDialogCloseGroup}
+              BackdropProps={{
+                style: {
+                  opacity: 0.1,
+                },
+              }}
+              PaperProps={{
+                style: {
+                  borderRadius: "8px",
+                  width: "428px",
+                  // height: '369px',
+                  paddingBottom: "5%",
+                  paddingTop: "2.5%",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              <DialogTitle>
+                <Typography
+                  className={classes.dialogTypo}
+                  style={{
+                    fontWeight: "700",
+                    fontSize: "24px",
+                    lineHeight: "28px",
+                  }}
+                >
+                  Delete Group Account
+                </Typography>
+              </DialogTitle>
+
+              <DialogContent>
+                <Box
+                  display="flex"
+                  component="span"
+                  style={{
+                    whiteSpace: "initial",
+                  }}
+                >
+                  <Typography className={classes.dialogTypo}>
+                    You want to delete{" "}
+                    <strong>{'Name'} </strong>
+                    group account from this platform, click delete
+                    button to proceed or cancel this action.
+                  </Typography>
+                </Box>
+              </DialogContent>
+
+              <DialogActions
+                style={{
+                  padding: "11px",
+                  justifyContent: "center",
+                }}
+              >
+                <Box display="flex" justifyContent="center">
+                  <Button
+                    size="large"
+                    className={classes.button2}
+                    // onClick={clickDelete}
+                    disableFocusRipple
+                    disableRipple
+                    disableTouchRipple
+                    disabled={loading}
+                    style={{
+                      border: "2px solid #72A624",
+                    }}
+                  >
+                    {loading ? (
+                      <CircularProgress
+                        size="1em"
+                        style={{ color: "#72A624" }}
+                      />
+                    ) : (
                       <Typography
                         className={classes.dialogTypo}
                         style={{
                           textAlign: "center",
-                          color: "#FFFFFF",
+                          color: "#72A624",
                           fontSize: "13px",
                           fontWeight: "500",
                           lineHeight: "15px",
@@ -366,13 +399,43 @@ export default function MemberDetails() {
                           lineSpacing: "0.02em",
                         }}
                       >
-                        cancel
+                        Delete
                       </Typography>
-                    </Button>
-                  </Box>
-                </DialogActions>
-              </Dialog>
-            </Box>
+                    )}
+                  </Button>
+
+                  <Button
+                    size="large"
+                    className={classes.button2}
+                    // onClick={handleDialogCloseGroup}
+                    disabled={loading}
+                    disableFocusRipple
+                    disableRipple
+                    disableTouchRipple
+                    style={{
+                      border: "1px solid #72A624",
+                      backgroundColor: "#72A624",
+                      marginLeft: "20px",
+                    }}
+                  >
+                    <Typography
+                      className={classes.dialogTypo}
+                      style={{
+                        textAlign: "center",
+                        color: "#FFFFFF",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        lineHeight: "15px",
+                        textTransform: "capitalize",
+                        lineSpacing: "0.02em",
+                      }}
+                    >
+                      cancel
+                    </Typography>
+                  </Button>
+                </Box>
+              </DialogActions>
+            </Dialog>
           </Box>
         </ClickAwayListener>
       )}

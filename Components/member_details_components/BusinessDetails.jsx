@@ -22,6 +22,7 @@ import useSWR, { mutate } from "swr";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import moment from "moment";
+import NumberFormat from 'react-number-format'
 import clsx from 'clsx'
 
 
@@ -139,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function BusinessDetails() {
+export default function BusinessDetails({ member, isError, isLoading }) {
   const classes = useStyles()
 
   const [loading, setLoading] = useState(false)
@@ -186,7 +187,34 @@ export default function BusinessDetails() {
                   Type Of Business
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Type Of Business Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.typeOfBusiness}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Type Of Business not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -209,7 +237,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -223,7 +251,7 @@ export default function BusinessDetails() {
                     >
                       Sole Proprietorship
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -241,7 +269,34 @@ export default function BusinessDetails() {
                   Duration Of Business Operation
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Business Duration Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.durationOfBusiness} year(s)
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Business Duration not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -264,7 +319,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -278,7 +333,7 @@ export default function BusinessDetails() {
                     >
                       3 years
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -296,7 +351,34 @@ export default function BusinessDetails() {
                   Business Address
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Business Address Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.businessAddress}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Business Address not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -319,7 +401,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -333,7 +415,7 @@ export default function BusinessDetails() {
                     >
                       22, James Ibori Avenue, Sapele Delta State.
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -351,7 +433,34 @@ export default function BusinessDetails() {
                   Family In Any HCDTI Group
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    HCDTI Group Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.familyInHcdti ? 'yes' : 'no'}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      HCDTI Group not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -374,7 +483,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -388,7 +497,7 @@ export default function BusinessDetails() {
                     >
                       yes
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -406,7 +515,42 @@ export default function BusinessDetails() {
                   Amount Of Savings In PassBook
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Savings Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      <NumberFormat
+                        value={member.businessInfo.amountOfPassbook}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        decimalSeparator="."
+                        prefix={'₦'}
+                        fixedDecimalScale={true}
+                        displayType="text"
+                      />
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Savings not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -430,7 +574,7 @@ export default function BusinessDetails() {
                         startAdornment: (
                           <InputAdornment position="start">
                             ₦
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -445,7 +589,7 @@ export default function BusinessDetails() {
                     >
                       ₦40,000.00
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -463,7 +607,34 @@ export default function BusinessDetails() {
                   Bank
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Bank Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.bank}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Bank not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -486,7 +657,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -500,7 +671,7 @@ export default function BusinessDetails() {
                     >
                       GTBank
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -518,7 +689,34 @@ export default function BusinessDetails() {
                   Account Number
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Account Number Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.businessInfo ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.businessInfo.accountNo}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Account Number not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -541,7 +739,7 @@ export default function BusinessDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -555,7 +753,7 @@ export default function BusinessDetails() {
                     >
                       0029903212
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid

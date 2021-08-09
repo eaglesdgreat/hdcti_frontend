@@ -694,7 +694,8 @@ export default function GroupDetails() {
       JSON.stringify("/group_management/group_details/" + gid)
     );
 
-    router.push(url);
+    // router.push(url);
+    window.location.href = url
   };
 
   const handleClick = () => {

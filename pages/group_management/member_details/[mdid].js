@@ -376,6 +376,8 @@ const useStyles = makeStyles((theme) => ({
     opacity: 1,
     height: "331px",
     width: "25%",
+    position: 'sticky',
+    zIndex: 0,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
     },
@@ -556,44 +558,32 @@ const fetcher = async (...arg) => {
   return response.data;
 };
 
-const groupData = () => {
+const memberData = () => {
   const router = useRouter();
-  const { gid } = router.query;
+  const { mdid } = router.query;
 
-  // const url = `${process.env.BACKEND_URL}/account/groupbyid/${gid}`
-  const url = `https://hcdti.savitechnig.com/account/groupbyid/${gid}`;
+  // const url = `${process.env.BACKEND_URL}/account/memberinfo/${mdid}`
+  const url = `https://hcdti.savitechnig.com/account/memberinfo/${mdid}`;
+
   const token = isAuthenticated().auth_token;
 
-  const { data, error } = useSWR([url, token], fetcher, {
+  const options = {
     shouldRetryOnError: false,
-  });
+    // revalidateOnMount: false,
+    // revalidateOnFocus: false,
+    // revalidateOnReconnect: false,
+  };
+
+  const { data, error } = useSWR([url, token], fetcher, { ...options });
 
   return {
-    group: data,
+    member: data,
     isLoading: !error && !data,
     isError: error,
   };
 };
 
-const membersData = (groupId) => {
-  const router = useRouter();
-
-  // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}?page=1`
-  const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}?page=1`;
-  const token = isAuthenticated().auth_token;
-
-  const { data, error } = useSWR([url, token], fetcher, {
-    shouldRetryOnError: false,
-  });
-
-  return {
-    members: data,
-    isMemberLoading: !error && !data,
-    isMemberError: error,
-  };
-};
-
-export default function GroupDetails() {
+export default function MemberDetailsPage() {
   const path = "/groups";
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -608,6 +598,10 @@ export default function GroupDetails() {
     });
   };
 
+  // Fetching data from backend with SWR
+  const { member, isLoading, isError } = memberData();
+  console.log('data=>',member)
+
   const [state, setState] = useState("");
   const [search, setSearch] = useState([]);
   const [page, setPage] = useState(0);
@@ -616,94 +610,6 @@ export default function GroupDetails() {
   const [openMenu, setOpenMenu] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [idx, setIdx] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [groupId, setGroupId] = useState(
-    JSON.parse(localStorage.getItem("group_id"))
-  );
-
-  const anchorRef = useRef(null);
-
-  // Fetching data from backend with SWR
-  const { group, isLoading, isError } = groupData();
-  // console.log(group);
-
-  const { members, isMemberLoading, isMemberError } = membersData(groupId);
-  // console.log(members);
-
-  const handleToggle = () => {
-    setOpenMenu(!openMenu);
-  };
-
-  const handleClose = (event) => {
-    // if (anchorRef.current && anchorRef.current.contains(event.target)) {
-    //   return;
-    // }
-
-    setOpenMenu(false);
-  };
-
-  // function handleListKeyDown(event) {
-  //   if (event.key === 'Tab') {
-  //     event.preventDefault();
-  //     setOpenMenu(false);
-  //   }
-  // }
-
-  // return focus to the button when we transitioned from !open -> open
-  // const prevOpen = useRef(openMenu);
-  // useEffect(() => {
-  //   if (prevOpen.current === true && openMenu === false) {
-  //     anchorRef.current.focus();
-  //   }
-
-  //   prevOpen.current = openMenu;
-  // }, [openMenu]);
-
-  // handle change per page
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  // handler for pagination change per page
-  const handleRowsChangePerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  // click open dialog pop up
-  const handleDialogClick = () => {
-    setOpen(true);
-  };
-
-  // click open dialog pop up
-  const handleDialogClickGroup = () => {
-    setGroupOpen(true);
-  };
-
-  // handle dialog close changes
-  const handleDialogClose = () => {
-    setOpen(false);
-  };
-
-  // handle dialog close changes
-  const handleDialogCloseGroup = () => {
-    setGroupOpen(false);
-  };
-
-  const changeLeader = () => {
-    const { gid } = router.query;
-    localStorage.removeItem("last_url");
-
-    const url = "/group_management/change_leader";
-
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/group_details/" + gid)
-    );
-
-    router.push(url);
-  };
 
   const handleClick = () => {
     const { gid } = router.query;
@@ -834,50 +740,6 @@ export default function GroupDetails() {
     }
   };
 
-  const onSearchChange = (event) => {
-    setState(event.target.value);
-  };
-
-  const searchResult = () => {
-    const data = members.results.result;
-
-    let currentList = data.map((request) => {
-      return { ...request };
-    });
-    // console.log(currentList)
-
-    if (state === "") {
-      setSearch([]);
-    }
-
-    if (state !== "") {
-      let newList = [];
-
-      newList = currentList.filter((request) => {
-        const name = `${request.staffname ? request.staffname : ""} ${
-          request.email ? request.email : ""
-        } ${
-          request.is_superuser
-            ? "Super User"
-            : "" || request.is_credit_officer
-            ? "Credit Officer"
-            : "" || request.is_branch_manager
-            ? "Branch Manager"
-            : "" || request.is_senior_manager
-            ? "Senior Manager"
-            : "" || request.is_agency_bank
-            ? "Agency Bank"
-            : ""
-        }`.toLowerCase();
-
-        return name.includes(state.toLowerCase());
-      });
-      // console.log(newList)
-
-      setSearch(newList);
-    }
-  };
-
   return (
     <Layout path={path}>
       <NoSsr>
@@ -887,29 +749,29 @@ export default function GroupDetails() {
             flexDirection="column"
             className={classes.leftBox}
           >
-            <MemberDetails />
+            <MemberDetails member={member} isError={isError} isLoading={isLoading} />
           </Box>
 
           <Box className={classes.rightBox}>
             <Grid container spacing={4}>
               <Grid className={classes.itemGrid} item>
-                <PersonalDetails />
+                <PersonalDetails member={member} isError={isError} isLoading={isLoading} />
               </Grid>
 
               <Grid className={classes.itemGrid} item>
-                <BusinessDetails />
+                <BusinessDetails member={member} isError={isError} isLoading={isLoading} />
               </Grid>
 
               <Grid className={classes.itemGrid} item>
-                <LoanApplications />
+                <LoanApplications member={member} isError={isError} isLoading={isLoading} />
               </Grid>
 
               <Grid className={classes.itemGrid} item>
-                <CreditHistory />
+                <CreditHistory member={member} isError={isError} isLoading={isLoading} />
               </Grid>
 
               <Grid className={classes.itemGrid} item>
-                <Gaurantor />
+                <Gaurantor member={member} isError={isError} isLoading={isLoading} />
               </Grid>
             </Grid>
           </Box>

@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function PersonalDetails() {
+export default function PersonalDetails({ member, isError, isLoading }) {
   const classes = useStyles()
 
   const [loading, setLoading] = useState(false)
@@ -181,12 +181,40 @@ export default function PersonalDetails() {
                 <Typography
                   className={clsx(classes.typography, classes.formTypo)}
                   variant="body1"
+                  noWrap={true}
                   gutterBottom
                 >
                   Name Of Husband/Father
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Name Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ?(
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.personal.nameOfHusband}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Name not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -209,7 +237,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -223,7 +251,7 @@ export default function PersonalDetails() {
                     >
                       Victor Test
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -236,12 +264,40 @@ export default function PersonalDetails() {
                 <Typography
                   className={clsx(classes.typography, classes.formTypo)}
                   variant="body1"
+                  noWrap={true}
                   gutterBottom
                 >
                   Name Of Next Of Kin
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Name Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ?(
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.personal.nextOfKin}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Name not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -264,7 +320,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -278,7 +334,7 @@ export default function PersonalDetails() {
                     >
                       Victor Test
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -291,12 +347,41 @@ export default function PersonalDetails() {
                 <Typography
                   className={clsx(classes.typography, classes.formTypo)}
                   variant="body1"
+                  noWrap={true}
                   gutterBottom
                 >
                   Phone Number Of Next Of Kin
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Phone Number Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {member.personal.nextOfKinMobile}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Phone Number not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -319,7 +404,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -333,7 +418,7 @@ export default function PersonalDetails() {
                     >
                       07034524566
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -351,7 +436,35 @@ export default function PersonalDetails() {
                   Education Level Of Customer
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Education Level Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {member.personal.custEducation}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Education Level not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -374,7 +487,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -388,7 +501,7 @@ export default function PersonalDetails() {
                     >
                       Bachelors
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -406,7 +519,35 @@ export default function PersonalDetails() {
                   Residential Address
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Residential Address Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {member.personal.residentialAddress}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Residential Address not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -429,7 +570,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -444,7 +585,7 @@ export default function PersonalDetails() {
                     >
                       22, James Ibori Avenue, Sapele Delta State.
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -462,7 +603,35 @@ export default function PersonalDetails() {
                   Business Address
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Business Address Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {member.personal.busAddress}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Business Address not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -485,7 +654,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -499,7 +668,7 @@ export default function PersonalDetails() {
                     >
                       22, James Ibori Avenue, Sapele Delta State.
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -517,7 +686,35 @@ export default function PersonalDetails() {
                   Marital Status
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Marital Status Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {member.personal.maritalStatus}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Marital Status not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -540,7 +737,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" /> 
                             <EditIcon style={{ color: "#72A624"}} />
                           </InputAdornment>
                         ),
@@ -554,7 +751,7 @@ export default function PersonalDetails() {
                     >
                       Married
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -572,7 +769,35 @@ export default function PersonalDetails() {
                   Date Added
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Date Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.personal ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      {moment(member.personal.dateJoin).format('Do MMM YYYY')}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Date not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -595,7 +820,7 @@ export default function PersonalDetails() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624"}} />
                           </InputAdornment>
                         ),
@@ -609,7 +834,7 @@ export default function PersonalDetails() {
                     >
                       01/01/2021
                     </Typography>
-                }
+                } */}
               </Grid>
             </Grid>
 

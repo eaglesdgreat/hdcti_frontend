@@ -296,7 +296,7 @@ export default function StepperForm() {
 
   const member_exist = router.query.exist_member === 'true' ? true : false
 
-  const [{ exist_mem }, dispatch] = useStateValue();
+  const [{ exist_mem, validate_stepper1, validate_stepper2, validate_stepper3, validate_stepper4, validate_stepper5 }, dispatch] = useStateValue();
 
   const addToBasket = (data) => {
     dispatch({
@@ -326,6 +326,49 @@ export default function StepperForm() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  // this function check fr form validation on each form and set the validation value as false by default
+  // if a step form is not validated the its leave the validation for that step as false and send the value to this function
+  // this functon disabled the next button by returning the negation of the step validation value 
+  function validateAStep(activeStep) {
+    if (exist_mem) {
+      if ((activeStep + 1) === 1) {
+        return !validate_stepper1
+      }
+
+      if ((activeStep + 1) === 2) {
+        return !validate_stepper2
+      }
+
+      if ((activeStep + 1) === 3) {
+        return !validate_stepper4
+      }
+
+      if ((activeStep + 1) === 4) {
+        return !validate_stepper5
+      }
+    } else {
+      if ((activeStep + 1) === 1) {
+        return !validate_stepper1
+      }
+
+      if ((activeStep + 1) === 2) {
+        return !validate_stepper2
+      }
+
+      if ((activeStep + 1) === 3) {
+        return !validate_stepper3
+      }
+
+      if ((activeStep + 1) === 4) {
+        return !validate_stepper4
+      }
+
+      if ((activeStep + 1) === 5) {
+        return !validate_stepper5
+      }
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -343,64 +386,46 @@ export default function StepperForm() {
     let url = ''
 
     if(obj.member_exist) {
-      body.phoneNextOfKin = obj.next_kin_phone
-      body.groupOfApp = obj.group_of_application
-      body.bank = obj.bank
-      body.accountNo = obj.account_number
-      body.typeOfBusiness = obj.type_of_business
-      body.businessDuration = obj.business_length
-      body.amtSavingsInPassbook = obj.amount_of_savings
-      body.busnessAddress = obj.business_address
-      body.familyOnHcdtiGroup = obj.family_member_in_hcdti
+      body.groupOfApp = obj.member_name.groupName
       body.lastLoanRecieved = obj.last_loan_received
       body.dateLastLoanRepaid = obj.repay_last_loan_date
       body.loanAppliedFor = obj.loan_applied
-      body.indeptedToMfbMfi = obj.indept
       body.outsanding = ''
-      body.nameOfGuarantor = obj.name_of_guarantor
-      body.guarantorRelationship = obj.relationship_with_borrower
       body.guarantorOccupation = obj.guarantor_occupation
-      body.guarantorHomeAddress = obj.guarantor_home_address
-      body.guarantorOfficeAddress = obj.guarantor_office_address
-      body.recFromGroup1 = obj.recommendation
+      body.recFromGroup1 = obj.recommendation.memberName
       body.recFromGroup2 = ''
       body.appType = obj.app_type
       body.formNo = obj.form_no
       body.state = obj.state
-      body.memberNo = obj.phone
-      body.fullname = obj.member_name
+      body.memberNo = obj.member_name.mobileNumber
+      body.fullname = obj.member_name.memberName
       body.branch = obj.branch
-      body.nameOfFather = obj.father_husband_name
-      body.residenceAddress = obj.res_address
-      body.permanentAddress = obj.perm_address
-      body.maritalStatus = obj.marital_status
-      body.formalEdu = obj.formal_education
-      body.nextOfKin = obj.next_kin_name
       body.date_of_app = obj.date_of_application
 
-      // url = `${process.env.BACKEND_URL}/account/oldloan`;
-      url = `https://hcdti.savitechnig.com/account/oldloan`;
+      // url = `${process.env.BACKEND_URL}/account/oldloan/`;
+      url = `https://hcdti.savitechnig.com/account/oldloan/`;
     } else {
       body.phoneNextOfKin = obj.next_kin_phone
-      body.groupOfApp = obj.group_of_application
+      body.groupOfApp = obj.group_of_application.groupName
+      body.group = obj.groupId
       body.bank = obj.bank
       body.accountNo = obj.account_number
       body.typeOfBusiness = obj.type_of_business
       body.businessDuration = obj.business_length
       body.amtSavingsInPassbook = obj.amount_of_savings
       body.busnessAddress = obj.business_address
-      body.familyOnHcdtiGroup = obj.family_member_in_hcdti
+      body.familyOnHcdtiGroup = obj.family_member_in_hcdti === 'true' ? true : false
       body.lastLoanRecieved = obj.last_loan_received
       body.dateLastLoanRepaid = obj.repay_last_loan_date
       body.loanAppliedFor = obj.loan_applied
-      body.indeptedToMfbMfi = obj.indept
+      body.indeptedToMfbMfi = obj.indept === 'true' ? true : false
       body.outsanding = ''
       body.nameOfGuarantor = obj.name_of_guarantor
       body.guarantorRelationship = obj.relationship_with_borrower
       body.guarantorOccupation = obj.guarantor_occupation
       body.guarantorHomeAddress = obj.guarantor_home_address
       body.guarantorOfficeAddress = obj.guarantor_office_address
-      body.recFromGroup1 = obj.recommendation
+      body.recFromGroup1 = obj.recommendation.memberName
       body.recFromGroup2 = ''
       body.appType = obj.app_type
       body.formNo = obj.form_no
@@ -528,6 +553,7 @@ export default function StepperForm() {
                         onClick={handleSubmit}
                         disabled={loading}
                         className={classes.button}
+                        disabled={validateAStep(activeStep)}
                         disableFocusRipple
                         disableRipple
                         disableTouchRipple
@@ -549,6 +575,7 @@ export default function StepperForm() {
                         color="primary"
                         onClick={handleNext}
                         className={classes.button}
+                        disabled={validateAStep(activeStep)}
                         disableFocusRipple
                         disableRipple
                         disableTouchRipple

@@ -30,7 +30,7 @@ import { useStateValue } from "../../../StateProviders";
 import Layout from "./../../../Components/Layout";
 import validations from "./../../../lib/validations";
 import { isAuthenticated } from "./../../../lib/auth.helper";
-import { maritalStatuses, educations } from './../../../lib/places'
+import { maritalStatuses, educations, banks } from './../../../lib/places'
 // import PrivateRoute from "./../../Components/PrivateRoute";
 
 
@@ -224,13 +224,12 @@ const fetcher = async (...arg) => {
 };
 
 
-const memberData = (groupId) => {
+const memberData = () => {
   const router = useRouter();
   const { mid } = router.query;
 
-  // const url = `${process.env.BACKEND_URL}/account/getsinglemember/${mid}`
-//   const url = `https://hcdti.savitechnig.com/account/getsinglemember/${mid}`;
-  const url = `https://hcdti.savitechnig.com/account/getsinglemember/${mid}`;
+  // const url = `${process.env.BACKEND_URL}/account/memberinfo/${mid}`
+  const url = `https://hcdti.savitechnig.com/account/memberinfo/${mid}`;
 
   const token = isAuthenticated().auth_token;
 
@@ -264,32 +263,87 @@ export default function EditMember() {
   const token = isAuthenticated().auth_token;
 
   const { member, isLoading, isError, memberMutate } = memberData();
-  console.log(member)
+  // console.log(member)
 
 
   const initialState = {
-    memberName: "",
-    mobileNumber: "",
+    memberName: null,
+    mobileNumber: null,
+    nameOfHusband: null,
+    nextOfKin: null,
+    nextOfKinMobile: null,
+    custEducation: null,
+    residentialAddress: null,
+    busAddress: null,
+    maritalStatus: null,
+    typeOfBusiness: null,
+    durationOfBusiness: null,
+    familyInHcdti: false,
+    amountOfPassbook: null,
+    bank: null,
+    accountNo: null,
+    owningMFI: false,
+    mfiName: null,
+    nameOfGuarantor: null,
+    guarantorRelationship: null,
+    guarantorHomeAddress: null,
+    guarantorOfficeAddress: null,
   };
 
   const [state, setState] = useState(initialState);
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState(true);
   const [messages, setMessages] = useState({
     ...initialState,
     success: "",
     failure: "",
   });
 
+  useEffect(async () => {
+    try {
+      const member_chnage = await member
+
+      if (member_chnage && check) {
+        setState({ ...state, ...member.memberInfo, ...member.guarantor, ...member.businessInfo, ...member.personal })
+
+        setCheck(false)
+      }
+    }catch(e) {
+      console.log(e)
+    }
+  }, [member])
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setState({ ...state, [name]: value });
 
-    memberMutate((data) => {
-      return {
-        ...member,
-        result: { ...data.result, [name]: value },
-      };
-    }, false);
+    if (name === "familyInHcdti") {
+      memberMutate((data) => {
+        return {
+          ...member,
+          result: { ...data.result, [name]: !state.familyInHcdti },
+        };
+      }, false);
+
+      setState({ ...state, [name]: !state.familyInHcdti });
+    } else if (name === 'owningMFI') {
+      memberMutate((data) => {
+        return {
+          ...member,
+          result: { ...data.result, [name]: !state.owningMFI },
+        };
+      }, false);
+
+      setState({ ...state, [name]: !state.owningMFI });
+    }else {
+      memberMutate((data) => {
+        return {
+          ...member,
+          result: { ...data.result, [name]: value },
+        };
+      }, false);
+
+      setState({ ...state, [name]: value });
+    }
   };
 
   const clearError = (e) => {
@@ -300,36 +354,42 @@ export default function EditMember() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (state.memberName) {
-    } else {
-      console.log('yes')
-      setState({ ...state, memberName: member.result.memberName });
-    }
-
-    if (state.mobileNumber) {
-    } else {
-      setState({ ...state, mobileNumber: member.result.mobileNumber });
-    }
+    const { mid } = router.query;
 
     let isValid = true;
 
     if (isValid) {
-      const validate = validations(state.memberName, "Member Name");
-      if (validate.status) {
-        setMessages({ ...messages, memberName: validate.message });
+      const validatePass = validations(state.mobileNumber, "Phone Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, mobileNumber: validatePass.message });
         isValid = false;
       }
     }
 
     if (isValid) {
-      const validatePass = validations(
-        state.mobileNumber,
-        "Phone Number",
-        true,
-        "digits"
-      );
+      const validatePass = validations(state.amountOfPassbook, "Amount", false, "digits");
+
       if (validatePass.status) {
-        setMessages({ ...messages, mobileNumber: validatePass.message });
+        setMessages({ ...messages, amountOfPassbook: validatePass.message });
+        isValid = false;
+      }
+    }
+
+    if (isValid) {
+      const validatePass = validations(state.nextOfKinMobile, "Phone Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, nextOfKinMobile: validatePass.message });
+        isValid = false;
+      }
+    }
+
+    if (isValid) {
+      const validatePass = validations(state.accountNo, "Account Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, accountNo: validatePass.message });
         isValid = false;
       }
     }
@@ -337,11 +397,30 @@ export default function EditMember() {
     const body = {
       memberName: state.memberName || null,
       mobileNumber: state.mobileNumber || null,
+      nameOfHusband: state.nameOfHusband || null,
+      nextOfKin: state.nextOfKin || null,
+      nextOfKinMobile: state.nextOfKinMobile || null,
+      custEduLevel: state.custEducation || null,
+      residentAddress: state.residentialAddress || null,
+      busAddress: state.busAddress || null,
+      maritalStatus: state.maritalStatus || null,
+      typeOfBusiness: state.typeOfBusiness || null,
+      durationOfBusiness: state.durationOfBusiness || null,
+      familyOnHcdtiGroup: state.familyInHcdti === true ? true : false,
+      savingsInPassbook: state.amountOfPassbook || null,
+      bank: state.bank || null,
+      accountNo: state.accountNo || null,
+      memberOwningMfi: state.owningMFI === true ? true : false,
+      mfiName: state.mfiName || null,
+      guarantor: state.nameOfGuarantor || null,
+      guarantorRelationship: state.guarantorRelationship || null,
+      guarantorAddress: state.guarantorHomeAddress || null,
+      guarantorOfficeAddress: state.guarantorOfficeAddress || null,
     };
     // console.log(body)
 
-    // const url = `${process.env.BACKEND_URL}/account/updatemember/${member.result.memberId}`;
-    const url = `https://hcdti.savitechnig.com/account/updatemember/${member.result.memberId}`;
+    // const url = `${process.env.BACKEND_URL}/account/updatemember/${mid}`;
+    const url = `https://hcdti.savitechnig.com/account/updatemember/${mid}`;
 
     if (isValid) {
       setLoading(true);
@@ -354,9 +433,7 @@ export default function EditMember() {
           },
         });
 
-        setState(initialState);
-
-        // console.log(response)
+        // console.log(response.data)
 
         if (response.data) {
           const last_url = JSON.parse(localStorage.getItem("last_url"));
@@ -389,7 +466,11 @@ export default function EditMember() {
             });
           }
 
-          // setState(initialState);
+          if (!e.response.data.reason && !e.response.data.detail) {
+            enqueueSnackbar(`Error Updating Member, Try again`, {
+              variant: "error",
+            });
+          }
         }
       }
     }
@@ -453,6 +534,14 @@ export default function EditMember() {
                       noValidate
                       onSubmit={handleSubmit}
                     >
+                      <Box display="flex" justifyContent="center">
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                        >
+                          Member Information
+                        </Typography>
+                      </Box>
                       <Grid container spacing={4}>
                         <Grid
                           className={classes.itemGrid}
@@ -483,7 +572,7 @@ export default function EditMember() {
                             required
                             fullWidth
                             margin="normal"
-                            value={member.result.groupName}
+                            value={state.groupName}
                             onChange={handleChange}
                             onKeyUp={clearError}
                           />
@@ -518,48 +607,10 @@ export default function EditMember() {
                             required
                             fullWidth
                             margin="normal"
-                            value={member.result.memberName}
+                            value={state.memberName}
                             onChange={handleChange}
                             onKeyUp={clearError}
                           />
-                          {messages.memberName && (
-                            <Alert severity="error">
-                              {messages.memberName}
-                            </Alert>
-                          )}
-                        </Grid>
-
-                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                          <Typography
-                            className={clsx(
-                              classes.typography,
-                              classes.formTypo
-                            )}
-                            variant="body1"
-                            gutterBottom
-                          >
-                            Name Of Father/Husband
-                          </Typography>
-                          <TextField
-                            className={classes.textField}
-                            type="text"
-                            placeholder="Enter member phone number"
-                            id="nameOfHusband"
-                            name="nameOfHusband"
-                            variant="outlined"
-                            size="small"
-                            required
-                            fullWidth
-                            margin="normal"
-                            value={member.result.nameOfHusband}
-                            onChange={handleChange}
-                            onKeyUp={clearError}
-                          />
-                          {messages.nameOfHusband && (
-                            <Alert severity="error">
-                              {messages.nameOfHusband}
-                            </Alert>
-                          )}
                         </Grid>
 
                         <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
@@ -584,7 +635,7 @@ export default function EditMember() {
                             required
                             fullWidth
                             margin="normal"
-                            value={member.result.mobileNumber}
+                            value={state.mobileNumber}
                             onChange={handleChange}
                             onKeyUp={clearError}
                           />
@@ -593,6 +644,47 @@ export default function EditMember() {
                               {messages.mobileNumber}
                             </Alert>
                           )}
+                        </Grid>
+                      </Grid>
+
+                      <Divider style={{ height: '5px', marginTop: '20px', marginBottom: '20px', background:'#000'}} light />
+
+                      <Box display="flex" justifyContent="center" style={{paddingTop:'10px', paddingBottom:'10px'}}>
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                        >
+                          Personal Information
+                        </Typography>
+                      </Box>
+
+                      <Grid container spacing={4}>
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            className={clsx(
+                              classes.typography,
+                              classes.formTypo
+                            )}
+                            variant="body1"
+                            gutterBottom
+                          >
+                            Name Of Father/Husband
+                          </Typography>
+                          <TextField
+                            className={classes.textField}
+                            type="text"
+                            placeholder="Enter member phone number"
+                            id="nameOfHusband"
+                            name="nameOfHusband"
+                            variant="outlined"
+                            size="small"
+                            required
+                            fullWidth
+                            margin="normal"
+                            value={state.nameOfHusband}
+                            onChange={handleChange}
+                            onKeyUp={clearError}
+                          />
                         </Grid>
 
                         <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
@@ -606,6 +698,7 @@ export default function EditMember() {
                           >
                             Name of Next of Kin
                           </Typography>
+
                           <TextField
                             className={classes.textField}
                             type="text"
@@ -617,15 +710,10 @@ export default function EditMember() {
                             required
                             fullWidth
                             margin="normal"
-                            value={member.result.nextOfKin}
+                            value={state.nextOfKin}
                             onChange={handleChange}
                             onKeyUp={clearError}
                           />
-                          {messages.nextOfKin && (
-                            <Alert severity="error">
-                              {messages.nextOfKin}
-                            </Alert>
-                          )}
                         </Grid>
 
                         <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
@@ -650,7 +738,7 @@ export default function EditMember() {
                             required
                             fullWidth
                             margin="normal"
-                            value={member.result.nextOfKinMobile}
+                            value={state.nextOfKinMobile}
                             onChange={handleChange}
                             onKeyUp={clearError}
                           />
@@ -673,15 +761,11 @@ export default function EditMember() {
                             Formal Education
                           </Typography>
                           <Autocomplete
-                            id="custEduLevel"
+                            id="custEducation"
                             options={educations}
-                            getOptionSelected={(option, value) =>
-                              option === value
-                            }
                             getOptionLabel={(option) => option}
                             classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
-                            // style={{ width: '90%' }}
-                            value={member.result.custEduLevel}
+                            value={state.custEducation}
                             onChange={(event, newValue) => {
 
                               const id = event.target.id;
@@ -696,32 +780,27 @@ export default function EditMember() {
                                 memberMutate((data) => {
                                   return {
                                     ...member,
-                                    result: { ...data.result, [name]: value },
+                                    result: { ...data.result, [name]: newValue },
                                   };
                                 }, false);
 
                               } else {
                                 setState({
                                   ...state,
-                                  custEduLevel: "",
+                                  custEducation: "",
                                 });
 
                                 memberMutate((data) => {
                                   return {
                                     ...member,
-                                    result: { ...data.result, custEduLevel: '' },
+                                    result: { ...data.result, custEducation: '' },
                                   };
                                 }, false);
                               }
                             }}
-                            // inputValue={inputValue.custEduLevel}
-                            // onInputChange={(_, newInputValue) => {
-                            //   setInputValue({ ...inputValue, custEduLevel: newInputValue })
-                            // }}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                // label="Select Group Name"
                                 placeholder="Select Formal Education"
                                 size="small"
                                 variant="outlined"
@@ -730,9 +809,56 @@ export default function EditMember() {
                               />
                             )}
                           />
-                          {messages.custEduLevel && (
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            className={clsx(
+                              classes.typography,
+                              // classes.formTypo
+                            )}
+                            variant="body1"
+                            gutterBottom
+                          >
+                            Residential Address
+                          </Typography>
+
+                          <TextareaAutosize
+                            aria-label="residential"
+                            placeholder="Enter the residential address"
+                            minrows={3}
+                            style={{ width: '100%', borderRadius: '5px', height: '95px' }}
+                            value={state.residentialAddress}
+                            name="residentialAddress"
+                            onChange={(event) => handleChange(event)}
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            className={clsx(
+                              classes.typography,
+                              // classes.formTypo
+                            )}
+                            variant="body1"
+                            gutterBottom
+                          >
+                            Business Address
+                          </Typography>
+
+                          <TextareaAutosize
+                            aria-label="residential"
+                            placeholder="Enter the Business address"
+                            minrows={3}
+                            style={{ width: '100%', borderRadius: '5px', height: '95px' }}
+                            value={state.busAddress}
+                            name="busAddress"
+                            onChange={(event) => handleChange(event)}
+                          />
+
+                          {messages.busAddress && (
                             <Alert severity="error">
-                              {messages.custEduLevel}
+                              {messages.busAddress}
                             </Alert>
                           )}
                         </Grid>
@@ -751,13 +877,9 @@ export default function EditMember() {
                           <Autocomplete
                             id="maritalStatus"
                             options={maritalStatuses}
-                            getOptionSelected={(option, value) =>
-                              option === value
-                            }
                             getOptionLabel={(option) => option}
                             classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
-                            // style={{ width: '90%' }}
-                            value={member.result.maritalStatus}
+                            value={state.maritalStatus}
                             onChange={(event, newValue) => {
 
                               const id = event.target.id;
@@ -772,7 +894,7 @@ export default function EditMember() {
                                 memberMutate((data) => {
                                   return {
                                     ...member,
-                                    result: { ...data.result, [name]: value },
+                                    result: { ...data.result, [name]: newValue },
                                   };
                                 }, false);
 
@@ -790,14 +912,9 @@ export default function EditMember() {
                                 }, false);
                               }
                             }}
-                            // inputValue={inputValue.custEduLevel}
-                            // onInputChange={(_, newInputValue) => {
-                            //   setInputValue({ ...inputValue, custEduLevel: newInputValue })
-                            // }}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                // label="Select Group Name"
                                 placeholder="Select Marital Status"
                                 size="small"
                                 variant="outlined"
@@ -806,9 +923,148 @@ export default function EditMember() {
                               />
                             )}
                           />
-                          {messages.maritalStatus && (
+                        </Grid>
+                      </Grid>
+
+                      <Divider style={{ height: '5px', marginTop: '20px', marginBottom: '20px', background: '#000' }} light />
+
+                      <Box display="flex" justifyContent="center" style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                        >
+                          Business Information
+                        </Typography>
+                      </Box>
+
+                      <Grid container spacing={4}>
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            Type of Business
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.typeOfBusiness}
+                            name="typeOfBusiness"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter the type of business"
+                            onKeyUp={clearError}
+                            id="typeOfBusiness"
+                            size="small"
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            How long is this business (years)?
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.durationOfBusiness}
+                            name="durationOfBusiness"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="For how long has customer been running the business"
+                            onKeyUp={clearError}
+                            id="durationOfBusiness"
+                            size="small"
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography)}
+                          >
+                            Got family member registered in any HCDTI Group?
+                          </Typography>
+
+                          <RadioGroup
+                            row
+                            aria-label="position-family"
+                            name="familyInHcdti"
+                            id="familyInHcdti"
+                            value={state.familyInHcdti === true ? true : false}
+                            onChange={handleChange}
+                            style={{ justifyContent: 'space-between', width: '70%' }}
+                          >
+                            <FormControlLabel
+                              value={true}
+                              control={
+                                <Radio
+                                  disableRipple
+                                  disableTouchRipple
+                                  disableFocusRipple
+                                  color="primary"
+                                />
+                              }
+                              label="Yes"
+                              labelPlacement="end"
+                            />
+                            <FormControlLabel
+                              value={false}
+                              control={
+                                <Radio
+                                  disableRipple
+                                  disableTouchRipple
+                                  disableFocusRipple
+                                  color="primary"
+                                />
+                              }
+                              label="No"
+                              labelPlacement="end"
+                            />
+                          </RadioGroup>
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            Amount of savings in passbook
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.amountOfPassbook}
+                            name="amountOfPassbook"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter amount of savings in passbook"
+                            onKeyUp={clearError}
+                            id="amountOfPassbook"
+                            size="small"
+                          />
+
+                          {messages.amountOfPassbook && (
                             <Alert severity="error">
-                              {messages.maritalStatus}
+                              {messages.amountOfPassbook}
                             </Alert>
                           )}
                         </Grid>
@@ -822,22 +1078,255 @@ export default function EditMember() {
                             variant="body1"
                             gutterBottom
                           >
-                            Residential Address
+                            Bank
                           </Typography>
+
+                          <Autocomplete
+                            id="bank"
+                            options={banks}
+                            // getOptionSelected={(option, value) =>
+                            //   option === value
+                            // }
+                            getOptionLabel={(option) => option}
+                            classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
+                            value={state.bank}
+                            onChange={(event, newValue) => {
+                              const id = event.target.id;
+                              const name = id.split("-")[0];
+
+                              if (newValue !== null) {
+                                setState({
+                                  ...state,
+                                  [name]: newValue,
+                                });
+
+                                memberMutate((data) => {
+                                  return {
+                                    ...member,
+                                    result: { ...data.result, [name]: newValue },
+                                  };
+                                }, false);
+
+                              } else {
+                                setState({
+                                  ...state,
+                                  bank: "",
+                                });
+
+                                memberMutate((data) => {
+                                  return {
+                                    ...member,
+                                    result: { ...data.result, bank: '' },
+                                  };
+                                }, false);
+                              }
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Select Marital Status"
+                                size="small"
+                                variant="outlined"
+                                fullWidth
+                                margin="none"
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            Account Number
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.accountNo}
+                            name="accountNo"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter customer account number"
+                            onKeyUp={clearError}
+                            id="accountNo"
+                            size="small"
+                          />
+
+                          {messages.accountNo && (
+                            <Alert severity="error">
+                              {messages.accountNo}
+                            </Alert>
+                          )}
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography)}
+                          >
+                            Indebted to any MFB/MFI?
+                          </Typography>
+
+                          <RadioGroup
+                            row
+                            aria-label="position-family"
+                            name="owningMFI"
+                            id="owningMFI"
+                            value={state.owningMFI === true ? true : false}
+                            // value={true}
+                            onChange={handleChange}
+                            style={{ justifyContent: 'space-between', width: '70%' }}
+                          >
+                            <FormControlLabel
+                              value={true}
+                              control={
+                                <Radio
+                                  disableRipple
+                                  disableTouchRipple
+                                  disableFocusRipple
+                                  color="primary"
+                                />
+                              }
+                              label="Yes"
+                              labelPlacement="end"
+                            />
+
+                            <FormControlLabel
+                              value={false}
+                              control={
+                                <Radio
+                                  disableRipple
+                                  disableTouchRipple
+                                  disableFocusRipple
+                                  color="primary"
+                                />
+                              }
+                              label="No"
+                              labelPlacement="end"
+                            />
+                          </RadioGroup>
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            MFB/MFI Name
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.mfiName}
+                            name="mfiName"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter name of mfb/mfi"
+                            onKeyUp={clearError}
+                            id="mfiName"
+                            size="small"
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Divider style={{ height: '5px', marginTop: '20px', marginBottom: '20px', background: '#000' }} light />
+
+                      <Box display="flex" justifyContent="center" style={{ paddingTop: '10px', paddingBottom: '10px' }}>
+                        <Typography
+                          variant="h5"
+                          gutterBottom
+                        >
+                          Guarantor Information
+                        </Typography>
+                      </Box>
+                      
+                      <Grid container spacing={4}>
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            Name of Guarantor
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.nameOfGuarantor}
+                            name="nameOfGuarantor"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter the name of the Guarantor"
+                            onKeyUp={clearError}
+                            id="nameOfGuarantor"
+                            size="small"
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            variant="body1"
+                            gutterBottom
+                            className={clsx(classes.typography, classes.formTypo)}
+                          >
+                            Relationship with Member
+                          </Typography>
+
+                          <TextField
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            required
+                            margin="normal"
+                            className={classes.textField}
+                            value={state.guarantorRelationship}
+                            name="guarantorRelationship"
+                            onChange={(event) => handleChange(event)}
+                            placeholder="Enter guarantor’s relationship with borrower"
+                            onKeyUp={clearError}
+                            id="guarantorRelationship"
+                            size="small"
+                          />
+                        </Grid>
+
+                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
+                          <Typography
+                            className={clsx(
+                              classes.typography,
+                              // classes.formTypo
+                            )}
+                            variant="body1"
+                            gutterBottom
+                          >
+                            Guarantor’s Home Address
+                          </Typography>
+
                           <TextareaAutosize
-                            aria-label="residential"
+                            aria-label="home"
                             placeholder="Enter the residential address"
                             minrows={3}
-                                style={{ width: '100%', borderRadius: '5px', height: '95px'  }}
-                            value={member.result.residentAddress}
-                            name="residentAddress"
+                            style={{ width: '100%', borderRadius: '5px', height: '95px' }}
+                            value={state.guarantorHomeAddress}
+                            name="guarantorHomeAddress"
                             onChange={(event) => handleChange(event)}
                           />
-                          {messages.residentAddress && (
-                            <Alert severity="error">
-                              {messages.residentAddress}
-                            </Alert>
-                          )}
                         </Grid>
 
                         <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
@@ -849,56 +1338,18 @@ export default function EditMember() {
                             variant="body1"
                             gutterBottom
                           >
-                            Business Address
+                            Guarantor’s Office Address
                           </Typography>
+
                           <TextareaAutosize
-                            aria-label="residential"
-                            placeholder="Enter the Business address"
+                            aria-label="office"
+                            placeholder="Enter the office address"
                             minrows={3}
-                            style={{ width: '100%', borderRadius: '5px', height:'95px' }}
-                            value={member.result.busAddress}
-                            name="busAddress"
+                            style={{ width: '100%', borderRadius: '5px', height: '95px' }}
+                            value={state.guarantorOfficeAddress}
+                            name="guarantorOfficeAddress"
                             onChange={(event) => handleChange(event)}
                           />
-                          {messages.busAddress && (
-                            <Alert severity="error">
-                              {messages.busAddress}
-                            </Alert>
-                          )}
-                        </Grid>
-
-                        <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
-                          <Typography
-                            className={clsx(
-                              classes.typography,
-                              classes.formTypo
-                            )}
-                            variant="body1"
-                            gutterBottom
-                          >
-                            Business Address
-                          </Typography>
-                          <TextField
-                            className={classes.textField}
-                            placeholder="Enter a name for the new memeber"
-                            id="typeOfBusiness"
-                            name="typeOfBusiness"
-                            type="text"
-                            variant="outlined"
-                            autoFocus={true}
-                            size="small"
-                            required
-                            fullWidth
-                            margin="normal"
-                            value={member.result.typeOfBusiness}
-                            onChange={handleChange}
-                            onKeyUp={clearError}
-                          />
-                          {messages.typeOfBusiness && (
-                            <Alert severity="error">
-                              {messages.typeOfBusiness}
-                            </Alert>
-                          )}
                         </Grid>
                       </Grid>
 

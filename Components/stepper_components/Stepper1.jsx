@@ -20,44 +20,8 @@ import DateFnsUtils from '@date-io/date-fns';
 // import moment from 'moment'
 
 import {states, branches} from './../../lib/places'
-
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
-    background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
-    borderRadius: "5px",
-    opacity: "1",
-    // color: "#182C51",
-    fontSize: "16px",
-    // fontWeight: "bold",
-    fontFamily: "Source Sans Pro",
-    fontStyle: "normal",
-    lineHeight: "20px",
-
-    borderRadius: '5px',
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
-    
-    // transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(InputBase);
+import validations from './../../lib/validations'
+import { useStateValue } from "./../../StateProviders";
 
 
 
@@ -166,25 +130,66 @@ export default function Stepper1() {
   const initialState = {
     app_type: '',
     form_no: '',
-    state: '',
-    branch: '',
+    state: null,
+    stateIndex: '',
+    branch: null,
+    branchIndex: '',
     date_of_application: new Date(),
   }
 
-  const [state, setState] = useState({});
-  const [inputValue, setInputValue] = useState({})
+  const [{ validate_stepper1 }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "STEPPER_1_VALIDATIONS",
+      item: data,
+    });
+  };
+
+  const [state, setState] = useState(initialState);
+  const [inputValue, setInputValue] = useState({ state: '', branch: '' })
+  const [check, setCheck] = useState(false)
+  const [messages, setMessages] = useState({
+    ...initialState,
+    success: "",
+    failure: "",
+  });
 
   useEffect(() => { 
     const prevState = JSON.parse(localStorage.getItem("stepper1"))
 
     if(prevState) {
-      setState(prevState)
-      setInputValue(prevState)
+      setState({ ...initialState, ...prevState})
+      setCheck(true)
     } else {
       setState(initialState)
-      setInputValue(initialState)
+      console.log(initialState)
     }
   }, [])
+
+  useEffect(() => {
+    if (state.app_type && state.form_no && state.state && state.branch && state.date_of_application && check) {
+      // setCheck(true)
+      addToBasket(true)
+    } else {
+      // setCheck(false)
+      addToBasket(false)
+    }
+  }, [check, state.app_type, state.form_no, state.state, state.branch, state.date_of_application])
+
+  const clearError = (e) => {
+    const { name } = e.target;
+
+      const validatePass = validations(state.form_no, "Form No", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+  };
 
   const handleChange = (event) => {
     localStorage.removeItem("stepper1");
@@ -228,8 +233,6 @@ export default function Stepper1() {
                 value={state.app_type}
                 name="app_type"
                 onChange={(event) => handleChange(event)}
-                // onKeyPress={enterSearch}
-                // onKeyUp={searchResult}
                 placeholder="Enter the type of application"
                 id="type"
                 InputProps={{
@@ -239,11 +242,6 @@ export default function Stepper1() {
                     focused: classes.cssFocused,
                     notchedOutline: classes.notchedOutline,
                   },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
                 }}
               />
             </Grid>
@@ -263,6 +261,7 @@ export default function Stepper1() {
                 className={classes.roots}
                 value={state.form_no}
                 name="form_no"
+                onKeyUp={clearError}
                 onChange={(event) => handleChange(event)}
                 placeholder="Enter the form number"
                 id="form_number"
@@ -275,6 +274,12 @@ export default function Stepper1() {
                   },
                 }}
               />
+
+              {messages.form_no && (
+                <Alert style={{ width: '90%' }} severity="error">
+                  {messages.form_no}
+                </Alert>
+              )}
             </Grid>
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
@@ -288,9 +293,10 @@ export default function Stepper1() {
                 id="state"
                 options={states}
                 // getOptionSelected={(option, value) =>
-                //   option.name === value.name
+                //   option === value
                 // }
                 getOptionLabel={(option) => option}
+                // defaultValue={states[0]}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
                 value={state.state}
@@ -316,10 +322,10 @@ export default function Stepper1() {
                     localStorage.setItem("stepper1", JSON.stringify({ ...state, state: '' }));
                   }
                 }}
-                inputValue={inputValue.state}
-                onInputChange={(_, newInputValue) => {
-                  setInputValue({ ...inputValue, state: newInputValue })
-                }}
+                // inputValue={inputValue.state}
+                // onInputChange={(_, newInputValue) => {
+                //   setInputValue({ ...inputValue, state: newInputValue })
+                // }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -347,10 +353,10 @@ export default function Stepper1() {
                 // getOptionSelected={(option, value) =>
                 //   option.name === value.name
                 // }
+                // defaultValue={branches[0 + state.branchIndex]}
                 getOptionLabel={(option) => option}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                // defaultValue={state.branch}
                 value={state.branch}
                 onChange={(event, newValue) => {
                   localStorage.removeItem("stepper1");
@@ -374,10 +380,10 @@ export default function Stepper1() {
                     localStorage.setItem("stepper1", JSON.stringify({ ...state, branch: '' }));
                   }
                 }}
-                inputValue={inputValue.branch}
-                onInputChange={(_, newInputValue) => {
-                  setInputValue({ ...inputValue, branch: newInputValue})
-                }}
+                // inputValue={inputValue.branch}
+                // onInputChange={(_, newInputValue) => {
+                //   setInputValue({ ...inputValue, branch: newInputValue})
+                // }}
                 renderInput={(params) => (
                   <TextField
                     {...params}

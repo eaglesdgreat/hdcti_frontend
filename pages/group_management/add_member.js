@@ -362,223 +362,221 @@ export default function AddMember() {
       <NoSsr>
         <Box display="flex" style={{ width: "100%" }}>
           <Box className={classes.createBox}>
-            <NoSsr>
-              <Typography
-                className={classes.typography}
-                style={{
-                  padding: "16px",
-                  paddingLeft: "30px",
-                  fontWeight: 600,
-                }}
+            <Typography
+              className={classes.typography}
+              style={{
+                padding: "16px",
+                paddingLeft: "30px",
+                fontWeight: 600,
+              }}
+            >
+              Create New Member
+            </Typography>
+
+            <Divider light />
+
+            <Box>
+              <form
+                className={classes.form}
+                noValidate
+                onSubmit={handleSubmit}
               >
-                Create New Member
-              </Typography>
-
-              <Divider light />
-
-              <Box>
-                <form
-                  className={classes.form}
-                  noValidate
-                  onSubmit={handleSubmit}
-                >
-                  <Grid container spacing={4}>
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
+                <Grid container spacing={4}>
+                  <Grid
+                    className={classes.itemGrid}
+                    item
+                    md={6}
+                    lg={6}
+                    xl={6}
+                  >
+                    <Typography
+                      className={clsx(classes.typography, classes.formTypo)}
+                      variant="body1"
+                      gutterBottom
                     >
-                      <Typography
-                        className={clsx(classes.typography, classes.formTypo)}
-                        variant="body1"
-                        gutterBottom
-                      >
-                        Group Name<span style={{ color: "red" }}>*</span>
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        placeholder="Enter the group name"
-                        id="groupName"
-                        name="groupName"
-                        type="text"
-                        disabled
-                        variant="outlined"
-                        size="small"
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={getQuery.name}
-                        onChange={handleChange}
-                        onKeyUp={clearError}
-                      />
-                      {/* {messages.groupName && (
-                        <Alert severity="error">{messages.groupName}</Alert>
-                      )} */}
-                    </Grid>
-
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={clsx(classes.typography, classes.formTypo)}
-                        variant="body1"
-                        gutterBottom
-                      >
-                        Member Name<span style={{ color: "red" }}>*</span>
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        placeholder="Enter a name for the new memeber"
-                        id="memberName"
-                        name="memberName"
-                        type="text"
-                        variant="outlined"
-                        autoFocus={true}
-                        size="small"
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={state.memberName}
-                        onChange={handleChange}
-                        onKeyUp={clearError}
-                      />
-                      {messages.memberName && (
-                        <Alert severity="error">{messages.memberName}</Alert>
-                      )}
-                    </Grid>
-
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={clsx(classes.typography, classes.formTypo)}
-                        variant="body1"
-                        gutterBottom
-                      >
-                        Phone Number<span style={{ color: "red" }}>*</span>
-                      </Typography>
-                      <TextField
-                        className={classes.textField}
-                        type="text"
-                        placeholder="Enter member phone number"
-                        id="mobileNumber"
-                        name="mobileNumber"
-                        variant="outlined"
-                        size="small"
-                        required
-                        fullWidth
-                        margin="normal"
-                        value={state.mobileNumber}
-                        onChange={handleChange}
-                        onKeyUp={clearError}
-                      />
-                      {messages.mobileNumber && (
-                        <Alert severity="error">{messages.mobileNumber}</Alert>
-                      )}
-                    </Grid>
-                    <Grid
-                      className={classes.itemGrid}
-                      item
-                      md={6}
-                      lg={6}
-                      xl={6}
-                    >
-                      <Typography
-                        className={clsx(classes.typography, classes.formTypo)}
-                        variant="body1"
-                        gutterBottom
-                      >
-                        Set Member As Leader?
-                      </Typography>
-                      <FormControl
-                        variant="outlined"
-                        // style={{ width: "100%" }}
-                        className={classes.formControl}
-                      >
-                        <RadioGroup
-                          row
-                          aria-label="position"
-                          name="isLeader"
-                          id="isLeader"
-                          value={state.isLeader}
-                          onChange={handleChange}
-                          // style={{justifyContent: 'spaace-between'}}
-                        >
-                          <FormControlLabel
-                            value={true}
-                            control={
-                              <Radio
-                                disableRipple
-                                disableTouchRipple
-                                disableFocusRipple
-                                color="primary"
-                              />
-                            }
-                            label="Yes"
-                            labelPlacement="top"
-                          />
-                          <FormControlLabel
-                            value={false}
-                            control={
-                              <Radio
-                                disableRipple
-                                disableTouchRipple
-                                disableFocusRipple
-                                color="primary"
-                              />
-                            }
-                            label="No"
-                            labelPlacement="top"
-                          />
-                        </RadioGroup>
-                      </FormControl>
-                    </Grid>
+                      Group Name<span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <TextField
+                      className={classes.textField}
+                      placeholder="Enter the group name"
+                      id="groupName"
+                      name="groupName"
+                      type="text"
+                      disabled
+                      variant="outlined"
+                      size="small"
+                      required
+                      fullWidth
+                      margin="normal"
+                      value={getQuery.name}
+                      onChange={handleChange}
+                      onKeyUp={clearError}
+                    />
+                    {/* {messages.groupName && (
+                      <Alert severity="error">{messages.groupName}</Alert>
+                    )} */}
                   </Grid>
 
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button
-                      type="submit"
-                      fullWidth
-                      disabled={loading}
-                      variant="contained"
-                      style={{
-                        backgroundColor: "#72A624",
-                        color: "white",
-                        width: "70px",
-                        height: "40px",
-                        opacity: "1",
-                      }}
-                      className={classes.submit}
+                  <Grid
+                    className={classes.itemGrid}
+                    item
+                    md={6}
+                    lg={6}
+                    xl={6}
+                  >
+                    <Typography
+                      className={clsx(classes.typography, classes.formTypo)}
+                      variant="body1"
+                      gutterBottom
                     >
-                      {loading ? (
-                        <CircularProgress
-                          size="2em"
-                          style={{ color: "#fff" }}
+                      Member Name<span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <TextField
+                      className={classes.textField}
+                      placeholder="Enter a name for the new memeber"
+                      id="memberName"
+                      name="memberName"
+                      type="text"
+                      variant="outlined"
+                      autoFocus={true}
+                      size="small"
+                      required
+                      fullWidth
+                      margin="normal"
+                      value={state.memberName}
+                      onChange={handleChange}
+                      onKeyUp={clearError}
+                    />
+                    {messages.memberName && (
+                      <Alert severity="error">{messages.memberName}</Alert>
+                    )}
+                  </Grid>
+
+                  <Grid
+                    className={classes.itemGrid}
+                    item
+                    md={6}
+                    lg={6}
+                    xl={6}
+                  >
+                    <Typography
+                      className={clsx(classes.typography, classes.formTypo)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      Phone Number<span style={{ color: "red" }}>*</span>
+                    </Typography>
+                    <TextField
+                      className={classes.textField}
+                      type="text"
+                      placeholder="Enter member phone number"
+                      id="mobileNumber"
+                      name="mobileNumber"
+                      variant="outlined"
+                      size="small"
+                      required
+                      fullWidth
+                      margin="normal"
+                      value={state.mobileNumber}
+                      onChange={handleChange}
+                      onKeyUp={clearError}
+                    />
+                    {messages.mobileNumber && (
+                      <Alert severity="error">{messages.mobileNumber}</Alert>
+                    )}
+                  </Grid>
+                  <Grid
+                    className={classes.itemGrid}
+                    item
+                    md={6}
+                    lg={6}
+                    xl={6}
+                  >
+                    <Typography
+                      className={clsx(classes.typography, classes.formTypo)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      Set Member As Leader?
+                    </Typography>
+                    <FormControl
+                      variant="outlined"
+                      // style={{ width: "100%" }}
+                      className={classes.formControl}
+                    >
+                      <RadioGroup
+                        row
+                        aria-label="position"
+                        name="isLeader"
+                        id="isLeader"
+                        value={state.isLeader}
+                        onChange={handleChange}
+                        // style={{justifyContent: 'spaace-between'}}
+                      >
+                        <FormControlLabel
+                          value={true}
+                          control={
+                            <Radio
+                              disableRipple
+                              disableTouchRipple
+                              disableFocusRipple
+                              color="primary"
+                            />
+                          }
+                          label="Yes"
+                          labelPlacement="top"
                         />
-                      ) : (
-                        // "Login"
-                        <Typography
-                          variant="body1"
-                          className={classes.submitTypo}
-                        >
-                          Submit
-                        </Typography>
-                      )}
-                    </Button>
-                  </Box>
-                </form>
-              </Box>
-            </NoSsr>
+                        <FormControlLabel
+                          value={false}
+                          control={
+                            <Radio
+                              disableRipple
+                              disableTouchRipple
+                              disableFocusRipple
+                              color="primary"
+                            />
+                          }
+                          label="No"
+                          labelPlacement="top"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    type="submit"
+                    fullWidth
+                    disabled={loading}
+                    variant="contained"
+                    style={{
+                      backgroundColor: "#72A624",
+                      color: "white",
+                      width: "70px",
+                      height: "40px",
+                      opacity: "1",
+                    }}
+                    className={classes.submit}
+                  >
+                    {loading ? (
+                      <CircularProgress
+                        size="2em"
+                        style={{ color: "#fff" }}
+                      />
+                    ) : (
+                      // "Login"
+                      <Typography
+                        variant="body1"
+                        className={classes.submitTypo}
+                      >
+                        Submit
+                      </Typography>
+                    )}
+                  </Button>
+                </Box>
+              </form>
+            </Box>
           </Box>
         </Box>
       </NoSsr>

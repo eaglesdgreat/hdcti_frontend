@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-export default function Gaurantor() {
+export default function Gaurantor({ member, isError, isLoading }) {
   const classes = useStyles()
 
   const [loading, setLoading] = useState(false)
@@ -185,7 +185,34 @@ export default function Gaurantor() {
                   Name Of Guarantor
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Name Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.guarantor ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.guarantor.nameOfGuarantor}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Name not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -208,7 +235,7 @@ export default function Gaurantor() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -222,7 +249,7 @@ export default function Gaurantor() {
                     >
                       Victor Test
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -240,7 +267,34 @@ export default function Gaurantor() {
                   Relationship With Borrower
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Relationship Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.guarantor ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.guarantor.guarantorRelationship}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Relationship not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -263,7 +317,7 @@ export default function Gaurantor() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -277,7 +331,7 @@ export default function Gaurantor() {
                     >
                       Brother
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -295,7 +349,34 @@ export default function Gaurantor() {
                   Guarantor's Home Address
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Home Address Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.guarantor ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.guarantor.guarantorHomeAddress}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Home Address not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -318,7 +399,7 @@ export default function Gaurantor() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -333,7 +414,7 @@ export default function Gaurantor() {
                     >
                       22, James Ibori Avenue, Sapele Delta State.
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -351,7 +432,34 @@ export default function Gaurantor() {
                   Guarantor's Office Address
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Office Address Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.guarantor ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.guarantor.guarantorOfficeAddress}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Office Address not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -374,7 +482,7 @@ export default function Gaurantor() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" />
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -388,7 +496,7 @@ export default function Gaurantor() {
                     >
                       22, James Ibori Avenue, Sapele Delta State.
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid
@@ -406,7 +514,34 @@ export default function Gaurantor() {
                   Recommendations From Group
                 </Typography>
 
-                {
+                {isError ? (
+                  <Typography className={classes.typography3}>
+                    Group Recommendations Unavailable
+                  </Typography>
+                ) : isLoading ? (
+                  <CircularProgress size="1em" style={{ color: "#362D73" }} />
+                ) : (
+                  member && member.guarantor ? (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {member.guarantor.recommendation}
+                    </Typography>
+                  ) : (
+                    <Typography
+                      className={clsx(classes.typography2)}
+                      variant="body1"
+                      noWrap={true}
+                      gutterBottom
+                    >
+                      Group Recommendations not Selected
+                    </Typography>
+                  )
+                )}
+
+                {/* {
                   edit ?
                     <TextField
                       type="text"
@@ -429,7 +564,7 @@ export default function Gaurantor() {
                         },
                         startAdornment: (
                           <InputAdornment position="start">
-                            {/* <img src="/search.svg" alt="search" /> */}
+                            <img src="/search.svg" alt="search" /> 
                             <EditIcon style={{ color: "#72A624" }} />
                           </InputAdornment>
                         ),
@@ -443,7 +578,7 @@ export default function Gaurantor() {
                     >
                       Mirabel Chukwu
                     </Typography>
-                }
+                } */}
               </Grid>
 
               <Grid

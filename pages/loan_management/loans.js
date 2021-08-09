@@ -32,6 +32,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
 } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -415,7 +418,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #362D7365',
     opacity: 1,
     height: '78px',
-    width: '130px',
+    width: '115px',
   },
   details: {
     font: 'var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) 13px/20px var(--unnamed-font-family-poppins)',
@@ -431,12 +434,18 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: "var(--unnamed-character-spacing-0)",
     color: "var(--unnamed-color-0d0d0d)",
     textAlign: "center",
-    font: "normal normal bold 13px/16px Helvetica Neue",
+    font: "normal normal medium 13px/16px Helvetica Neue",
     letterSpacing: "0px",
     color: "#0D0D0DA0",
     textTransform: "capitalize",
     opacity: 1,
   },
+  button: {
+    '&:hover': {
+      background: '#FFFFFF00',
+      opacity: 0.42,
+    }
+  }
 }));
 
 const filter_list = [
@@ -906,7 +915,7 @@ export default function Loans() {
                               href={{
                                 pathname: `/group_management/member_details/[mdid]`,
                                 query: {
-                                  mdid: 1,
+                                  mdid: loan.member_id,
                                 },
                               }}
                             >
@@ -933,7 +942,7 @@ export default function Loans() {
                             <Box display="flex" justifyContent="center">
                               <IconButton
                                 ref={anchorRef}
-                                aria-controls={open ? 'menu-list-grow' : undefined}
+                                aria-controls={open ? 'simple-list' : undefined}
                                 aria-haspopup="true"
                                 onClick={(e) => handleToggle(e, loan.application_id, loan.fullname)}
                                 className={classes.icon}
@@ -1000,7 +1009,7 @@ export default function Loans() {
                                   <Box display="flex" justifyContent="center">
                                     <Button
                                       size="large"
-                                      className={classes.button}
+                                      // className={classes.button}
                                       onClick={clickDelete}
                                       disableRipple
                                       disabled={loading}
@@ -1033,7 +1042,7 @@ export default function Loans() {
 
                                     <Button
                                       size="large"
-                                      className={classes.button}
+                                      // className={classes.button}
                                       onClick={handleDialogClose}
                                       disabled={loading}
                                       disableRipple
@@ -1061,57 +1070,59 @@ export default function Loans() {
                                   </Box>
                                 </DialogActions>
                               </Dialog>
-
-                              <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                                {({ TransitionProps, placement }) => (
-                                  <Grow
-                                    {...TransitionProps}
-                                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-                                  >
-                                    <Paper>
-                                      <ClickAwayListener onClickAway={handleClose}>
-                                        <MenuList className={classes.dropdown} autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                          <Link
-                                            href={{
-                                              pathname: `/loan_management/loan_details/[lid]`,
-                                              query: {
-                                                lid: loanId,
-                                              },
-                                            }}
-                                          >
-                                            <a
-                                              style={{
-                                                textDecoration: "none",
-                                                cursor: "pointer",
-                                              }}
-                                            >
-                                              <MenuItem onClick={handleClose}>
-                                                <Typography gutterBottom className={classes.details}>
-                                                  View Details
-                                                </Typography>
-                                              </MenuItem>
-                                            </a>
-                                          </Link>
-
-                                          <Divider light />
-
-                                          <MenuItem 
-                                            onClick={(e) => {
-                                              handleDialogClick(e)
-                                              // handleClose(e)
-                                            }}
-                                          >
-                                            <Typography gutterBottom className={classes.details}>
-                                              Delete
-                                            </Typography>
-                                          </MenuItem>
-                                        </MenuList>
-                                      </ClickAwayListener>
-                                    </Paper>
-                                  </Grow>
-                                )}
-                              </Popper>
                             </Box>
+
+                            {open && loanId === loan.application_id && (
+                              <ClickAwayListener onClickAway={handleClose}>
+                                <Box display="flex" justifyContent="flex-end" className={classes.dropdown}>
+                                  <List component="nav" aria-label="secondary mailbox folders">
+                                    <Link
+                                      href={{
+                                        pathname: `/loan_management/loan_details/[lid]`,
+                                        query: {
+                                          lid: loanId,
+                                        },
+                                      }}
+                                    >
+                                      <a
+                                        style={{
+                                          textDecoration: "none",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <ListItem 
+                                          style={{paddingTop:'0px'}} 
+                                          className={classes.button} 
+                                          button 
+                                          onClick={handleClose}
+                                          disableRipple
+                                        >
+                                          <ListItemText>
+                                            <Typography className={classes.details}>
+                                              View Details
+                                            </Typography>
+                                          </ListItemText>
+                                        </ListItem>
+                                      </a>
+                                    </Link>
+
+                                    <ListItem 
+                                      disableRipple 
+                                      style={{ paddingTop: '0px' }}
+                                      className={classes.button}
+                                      button 
+                                      onClick={handleDialogClick}
+                                    >
+                                      <ListItemText>
+                                        <Typography className={classes.details}>
+                                          Delete
+                                        </Typography>
+                                      </ListItemText>
+                                    </ListItem>
+                                  </List>
+                                </Box>
+                              </ClickAwayListener>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}

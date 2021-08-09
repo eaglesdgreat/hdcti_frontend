@@ -14,6 +14,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 import axios from 'axios'
 
+import { useStateValue } from "./../../StateProviders";
 import { isAuthenticated } from "../../lib/auth.helper";
 
 
@@ -154,18 +155,18 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-const roles = [
-  { id: 1, name: "Super User", value: "super", disabled: false },
-  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
-  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
-  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
-  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
-];
-
-
 
 export default function Stepper5() {
   const classes = useStyles()
+
+  const [{ exist_mem, validate_stepper5 }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "STEPPER_5_VALIDATIONS",
+      item: data,
+    });
+  };
 
   const initialState = {
     name_of_guarantor: '',
@@ -173,23 +174,30 @@ export default function Stepper5() {
     guarantor_occupation: '',
     guarantor_home_address: '',
     guarantor_office_address: '',
-    recommendation: '',
+    recommendation: null,
   }
 
-  const [state, setState] = useState({});
+  const [state, setState] = useState(initialState);
+  const [check, setCheck] = useState(false)
+  const [groupMembers, setGroupMembers] = useState([]);
 
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper5"))
 
     if (prevState) {
+      setCheck(true)
       setState(prevState)
     } else {
       setState(initialState)
     }
   }, [])
 
+  if(!exist_mem) {
+
+  }
   useEffect(async () => {
-    const groupId = JSON.parse(localStorage.getItem("stepper3")).groupId
+    const groupId = exist_mem ? JSON.parse(localStorage.getItem("stepper2")).member_name.groupId : JSON.parse(localStorage.getItem("stepper3")).groupId
+
     // const url = `${process.env.BACKEND_URL}/account/get_group_member/${groupId}`
     const url = `https://hcdti.savitechnig.com/account/get_group_member/${groupId}`;
     const token = isAuthenticated().auth_token
@@ -200,15 +208,41 @@ export default function Stepper5() {
           Authorization: `Token ${token}`,
         },
       });
-      console.log(response.data)
+      // console.log(response.data)
 
       if (response.data) {
-        setGroups(response.data)
+        // const group_members = response.data.result.map(x => x.memberName)
+        const group_members = response.data.result
+
+        setGroupMembers(group_members)
       }
     } catch (e) {
       console.log(e)
     }
   }, [])
+
+  useEffect(() => {
+    if(exist_mem) {
+      if (state.guarantor_occupation && state.recommendation) {
+        setCheck(true)
+        addToBasket(true)
+      } else {
+        setCheck(false)
+        addToBasket(false)
+      }
+    } else {
+      if (state.name_of_guarantor && state.relationship_with_borrower && state.guarantor_occupation && state.guarantor_home_address
+        && state.guarantor_office_address && state.recommendation) {
+        setCheck(true)
+        addToBasket(true)
+      } else {
+        setCheck(false)
+        addToBasket(false)
+      }
+    }
+  }, [check, state.name_of_guarantor, state.relationship_with_borrower, state.guarantor_occupation, state.guarantor_home_address, 
+      state.guarantor_office_address, state.recommendation
+  ])
 
   const handleChange = (event) => {
     localStorage.removeItem("stepper5");
@@ -232,74 +266,80 @@ export default function Stepper5() {
         // onSubmit={createGroup}
         >
           <Grid container spacing={5}>
-            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Name of Guarantor
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
+            {
+              !exist_mem && (
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                  <Box display="flex">
+                    <Typography variant="body1" gutterBottom className={classes.text}>
+                      Name of Guarantor
+                    </Typography><span style={{ color: 'red' }}>*</span>
+                  </Box>
 
-              <TextField
-                type="text"
-                fullWidth
-                variant="outlined"
-                margin="none"
-                style={{ width: '95%' }}
-                className={classes.roots}
-                value={state.name_of_guarantor}
-                name="name_of_guarantor"
-                onChange={(event) => handleChange(event)}
-                placeholder="Enter the name of the Guarantor"
-                id="name_of_guarantor"
-                InputProps={{
-                  className: classes.input,
-                  classes: {
-                    root: classes.cssOutlinedInput,
-                    focused: classes.cssFocused,
-                    notchedOutline: classes.notchedOutline,
-                  },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
-                }}
-              />
-            </Grid>
+                  <TextField
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    margin="none"
+                    style={{ width: '95%' }}
+                    className={classes.roots}
+                    value={state.name_of_guarantor}
+                    name="name_of_guarantor"
+                    onChange={(event) => handleChange(event)}
+                    placeholder="Enter the name of the Guarantor"
+                    id="name_of_guarantor"
+                    InputProps={{
+                      className: classes.input,
+                      classes: {
+                        root: classes.cssOutlinedInput,
+                        focused: classes.cssFocused,
+                        notchedOutline: classes.notchedOutline,
+                      },
+                      // startAdornment: (
+                      //   <InputAdornment position="start">
+                      //     {/* <img src="/search.svg" alt="search" /> */}
+                      //   </InputAdornment>
+                      // ),
+                    }}
+                  />
+                </Grid>
+              )
+            }
 
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Relationship with borrower
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
+            {!exist_mem && (
+              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Box display="flex">
+                  <Typography variant="body1" gutterBottom className={classes.text}>
+                    Relationship with borrower
+                  </Typography><span style={{ color: 'red' }}>*</span>
+                </Box>
 
-              <TextField
-                type="text"
-                fullWidth
-                variant="outlined"
-                margin="none"
-                className={classes.roots}
-                value={state.relationship_with_borrower}
-                name="relationship_with_borrower"
-                onChange={(event) => handleChange(event)}
-                placeholder="Enter guarantor’s relationship with borrower"
-                id="relationship_with_borrower"
-                InputProps={{
-                  className: classes.input,
-                  classes: {
-                    root: classes.cssOutlinedInput,
-                    focused: classes.cssFocused,
-                    notchedOutline: classes.notchedOutline,
-                  },
-                  // startAdornment: (
-                  //   <InputAdornment position="start">
-                  //     {/* <img src="/search.svg" alt="search" /> */}
-                  //   </InputAdornment>
-                  // ),
-                }}
-              />
-            </Grid>
+                <TextField
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  margin="none"
+                  className={classes.roots}
+                  value={state.relationship_with_borrower}
+                  name="relationship_with_borrower"
+                  onChange={(event) => handleChange(event)}
+                  placeholder="Enter guarantor’s relationship with borrower"
+                  id="relationship_with_borrower"
+                  InputProps={{
+                    className: classes.input,
+                    classes: {
+                      root: classes.cssOutlinedInput,
+                      focused: classes.cssFocused,
+                      notchedOutline: classes.notchedOutline,
+                    },
+                    // startAdornment: (
+                    //   <InputAdornment position="start">
+                    //     {/* <img src="/search.svg" alt="search" /> */}
+                    //   </InputAdornment>
+                    // ),
+                  }}
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <Box display="flex">
@@ -334,42 +374,46 @@ export default function Stepper5() {
                 }}
               />
             </Grid>
+            
+            {!exist_mem && (
+              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Box display="flex">
+                  <Typography variant="body1" gutterBottom className={classes.text}>
+                    Guarantor’s Home Address
+                  </Typography><span style={{ color: 'red' }}>*</span>
+                </Box>
 
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Guarantor’s Home Address
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
+                <TextareaAutosize
+                  aria-label="residential"
+                  placeholder="Enter the residential address"
+                  minRows={3}
+                  style={{ width: '90%', borderRadius: '5px', height: '95px' }}
+                  value={state.guarantor_home_address}
+                  name="guarantor_home_address"
+                  onChange={(event) => handleChange(event)}
+                />
+              </Grid>
+            )}
 
-              <TextareaAutosize
-                aria-label="residential"
-                placeholder="Enter the residential address"
-                minRows={3}
-                style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                value={state.guarantor_home_address}
-                name="guarantor_home_address"
-                onChange={(event) => handleChange(event)}
-              />
-            </Grid>
+            {!exist_mem && (
+              <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Box display="flex">
+                  <Typography variant="body1" gutterBottom className={classes.text}>
+                    Guarantor’s Office Address
+                  </Typography><span style={{ color: 'red' }}>*</span>
+                </Box>
 
-            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-              <Box display="flex">
-                <Typography variant="body1" gutterBottom className={classes.text}>
-                  Guarantor’s Office Address
-                </Typography><span style={{ color: 'red' }}>*</span>
-              </Box>
-
-              <TextareaAutosize
-                aria-label="residential"
-                placeholder="Enter the residential address"
-                minRows={3}
-                style={{ width: '90%', borderRadius: '5px', height: '95px' }}
-                value={state.guarantor_office_address}
-                name="guarantor_office_address"
-                onChange={(event) => handleChange(event)}
-              />
-            </Grid>
+                <TextareaAutosize
+                  aria-label="residential"
+                  placeholder="Enter the office address"
+                  minRows={3}
+                  style={{ width: '90%', borderRadius: '5px', height: '95px' }}
+                  value={state.guarantor_office_address}
+                  name="guarantor_office_address"
+                  onChange={(event) => handleChange(event)}
+                />
+              </Grid>
+            )}
 
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <Box display="flex">
@@ -380,14 +424,14 @@ export default function Stepper5() {
 
               <Autocomplete
                 id="recommendation"
-                options={roles}
-                getOptionSelected={(option, value) =>
-                  option.name === value.name
-                }
-                getOptionLabel={(option) => option.name}
+                options={groupMembers}
+                // getOptionSelected={(option, value) =>
+                //   option.memberName === value.memberName
+                // }
+                getOptionLabel={(option) => option.memberName}
                 classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                 style={{ width: '90%' }}
-                // value={state.member_name}
+                value={state.recommendation}
                 onChange={(event, newValue) => {
                   localStorage.removeItem("stepper5");
 
@@ -397,10 +441,10 @@ export default function Stepper5() {
                   if (newValue !== null) {
                     setState({
                       ...state,
-                      [name]: newValue.name,
+                      [name]: newValue,
                     });
 
-                    localStorage.setItem("stepper5", JSON.stringify({ ...state, [name]: newValue.name}));
+                    localStorage.setItem("stepper5", JSON.stringify({ ...state, [name]: newValue }));
                   } else {
                     setState({
                       ...state,
@@ -413,7 +457,6 @@ export default function Stepper5() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    // label="Select Group Name"
                     placeholder="Select a group member"
                     size="small"
                     variant="outlined"

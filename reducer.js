@@ -7,6 +7,11 @@ export const initialState = {
   groupId: '',
   exist_mem: false,
   openDialog: false,
+  validate_stepper1: false,
+  validate_stepper2: false,
+  validate_stepper3: false,
+  validate_stepper4: false,
+  validate_stepper5: false,
 };
 
 export const reducer = (state, action) => {
@@ -57,6 +62,36 @@ export const reducer = (state, action) => {
         return {
           ...state,
           openDialog: action.item,
+        };
+
+      case "STEPPER_1_VALIDATIONS":
+        return {
+          ...state,
+          validate_stepper1: action.item,
+        };
+
+      case "STEPPER_2_VALIDATIONS":
+        return {
+          ...state,
+          validate_stepper2: action.item,
+        };
+
+      case "STEPPER_3_VALIDATIONS":
+        return {
+          ...state,
+          validate_stepper3: action.item,
+        };
+
+      case "STEPPER_4_VALIDATIONS":
+        return {
+          ...state,
+          validate_stepper4: action.item,
+        };
+
+      case "STEPPER_5_VALIDATIONS":
+        return {
+          ...state,
+          validate_stepper5: action.item,
         };
 
       default:

@@ -572,7 +572,7 @@ const credits = [
 
 
 
-export default function CreditHistory() {
+export default function CreditHistory({ member, isError, isLoading }) {
   const classes = useStyles();
 
   const [page, setPage] = useState(0);
@@ -616,40 +616,40 @@ export default function CreditHistory() {
         </Box>
 
         {
-          // isMemberError ? (
-          //   <Box
-          //     display="flex"
-          //     justifyContent="center"
-          //     style={{
-          //       margin: "auto",
-          //       width: "100%",
-          //       borderRadius: "5px",
-          //       height: "100px",
-          //       padding: "100px",
-          //     }}
-          //   >
-          //     <Typography className={classes.typography}>
-          //       Error Fetching All Members Data
-          //     </Typography>
-          //   </Box>
-          // ) : isMemberLoading ? (
-          //   <Box
-          //     display="flex"
-          //     justifyContent="center"
-          //     style={{
-          //       width: "100%",
-          //       margin: "auto",
-          //       paddingLeft: 100,
-          //       paddingRight: 100,
-          //       paddingTop: 150,
-          //       paddingBottom: 150,
-          //     }}
-          //   >
-          //     <CircularProgress size="3em" style={{ color: "#362D73" }} />
-          //   </Box>
-          // ) : 
+          isError ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              style={{
+                margin: "auto",
+                width: "100%",
+                borderRadius: "5px",
+                height: "100px",
+                padding: "100px",
+              }}
+            >
+              <Typography className={classes.typography}>
+                Error Fetching All Credit History Data
+              </Typography>
+            </Box>
+          ) : isLoading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              style={{
+                width: "100%",
+                margin: "auto",
+                paddingLeft: 100,
+                paddingRight: 100,
+                paddingTop: 150,
+                paddingBottom: 150,
+              }}
+            >
+              <CircularProgress size="3em" style={{ color: "#362D73" }} />
+            </Box>
+          ) : 
           (
-            credits && (
+            member && (
               <Table className={classes.table}>
                 <TableHead className={classes.thead}>
                   <TableRow>
@@ -716,13 +716,40 @@ export default function CreditHistory() {
               Is Member Owing Any Bfb/Mfi?
             </Typography>
 
-            <Typography
+            {isError ? (
+              <Typography className={classes.typography3}>
+                Bfb/Mfi Unavailable
+              </Typography>
+            ) : isLoading ? (
+              <CircularProgress size="1em" style={{ color: "#362D73" }} />
+            ) : (
+              member && member.businessInfo ? (
+                <Typography
+                  className={clsx(classes.typography6)}
+                  variant="body1"
+                  gutterBottom
+                >
+                  {member.businessInfo.owningMFI ? 'yes' : 'no'}
+                </Typography>
+              ) : (
+                <Typography
+                  className={clsx(classes.typography2)}
+                  variant="body1"
+                  noWrap={true}
+                  gutterBottom
+                >
+                  Bfb/Mfi not Selected
+                </Typography>
+              )
+            )}
+
+            {/* <Typography
               className={clsx(classes.typography6)}
               variant="body1"
               gutterBottom
             >
-              Yes
-            </Typography>
+              {member.businessInfo.owningMFI ? 'yes' : 'no'}
+            </Typography> */}
           </Grid>
 
           <Grid className={classes.itemGrid} item md={6} lg={6} xl={6}>
@@ -734,15 +761,34 @@ export default function CreditHistory() {
               Is Member Owing Any Bfb/Mfi?
             </Typography>
 
-            <ul style={{marginLeft: "-28px"}}>
-              <li className={clsx(classes.typography6)}>
-                Trust Microfinance
-              </li>
-
-              <li className={clsx(classes.typography6)}>
-                Fidelity Microfinance
-              </li>
-            </ul>
+            {isError ? (
+              <Typography className={classes.typography3}>
+                Bfb/Mfi Unavailable
+              </Typography>
+            ) : isLoading ? (
+              <CircularProgress size="1em" style={{ color: "#362D73" }} />
+            ) : (
+              member && member.businessInfo ? (
+                <ul style={{marginLeft: "-28px"}}>
+                  {
+                    member.businessInfo.mfiName.split(',').map((name, i)  => (
+                      <li key={i} className={clsx(classes.typography6)}>
+                        {name}
+                      </li>
+                    ))
+                  }
+                </ul>
+              ) : (
+                <Typography
+                  className={clsx(classes.typography2)}
+                  variant="body1"
+                  noWrap={true}
+                  gutterBottom
+                >
+                  Bfb/Mfi not Selected
+                </Typography>
+              )
+            )}
           </Grid>
         </Grid>
       </Box>

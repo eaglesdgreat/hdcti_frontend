@@ -11,48 +11,13 @@ import {
   MenuItem,
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { useStateValue } from "./../../StateProviders";
+import axios from 'axios'
 import { Autocomplete, Alert, AlertTitle } from "@material-ui/lab";
 
+import { useStateValue } from "./../../StateProviders";
+import validations from './../../lib/validations'
+import { isAuthenticated } from "../../lib/auth.helper";
 import { maritalStatuses, educations } from './../../lib/places'
-
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
-    background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
-    borderRadius: "5px",
-    opacity: "1",
-    // color: "#182C51",
-    fontSize: "16px",
-    // fontWeight: "bold",
-    fontFamily: "Source Sans Pro",
-    fontStyle: "normal",
-    lineHeight: "20px",
-
-    borderRadius: '5px',
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
-
-    // transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(InputBase);
 
 
 
@@ -166,10 +131,28 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
+const roles = [
+  // { id: 6, name: "Select Role", value: "", disabled: true },
+  { id: 1, name: "Super User", value: "super", disabled: false },
+  { id: 2, name: "Credit Officer", value: "credit_officer", disabled: false },
+  { id: 3, name: "Branch Manager", value: "branch_manager", disabled: false },
+  { id: 4, name: "Senior Manager", value: "senior_manager", disabled: false },
+  { id: 5, name: "Agency Bank", value: "agency_bank", disabled: false },
+];
+
+
 
 export default function Stepper2() {
   const classes = useStyles()
-  const [{ exist_mem }, dispatch] = useStateValue();
+  
+  const [{ exist_mem, validate_stepper2 }, dispatch] = useStateValue();
+
+  const addToBasket = (data) => {
+    dispatch({
+      type: "STEPPER_2_VALIDATIONS",
+      item: data,
+    });
+  };
 
   const initialState = {
     full_name: '',
@@ -178,28 +161,112 @@ export default function Stepper2() {
     perm_address: '',
     phone: '',
     next_kin_phone: '',
-    marital_status: '',
-    formal_education: '',
+    marital_status: null,
+    formal_education: null,
     buz_address: '',
     next_kin_name: '',
-    member_name: '',
+    member_name: null,
     member_exist: exist_mem,
   }
 
-  const [state, setState] = useState({});
+  const [state, setState] = useState(initialState);
+  const [check, setCheck] = useState(false)
   const [inputValue, setInputValue] = useState({})
+  const [members, setMembers] = useState([])
+  const [messages, setMessages] = useState({
+    ...initialState,
+    success: "",
+    failure: "",
+  });
 
   useEffect(() => {
     const prevState = JSON.parse(localStorage.getItem("stepper2"))
 
     if (prevState) {
       setState(prevState)
-      setInputValue(prevState)
+      setCheck(true)
     } else {
       setState(initialState)
-      setInputValue(initialState)
     }
   }, [])
+
+  useEffect(async () => {
+    // const url = `${process.env.BACKEND_URL}/account/allgroupmember`
+    const url = `https://hcdti.savitechnig.com/account/allgroupmember`;
+    const token = isAuthenticated().auth_token
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      // console.log(response.data)
+
+      if (response.data) {
+        const all_members = response.data
+
+        setMembers(all_members)
+      }
+    } catch (e) {
+      // console.log(e)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (exist_mem) {
+      if (state.member_name) {
+        setCheck(true)
+        addToBasket(true)
+      } else {
+        setCheck(false)
+        addToBasket(false)
+      }
+    } else {
+      if (state.full_name && state.father_husband_name && state.res_address
+        && state.perm_address && state.phone && state.next_kin_phone && state.marital_status
+        && state.formal_education && state.buz_address && state.next_kin_name && check
+      ) {
+        // setCheck(true)
+        addToBasket(true)
+      } else {
+        // setCheck(false)
+        addToBasket(false)
+      }
+    }
+  }, [
+    check, state.full_name, state.father_husband_name, state.res_address, 
+    state.perm_address, state.phone, state.next_kin_phone, state.marital_status,
+    state.formal_education, state.buz_address, state.next_kin_name, state.member_name
+  ])
+
+  const clearError = (e) => {
+    const { name } = e.target;
+
+    if(name === 'phone') {
+      const validatePass = validations(state.phone, "Phone Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+
+    if (name === 'next_kin_phone') {
+      const validatePass = validations(state.next_kin_phone, "Phone Number", false, "digits");
+
+      if (validatePass.status) {
+        setMessages({ ...messages, [name]: validatePass.message });
+        setCheck(false)
+      } else {
+        setMessages({ ...messages, [name]: "" });
+        setCheck(true)
+      }
+    }
+  };
 
   const handleChange = (event) => {
     localStorage.removeItem("stepper2");
@@ -207,7 +274,7 @@ export default function Stepper2() {
 
     setState({ ...state, [name]: value })
 
-    localStorage.setItem("stepper2", JSON.stringify(state));
+    localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: value}));
   };
 
   return (
@@ -352,6 +419,7 @@ export default function Stepper2() {
                     className={classes.roots}
                     value={state.phone}
                     name="phone"
+                    onKeyUp={clearError}
                     onChange={(event) => handleChange(event)}
                     placeholder="Enter the phone Number"
                     id="phone"
@@ -362,13 +430,14 @@ export default function Stepper2() {
                         focused: classes.cssFocused,
                         notchedOutline: classes.notchedOutline,
                       },
-                      // startAdornment: (
-                      //   <InputAdornment position="start">
-                      //     {/* <img src="/search.svg" alt="search" /> */}
-                      //   </InputAdornment>
-                      // ),
                     }}
                   />
+
+                  {messages.phone && (
+                    <Alert style={{width: '90%'}} severity="error">
+                      {messages.phone}
+                    </Alert>
+                  )}
                 </Grid>
               )
             }
@@ -389,6 +458,7 @@ export default function Stepper2() {
                   className={classes.roots}
                   value={state.next_kin_phone}
                   name="next_kin_phone"
+                  onKeyUp={clearError}
                   onChange={(event) => handleChange(event)}
                   placeholder="Enter the Phone Number of Next of Kin"
                   id="next_kin_phone"
@@ -399,13 +469,14 @@ export default function Stepper2() {
                       focused: classes.cssFocused,
                       notchedOutline: classes.notchedOutline,
                     },
-                    // startAdornment: (
-                    //   <InputAdornment position="start">
-                    //     {/* <img src="/search.svg" alt="search" /> */}
-                    //   </InputAdornment>
-                    // ),
                   }}
                 />
+
+                {messages.next_kin_phone && (
+                  <Alert style={{ width: '90%' }} severity="error">
+                    {messages.next_kin_phone}
+                  </Alert>
+                )}
               </Grid>
             )}
 
@@ -450,10 +521,10 @@ export default function Stepper2() {
                         localStorage.setItem("stepper2", JSON.stringify({ ...state, marital_status: '' }));
                       }
                     }}
-                    inputValue={inputValue.marital_status}
-                    onInputChange={(_, newInputValue) => {
-                      setInputValue({ ...inputValue, marital_status: newInputValue })
-                    }}
+                    // inputValue={inputValue.marital_status}
+                    // onInputChange={(_, newInputValue) => {
+                    //   setInputValue({ ...inputValue, marital_status: newInputValue })
+                    // }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -478,11 +549,11 @@ export default function Stepper2() {
 
                     <Autocomplete
                       id="member_name"
-                      options={roles}
+                      options={members}
                       // getOptionSelected={(option, value) =>
-                      //   option.name === value.name
+                      //   option.memberName === value.memberName
                       // }
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option.memberName}
                       classes={{ inputRoot: classes.inputRoot, focused: classes.autoInput }}
                       style={{ width: '90%' }}
                       value={state.member_name}
@@ -495,10 +566,10 @@ export default function Stepper2() {
                         if (newValue !== null) {
                           setState({
                             ...state,
-                            [name]: newValue.name,
+                            [name]: newValue,
                           });
 
-                          localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue.name }));
+                          localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue }));
                         } else {
                           setState({
                             ...state,
@@ -508,10 +579,10 @@ export default function Stepper2() {
                           localStorage.setItem("stepper2", JSON.stringify({ ...state, member_name: '' }));
                         }
                       }}
-                      inputValue={inputValue.member_name}
-                      onInputChange={(_, newInputValue) => {
-                        setInputValue({ ...inputValue, member_name: newInputValue.name })
-                      }}
+                      // inputValue={inputValue.member_name}
+                      // onInputChange={(_, newInputValue) => {
+                      //   setInputValue({ ...inputValue, member_name: newInputValue.name })
+                      // }}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -559,7 +630,6 @@ export default function Stepper2() {
                       });
 
                       localStorage.setItem("stepper2", JSON.stringify({ ...state, [name]: newValue }));
-                      console.log(JSON.parse(localStorage.getItem("stepper2")), state)
                     } else {
                       setState({
                         ...state,
@@ -569,10 +639,10 @@ export default function Stepper2() {
                       localStorage.setItem("stepper2", JSON.stringify({ ...state, formal_education: '' }));
                     }
                   }}
-                  inputValue={inputValue.formal_education}
-                  onInputChange={(_, newInputValue) => {
-                    setInputValue({ ...inputValue, formal_education: newInputValue })
-                  }}
+                  // inputValue={inputValue.formal_education}
+                  // onInputChange={(_, newInputValue) => {
+                  //   setInputValue({ ...inputValue, formal_education: newInputValue })
+                  // }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
