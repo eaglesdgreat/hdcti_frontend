@@ -30,10 +30,12 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 250,
     background: "#ECF1F2 0% 0% no-repeat padding-box",
     background: "var(--unnamed-color-ecf1f2) 0% 0% no-repeat padding-box",
+    // background: "#ECF1F2 0% 0% no-repeat padding-box",
     opacity: "1",
   },
   card: {
-    width: "529px",
+    width: "inherit",
+    // width: "529px",
     height: "421px",
     // paddingTop: '5%',
     // paddingBottom: '5%',
@@ -276,7 +278,7 @@ export default function Index() {
       try {
         const response = await axios.post(url, body)
         // console.log(response)
-        setState(initialState);
+        // setState(initialState);
 
         if (response.data) {
           let getUser = await checkUser(response.data.auth_token);
@@ -285,7 +287,9 @@ export default function Index() {
             getUser.auth_token = response.data.auth_token;
 
             const last_url = JSON.parse(localStorage.getItem("last_url"));
+            // const last_url = '';
 
+            console.log(last_url)
             setState(initialState);
 
             setLoading(false);
@@ -341,7 +345,11 @@ export default function Index() {
   return (
     <div className={classes.root}>
       <Container maxWidth="sm">
-        <Box display="flex" className={classes.box}>
+        <Box display="flex" flexDirection="column" className={classes.box}>
+          <Box display="flex" justifyContent="center" style={{paddingBottom: '20px'}}>
+            <img style={{width: '20%'}} src="/logo-only.png" alt="Hcdti Logo" />
+          </Box>
+
           <Card className={classes.card}>
             <CardContent style={{ padding: "0px" }}>
               <Typography

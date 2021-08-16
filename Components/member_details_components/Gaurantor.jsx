@@ -192,7 +192,7 @@ export default function Gaurantor({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.guarantor ? (
+                  member && member.guarantor && member.guarantor.nameOfGuarantor ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -274,7 +274,7 @@ export default function Gaurantor({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.guarantor ? (
+                  member && member.guarantor && member.guarantor.guarantorRelationship ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -356,7 +356,7 @@ export default function Gaurantor({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.guarantor ? (
+                  member && member.guarantor && member.guarantor.guarantorHomeAddress ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -439,7 +439,7 @@ export default function Gaurantor({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.guarantor ? (
+                  member && member.guarantor && member.guarantor.guarantorOfficeAddress ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -521,7 +521,7 @@ export default function Gaurantor({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.guarantor ? (
+                  member && member.guarantor && member.guarantor.recommendation ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"

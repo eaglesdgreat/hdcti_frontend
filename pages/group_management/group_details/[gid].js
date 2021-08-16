@@ -549,7 +549,7 @@ const fetcher = async (...arg) => {
 
 const groupData = () => {
   const router = useRouter();
-  const { gid } = router.query;
+  const {gid} = router.query
 
   // const url = `${process.env.BACKEND_URL}/account/groupbyid/${gid}`
   const url = `https://hcdti.savitechnig.com/account/groupbyid/${gid}`;
@@ -610,9 +610,7 @@ export default function GroupDetails() {
   const [idx, setIdx] = useState("");
   const [loading, setLoading] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [groupId, setGroupId] = useState(
-    JSON.parse(localStorage.getItem("group_id"))
-  );
+  const [groupId, setGroupId] = useState(JSON.parse(localStorage.getItem("group_id")));
 
   const anchorRef = useRef(null);
 
@@ -705,29 +703,21 @@ export default function GroupDetails() {
 
     const url = "/group_management/add_member";
 
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/group_details/" + gid)
-    );
-    localStorage.setItem(
-      "add_member",
-      JSON.stringify({ group: groupId, name: group.result.groupName })
-    );
+    localStorage.setItem("last_url",JSON.stringify("/group_management/group_details/" + gid));
+    localStorage.setItem("add_member", JSON.stringify({ group: groupId, name: group.result.groupName }));
 
     router.push(url, "/group_management/add_member");
   };
 
   const handleEditClick = (id) => {
-    const { gid } = router.query;
+    const gid = router.query.gid ? router.query.gid : JSON.parse(localStorage.getItem("group_id")).id
     localStorage.removeItem("last_url");
+    localStorage.removeItem("member_id");
 
-    // const url = "/group_management/edit_member/" + id;
     const url = "/group_management/edit_member/" + id;
 
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/group_details/" + gid)
-    );
+    localStorage.setItem("last_url", JSON.stringify("/group_management/group_details/" + gid));
+    localStorage.setItem("member_id", JSON.stringify(id));
 
     router.push(url);
   };
@@ -1155,42 +1145,6 @@ export default function GroupDetails() {
                 </Box>
               </ClickAwayListener>
             )}
-            {/* <div>
-              <Popper
-                open={openMenu}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-                style={{ width: "23.3%", left:'-161px'}}
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin:
-                        placement === "bottom"
-                          ? "center bottom"
-                          : "center top",
-                    }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList
-                          autoFocusItem={openMenu}
-                          id="menu-list-grow"
-                          onKeyDown={handleListKeyDown}
-                        >
-                          <MenuItem onClick={handleClose}>Profile</MenuItem>
-                          <MenuItem onClick={handleClose}>My account</MenuItem>
-                          <MenuItem onClick={handleClose}>Logout</MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
-            </div> */}
           </Box>
 
           <Box className={classes.rightBox}>
@@ -1360,7 +1314,27 @@ export default function GroupDetails() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {(search.length > 0 ? search : members.result)
+                      {
+                        (state !== "" && search.length === 0)
+                          ? (
+                            <Box
+                              display="flex"
+                              justifyContent="center"
+                              style={{
+                                margin: "auto",
+                                width: "185%",
+                                // borderRadius: "5px",
+                                height: "20px",
+                                padding: "100px",
+                              }}
+                            >
+                              <Typography className={classes.typography}>
+                                No result found for this search
+                              </Typography>
+                            </Box>
+                          )
+                          :
+                        (search.length > 0 ? search : members.result)
                         .slice(
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage

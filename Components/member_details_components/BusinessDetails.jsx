@@ -194,7 +194,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.typeOfBusiness ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -276,13 +276,13 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.durationOfBusiness ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
                       gutterBottom
                     >
-                      {member.businessInfo.durationOfBusiness} year(s)
+                      {member.businessInfo.durationOfBusiness ? member.businessInfo.durationOfBusiness+' year(s)' : ''} 
                     </Typography>
                   ) : (
                     <Typography
@@ -358,7 +358,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.businessAddress ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -446,7 +446,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                       variant="body1"
                       gutterBottom
                     >
-                      {member.businessInfo.familyInHcdti ? 'yes' : 'no'}
+                      {member.businessInfo.familyInHcdti ? 'Yes' : 'No'}
                     </Typography>
                   ) : (
                     <Typography
@@ -522,7 +522,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.amountOfPassbook ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -614,7 +614,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.bank ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -696,7 +696,7 @@ export default function BusinessDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.businessInfo ? (
+                  member && member.businessInfo && member.businessInfo.accountNo ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"

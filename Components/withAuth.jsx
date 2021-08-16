@@ -24,9 +24,11 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto', 
     width: '30%', 
     height: '60px', 
-    padding: '20px',
+    paddingTop: '20px',
+    // display: 'flex',
+    // justifyContent: 'center',
     [theme.breakpoints.down("sm")]: {
-      width: "100%",
+      width: '100%', 
       height: '30px',
       padding: '10px',
     }
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function AuthProvider({ children }) {
-  const { pathname, events } = useRouter();
+  const { pathname, events, query, push } = useRouter();
   const checkUrl = ["/", "/staff_reset_password"];
   const classes = useStyles()
   const [loading, setLoading] = useState(true);
@@ -97,6 +99,7 @@ function AuthProvider({ children }) {
         window.location.href = "/";
       })
     }
+    // console.log('url',localStorage.getItem("last_url"))
 
     // Monitor routes
     events.on("routeChangeStart", handleRouteChange);
@@ -105,18 +108,37 @@ function AuthProvider({ children }) {
     };
   }, [pathname, loading]);
 
+  const getUrl = () => {
+    let list = pathname.split('/')
+    let url = ''
+
+    list.forEach(item => {
+      const dynamicUrl = ['[gid]', '[mdid]', '[mid]', '[gpid]', '[lid]', '[uid]']
+
+      if (dynamicUrl.includes(item)) {
+        let dynamicStr = item.replace('[', '').replace(']', '')
+
+        const id = query[dynamicStr]
+        url = pathname.replace(`[${dynamicStr}]`, parseInt(id))
+      } else {
+        url = pathname
+      }
+    })
+
+    return url
+  }
+
   const logOutFnc = () => {
     logout(() => {
       setLoading(false);
-      
+      const url = getUrl()
+
       localStorage.removeItem("last_url");
-      localStorage.setItem(
-        "last_url",
-        JSON.stringify(pathname)
-      );
+      localStorage.setItem("last_url", JSON.stringify(url));
       localStorage.setItem('alert', true)
 
       window.location.href = "/";
+      // push('/')
     })
   }
 
@@ -130,7 +152,7 @@ function AuthProvider({ children }) {
             </Box>
 
             <Box display="flex" flexDirection="column" className={classes.box}>
-              <Box style={{ paddingBottom: '40px' }}>
+              <Box style={{ paddingBottom: '30px' }}>
                 <Skeleton height={50} />
               </Box>
               <Skeleton height={627}  />

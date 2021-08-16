@@ -3,6 +3,7 @@ import {
   Stepper,
   Step,
   StepLabel,
+  StepContent,
   Typography,
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   Divider,
   StepConnector,
   CircularProgress,
+  Hidden,
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
@@ -200,6 +202,12 @@ const useStyles = makeStyles((theme) => ({
       color: '#FFFFFF',
       opacity: 1,
     }
+  },
+  actionsContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  resetContainer: {
+    padding: theme.spacing(3),
   },
 }))
 
@@ -510,83 +518,157 @@ export default function StepperForm() {
     <Layout path={path}>
       <NoSsr>
         <Box className={classes.root}>
-          <Stepper activeStep={activeStep} connector={<QontoConnector />}>
-            {
-              steps.map((label, i) => (
-                <Step key={i}>
-                  <StepLabel StepIconComponent={QontoStepIcon}>
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))
-            }
-          </Stepper>
+          <Hidden smDown>
+            <Stepper activeStep={activeStep} connector={<QontoConnector />}>
+              {
+                steps.map((label, i) => (
+                  <Step key={i}>
+                    <StepLabel StepIconComponent={QontoStepIcon}>
+                      {label}
+                    </StepLabel>
+                  </Step>
+                ))
+              }
+            </Stepper>
 
-          <Divider light />
-          
-          <Box style={{ width: '85%', margin: 'auto', paddingTop: '40px', paddingBottom: '40px'}}>
-            <Box className={classes.box}>
-              <Typography>{member_exist ? getStepContent2(activeStep, member_exist) : getStepContent(activeStep)}</Typography>
+            <Divider light />
 
-              <Box display="flex" justifyContent="flex-end" style={{padding: '30px', width:'91%', margin:'auto'}}>
-                {
-                  activeStep === 0 ? '' : (
-                    <Button 
-                      disabled={activeStep === 0} 
-                      onClick={handleBack} 
-                      className={classes.prevButton}
-                      disableFocusRipple
-                      disableRipple
-                      disableTouchRipple
-                    >
-                      Previous
-                    </Button>
-                  )
-                }
+            <Box style={{ width: '85%', margin: 'auto', paddingTop: '40px', paddingBottom: '40px' }}>
+              <Box className={classes.box}>
+                <Typography>{member_exist ? getStepContent2(activeStep, member_exist) : getStepContent(activeStep)}</Typography>
 
-                {
-                  activeStep === steps.length - 1 
-                  ? (
+                <Box display="flex" justifyContent="flex-end" style={{ padding: '30px', width: '91%', margin: 'auto' }}>
+                  {
+                    activeStep === 0 ? '' : (
                       <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                        className={classes.button}
-                        disabled={validateAStep(activeStep)}
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.prevButton}
                         disableFocusRipple
                         disableRipple
                         disableTouchRipple
                       >
-                        {loading ? (
+                        Previous
+                      </Button>
+                    )
+                  }
+
+                  {
+                    activeStep === steps.length - 1
+                      ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleSubmit}
+                          disabled={loading}
+                          className={classes.button}
+                          disabled={validateAStep(activeStep)}
+                          disableFocusRipple
+                          disableRipple
+                          disableTouchRipple
+                        >
+                          {loading ? (
                             <CircularProgress
                               size="2em"
                               style={{ color: "#fff" }}
                             />
-                          ) : 
-                          'Finish'
-                        }
-                      </Button>
-                  ) 
-                   
-                  : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleNext}
-                        className={classes.button}
-                        disabled={validateAStep(activeStep)}
-                        disableFocusRipple
-                        disableRipple
-                        disableTouchRipple
-                      >
-                        Next
-                      </Button>
-                  )
-                }
+                          ) :
+                            'Finish'
+                          }
+                        </Button>
+                      )
+
+                      : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleNext}
+                          className={classes.button}
+                          disabled={validateAStep(activeStep)}
+                          disableFocusRipple
+                          disableRipple
+                          disableTouchRipple
+                        >
+                          Next
+                        </Button>
+                      )
+                  }
+                </Box>
               </Box>
             </Box>
-          </Box>
+          </Hidden>
+          
+          <Hidden mdUp>
+            <Stepper activeStep={activeStep} connector={<QontoConnector />} orientation="vertical">
+              {steps.map((label, index) => (
+                <Step key={index}>
+                  <StepLabel>{label}</StepLabel>
+                  <StepContent style={{marginLeft: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+                    <Typography>{member_exist ? getStepContent2(activeStep, member_exist) : getStepContent(activeStep)}</Typography>
+                    <div className={classes.actionsContainer}>
+                      <Box display="flex" justifyContent="flex-end" style={{ padding: '15px', width: '100%', margin: 'auto' }}>
+                        {
+                          activeStep === 0 ? '' : (
+                            <Button
+                              disabled={activeStep === 0}
+                              onClick={handleBack}
+                              className={classes.prevButton}
+                              disableFocusRipple
+                              disableRipple
+                              disableTouchRipple
+                            >
+                              Previous
+                            </Button>
+                          )
+                        }
+
+                        {
+                          activeStep === steps.length - 1
+                            ? (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                className={classes.button}
+                                disabled={validateAStep(activeStep)}
+                                disableFocusRipple
+                                disableRipple
+                                disableTouchRipple
+                              >
+                                {loading ? (
+                                  <CircularProgress
+                                    size="2em"
+                                    style={{ color: "#fff" }}
+                                  />
+                                ) :
+                                  'Finish'
+                                }
+                              </Button>
+                            )
+
+                            : (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleNext}
+                                className={classes.button}
+                                disabled={validateAStep(activeStep)}
+                                disableFocusRipple
+                                disableRipple
+                                disableTouchRipple
+                              >
+                                Next
+                              </Button>
+                            )
+                        }
+                      </Box>
+                    </div>
+                  </StepContent>
+                </Step>
+              ))}
+            </Stepper>
+          </Hidden>
         </Box>
       </NoSsr>
     </Layout>

@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
   appbar: {
     background: '#EFEFEF 0% 0% no-repeat padding-box;',
     paddingRight: '4%',
-    paddingBottom: '1%',
+    paddingBottom: '3%',
     paddingTop: '1%',
-    height: "60px",
+    height: "50px",
     opacity: "1",
   },
   avatar: {
@@ -160,7 +160,7 @@ function Header(props) {
             // paddingBottom: '1.5%',
           }}
         >
-          <AppBar className={classes.appbar} position="sticky" elevation={1}>
+          <AppBar className={classes.appbar} position="fixed" elevation={1}>
             <Toolbar>
               <Grid container spacing={1} alignItems="center">
                 <Hidden smUp>

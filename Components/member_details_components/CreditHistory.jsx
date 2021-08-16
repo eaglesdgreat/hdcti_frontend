@@ -729,7 +729,7 @@ export default function CreditHistory({ member, isError, isLoading }) {
                   variant="body1"
                   gutterBottom
                 >
-                  {member.businessInfo.owningMFI ? 'yes' : 'no'}
+                  {member.businessInfo.owningMFI ? 'Yes' : 'No'}
                 </Typography>
               ) : (
                 <Typography
@@ -768,7 +768,7 @@ export default function CreditHistory({ member, isError, isLoading }) {
             ) : isLoading ? (
               <CircularProgress size="1em" style={{ color: "#362D73" }} />
             ) : (
-              member && member.businessInfo ? (
+              member && member.businessInfo && member.businessInfo.mfiName ? (
                 <ul style={{marginLeft: "-28px"}}>
                   {
                     member.businessInfo.mfiName.split(',').map((name, i)  => (

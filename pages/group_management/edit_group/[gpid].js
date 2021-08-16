@@ -154,8 +154,7 @@ const fetcher = async (...arg) => {
 
 const groupData = () => {
   const router = useRouter();
-  const { gpid } = router.query;
-
+  const {gpid} = router.query
   //   const url = `${process.env.BACKEND_URL}/account/groupbyid/${gpid}`;
   const url = `https://hcdti.savitechnig.com/account/groupbyid/${gpid}`;
 
@@ -173,7 +172,6 @@ const groupData = () => {
     error,
     mutate: groupMutate,
   } = useSWR([url, token], fetcher, { ...options });
-  console.log(error)
 
   return {
     group: data,

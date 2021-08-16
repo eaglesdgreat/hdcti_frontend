@@ -375,11 +375,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
     opacity: 1,
     height: "331px",
-    width: "25%",
-    position: 'sticky',
+    width: "21%",
+    position: 'fixed',
     zIndex: 0,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
+      position: "inherit",
+      left: 0,
     },
   },
   showPass: {
@@ -415,58 +417,73 @@ const useStyles = makeStyles((theme) => ({
     // border: "1px solid #E0E0E0",
     borderRadius: "5px",
     opacity: 1,
+    position: "relative",
+    left: '30%',
     width: "70%",
     "@media only screen and (max-width: 280px)": {
       marginTop: "69px",
       width: "240px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 281px) and (max-width: 320px)": {
       marginTop: "69px",
       width: "270px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 321px) and (max-width: 360px)": {
       marginTop: "69px",
       width: "310px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 361px) and (max-width: 375px)": {
       marginTop: "69px",
       width: "330px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 376px) and (max-width: 384px)": {
       marginTop: "69px",
       width: "340px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 385px) and (max-width: 411px)": {
       marginTop: "69px",
       width: "367px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 412px) and (max-width: 414px)": {
       marginTop: "69px",
       width: "367px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 415px) and (max-width: 480px)": {
       marginTop: "69px",
       width: "435px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 481px) and (max-width: 540px)": {
       marginTop: "69px",
       width: "495px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 541px) and (max-width: 600px)": {
       marginTop: "69px",
       width: "317px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 601px) and (max-width: 768px)": {
       marginTop: "69px",
       width: "490px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 769px) and (max-width: 800px)": {
       marginTop: "69px",
       width: "510px",
+      position: "inherit",
     },
     "@media only screen and (min-width: 801px) and (max-width: 834px)": {
       marginTop: "69px",
       width: "530px",
+      position: "inherit",
     },
   },
   actionTypo: {
@@ -560,7 +577,7 @@ const fetcher = async (...arg) => {
 
 const memberData = () => {
   const router = useRouter();
-  const { mdid } = router.query;
+  const {mdid} = router.query
 
   // const url = `${process.env.BACKEND_URL}/account/memberinfo/${mdid}`
   const url = `https://hcdti.savitechnig.com/account/memberinfo/${mdid}`;
@@ -600,35 +617,9 @@ export default function MemberDetailsPage() {
 
   // Fetching data from backend with SWR
   const { member, isLoading, isError } = memberData();
-  console.log('data=>',member)
+  // console.log('data=>',member)
 
-  const [state, setState] = useState("");
-  const [search, setSearch] = useState([]);
-  const [page, setPage] = useState(0);
-  const [open, setOpen] = useState(false);
-  const [groupOpen, setGroupOpen] = useState(false);
-  const [openMenu, setOpenMenu] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [idx, setIdx] = useState("");
-
-  const handleClick = () => {
-    const { gid } = router.query;
-    localStorage.removeItem("last_url");
-    localStorage.removeItem("add_member");
-
-    const url = "/group_management/add_member";
-
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/group_details/" + gid)
-    );
-    localStorage.setItem(
-      "add_member",
-      JSON.stringify({ group: groupId, name: group.result.groupName })
-    );
-
-    router.push(url, "/group_management/add_member");
-  };
 
   const handleEditClick = (id) => {
     const { gid } = router.query;
@@ -643,101 +634,6 @@ export default function MemberDetailsPage() {
     );
 
     router.push(url);
-  };
-
-  // delete a group handler
-  const clickDelete = async (e) => {
-    e.preventDefault();
-
-    let isValid = true;
-
-    const { gid } = router.query;
-    const tok = isAuthenticated().auth_token;
-
-    // const url = `${process.env.BACKEND_URL}/account/removegroup/${gid}`;
-    const url = `https://hcdti.savitechnig.com/account/removegroup/${gid}`;
-
-    if (isValid) {
-      setLoading(true);
-
-      try {
-        const response = await axios.delete(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${tok}`,
-          },
-        });
-        // console.log(response);
-
-        setLoading(false);
-
-        enqueueSnackbar(`Group Account Has Been Deleted Succesfully.`, {
-          variant: "success",
-        });
-
-        handleDialogCloseGroup();
-
-        window.location.href = "/group_management/groups";
-      } catch (e) {
-        console.log(e);
-
-        if (e.response) {
-          setLoading(false);
-
-          enqueueSnackbar(`Error Deleting Group Account. Try Again`, {
-            variant: "error",
-          });
-        }
-      }
-    }
-  };
-
-  // delete a group member handler
-  const deleteMember = async (e) => {
-    e.preventDefault();
-
-    let isValid = true;
-
-    const { gid } = router.query;
-    const tok = isAuthenticated().auth_token;
-    console.log(tok);
-
-    // const url = `${process.env.BACKEND_URL}/account/removemember/${idx}`;
-    const url = `https://hcdti.savitechnig.com/account/removemember/${idx}`;
-
-    if (isValid) {
-      setLoading(true);
-
-      try {
-        const response = await axios.delete(url, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Token ${tok}`,
-          },
-        });
-        // console.log(response);
-
-        setLoading(false);
-
-        enqueueSnackbar(`Group Member Has Been Deleted Succesfully.`, {
-          variant: "success",
-        });
-
-        handleDialogClose();
-
-        window.location.href = "/group_management/group_details/" + gid;
-      } catch (e) {
-        console.log(e);
-
-        if (e.response) {
-          setLoading(false);
-
-          enqueueSnackbar(`Error Deleting Group Member. Try Again`, {
-            variant: "error",
-          });
-        }
-      }
-    }
   };
 
   return (

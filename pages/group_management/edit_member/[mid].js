@@ -226,7 +226,7 @@ const fetcher = async (...arg) => {
 
 const memberData = () => {
   const router = useRouter();
-  const { mid } = router.query;
+  const {mid} = router.query
 
   // const url = `${process.env.BACKEND_URL}/account/memberinfo/${mid}`
   const url = `https://hcdti.savitechnig.com/account/memberinfo/${mid}`;

@@ -25,14 +25,14 @@ const categories = [
     headUrl: "/loan_management",
     body1: {
       id: "Create New",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/add-group.svg" alt="add loan" />,
+      activeIcon: <img src="/add-group.svg" alt="add loan" />,
       path: "/create_loan",
     },
     body2: {
       id: "View Applications",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/tax.svg" alt="loans" />,
+      activeIcon: <img src="/tax.svg" alt="loans" />,
       path: "/loans",
     },
   },
@@ -43,14 +43,14 @@ const categories = [
     headUrl: "/group_management",
     body1: {
       id: "Create New",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/add-group.svg" alt="add group" />,
+      activeIcon: <img src="/add-group.svg" alt="add group" />,
       path: "/create_group",
     },
     body2: {
       id: "View Groups",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/XMLID_10_.svg" alt="view groups" />,
+      activeIcon: <img src="/XMLID_10_.svg" alt="view groups" />,
       path: "/groups",
     },
   },
@@ -61,20 +61,20 @@ const categories = [
     headUrl: "/user_management",
     body1: {
       id: "Create New",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/add-group.svg" alt="add user" />,
+      activeIcon: <img src="/add-group.svg" alt="add user" />,
       path: "/create_user",
     },
     body2: {
       id: "View Users",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/XMLID_10_.svg" alt="view users" />,
+      activeIcon: <img src="/XMLID_10_.svg" alt="view users" />,
       path: "/users",
     },
     body3: {
       id: "Reset Password",
-      icon: <img src="/home.svg" alt="home" />,
-      activeIcon: <img src="/home.svg" alt="home" />,
+      icon: <img src="/synchronize.svg" alt="reset" />,
+      activeIcon: <img src="/synchronize.svg" alt="reset" />,
       path: "/reset_password",
     },
   },
@@ -101,15 +101,6 @@ const styles = (theme) => ({
     letterSpacing: "0px",
     color: "#362D73",
     opacity: "1",
-    // fontfamily: 'Roboto',
-    // fontStyle: 'normal',
-    // fontWeight: '400',
-    // fontSize: '16px',
-    // lineHeight: '18.75px',
-    // color: '#687282',
-    // '&:hover,&:focus': {
-    //   backgroundColor: '#F8F8F8',
-    // },
   },
   itemActiveItem: {
     font: "var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-medium) 15px/20px var(--unnamed-font-family-poppins)",
@@ -145,7 +136,7 @@ const styles = (theme) => ({
     width:204,
     height:39,
     "&:hover,&:focus": {
-      background: "#FFFFFF",
+      background: "#DAF2B6 0% 0% no-repeat padding-box",
       borderRadius: "2px 0px 0px 2px",
       opacity: "1",
     },
@@ -314,7 +305,8 @@ function Navigator(props) {
                     <a style={{textDecoration:"none"}}>
                       <Button varaint="contained"
                         className={
-                          router.pathname === headUrl+""+props.path && body2.path === `/${checkPath}`
+                          // router.pathname === headUrl+""+props.path && 
+                          body2.path === `/${checkPath}`
                           ? classes.button
                           : classes.unActiveBtn
                         }

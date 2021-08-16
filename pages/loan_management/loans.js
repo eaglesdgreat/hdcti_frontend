@@ -672,7 +672,7 @@ export default function Loans() {
 
         return name.includes(state.toLowerCase());
       });
-      console.log(newList)
+      // console.log(newList)
 
       setSearch(newList);
     }
@@ -870,8 +870,29 @@ export default function Loans() {
                       </TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
-                    {(search.length > 0 ? search : filterData.length > 0 ? filterData : loans.result)
+                    {
+                      (state !== "" && search.length === 0)
+                        ? (
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            style={{
+                              margin: "auto",
+                              width: "270%",
+                              // borderRadius: "5px",
+                              height: "30px",
+                              padding: "100px",
+                            }}
+                          >
+                            <Typography className={classes.typography}>
+                              No result found for this search
+                            </Typography>
+                          </Box>
+                        )
+                        :
+                      (search.length > 0 ? search : filterData.length > 0 ? filterData : loans.result)
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage

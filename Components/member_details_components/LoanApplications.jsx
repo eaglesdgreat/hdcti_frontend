@@ -582,7 +582,7 @@ const members = [
 
 
 
-export default function LoanApplications(member, isError, isLoading) {
+export default function LoanApplications({ member, isError, isLoading }) {
   const classes = useStyles();
 
   const [page, setPage] = useState(0);
@@ -727,10 +727,11 @@ export default function LoanApplications(member, isError, isLoading) {
             }}
           >
             <Typography className={classes.typography}>
-              Error Fetching All Members Data
+              Error Fetching All Loan Data
             </Typography>
           </Box>
-        ) : isLoading ? (
+        ) : 
+        isLoading ? (
           <Box
             display="flex"
             justifyContent="center"
@@ -747,7 +748,7 @@ export default function LoanApplications(member, isError, isLoading) {
           </Box>
         ) : 
         (
-          member && member.loanHistory && (
+          member && member.loanHistory.length > 0 && (
             <Table className={classes.table}>
               <TableHead className={classes.thead}>
                 <TableRow>
@@ -765,11 +766,11 @@ export default function LoanApplications(member, isError, isLoading) {
                     </Typography>
                   </TableCell>
 
-                    <TableCell size="small" className={classes.tableCell}>
-                      <Typography className={classes.typo}>
-                        Amount Requested
-                      </Typography>
-                    </TableCell>
+                  <TableCell size="small" className={classes.tableCell}>
+                    <Typography className={classes.typo}>
+                      Amount Requested
+                    </Typography>
+                  </TableCell>
 
                   <TableCell size="small" className={classes.tableCell}>
                     <Typography className={classes.typo}>
@@ -784,6 +785,7 @@ export default function LoanApplications(member, isError, isLoading) {
                   </TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {
                     // (search.length > 0 ? search : members.results.result)

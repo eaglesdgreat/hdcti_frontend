@@ -120,6 +120,12 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "28px",
     letterSpacing: "0.1px",
   },
+  mobileBox: { 
+    padding: '30px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '15px',
+    }
+  },
 }))
 
 
@@ -210,7 +216,7 @@ export default function Stepper1() {
 
   return (
     <>
-      <Box display="flex" style={{padding: '30px'}}>
+      <Box display="flex" className={classes.mobileBox}>
         <form
           className={classes.form}
           noValidate

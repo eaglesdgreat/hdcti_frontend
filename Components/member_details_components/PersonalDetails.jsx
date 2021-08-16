@@ -194,7 +194,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ?(
+                  member && member.personal && member.personal.nameOfHusband ?(
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -277,7 +277,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ?(
+                  member && member.personal && member.personal.nextOfKin ?(
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -360,7 +360,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ? (
+                  member && member.personal && member.personal.nextOfKinMobile ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -443,7 +443,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ? (
+                  member && member.personal && member.personal.custEducation ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -526,7 +526,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ? (
+                  member && member.personal && member.personal.residentialAddress ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -610,7 +610,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ? (
+                  member && member.personal && member.personal.busAddress ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"
@@ -693,7 +693,7 @@ export default function PersonalDetails({ member, isError, isLoading }) {
                 ) : isLoading ? (
                   <CircularProgress size="1em" style={{ color: "#362D73" }} />
                 ) : (
-                  member && member.personal ? (
+                  member && member.personal && member.personal.maritalStatus ? (
                     <Typography
                       className={clsx(classes.typography2)}
                       variant="body1"

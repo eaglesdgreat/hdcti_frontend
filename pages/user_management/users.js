@@ -758,7 +758,27 @@ export default function Users() {
 
                   {users.users.length > 20 ? (
                     <TableBody>
-                      {(search.length > 0 ? search : users.users)
+                      {
+                        (state !== "" && search.length === 0)
+                          ? (
+                            <Box
+                              display="flex"
+                              justifyContent="center"
+                              style={{
+                                margin: "auto",
+                                width: "173%",
+                                // borderRadius: "5px",
+                                height: "20px",
+                                padding: "100px",
+                              }}
+                            >
+                              <Typography className={classes.typography}>
+                                No result found for this search
+                              </Typography>
+                            </Box>
+                          )
+                          :
+                        (search.length > 0 ? search : users.users)
                         .filter((user) => user.is_active === true)
                         .slice(
                           page * rowsPerPage,
@@ -966,7 +986,27 @@ export default function Users() {
                     </TableBody>
                   ) : (
                     <TableBody>
-                      {(search.length > 0 ? search : users.users)
+                      {
+                        (state !== "" && search.length === 0)
+                          ? (
+                            <Box
+                              display="flex"
+                              justifyContent="center"
+                              style={{
+                                margin: "auto",
+                                width: "173%",
+                                // borderRadius: "5px",
+                                height: "20px",
+                                padding: "100px",
+                              }}
+                            >
+                              <Typography className={classes.typography}>
+                                No result found for this search
+                              </Typography>
+                            </Box>
+                          )
+                          :
+                        (search.length > 0 ? search : users.users)
                         .filter((user) => user.is_active === true)
                         .map((user, i) => (
                           <TableRow key={user.id}>

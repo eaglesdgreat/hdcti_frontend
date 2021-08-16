@@ -136,6 +136,12 @@ const useStyles = makeStyles((theme) => ({
     color: "#868D96",
     opacity: "1",
   },
+  mobileBox: {
+    padding: '30px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '15px',
+    }
+  },
 }))
 
 
@@ -294,7 +300,7 @@ export default function Stepper3() {
 
   return (
     <>
-      <Box display="flex" style={{ padding: '30px' }}>
+      <Box display="flex" className={classes.mobileBox}>
         <form
           className={classes.form}
           noValidate

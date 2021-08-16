@@ -18,45 +18,6 @@ import { useStateValue } from "./../../StateProviders";
 import { isAuthenticated } from "../../lib/auth.helper";
 
 
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    'label + &': {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    background: "var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box",
-    // border: "1px solid var(--unnamed-color-e0e0e0)",
-    background: "#FFFFFF 0% 0% no-repeat padding-box",
-    // border: "1px solid #E0E0E0",
-    borderRadius: "5px",
-    opacity: "1",
-    // color: "#182C51",
-    fontSize: "16px",
-    // fontWeight: "bold",
-    fontFamily: "Source Sans Pro",
-    fontStyle: "normal",
-    lineHeight: "20px",
-
-    borderRadius: '5px',
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: '1px solid #ced4da',
-    lineHeight: '18px',
-    padding: '10px 0px 10px 12px',
-
-    // transition: theme.transitions.create(['border-color', 'box-shadow']),
-    // Use the system font instead of the default Roboto font.
-    '&:focus': {
-      borderRadius: '5px',
-      borderColor: '#ced4da',
-      backgroundColor: theme.palette.background.paper,
-    },
-  },
-}))(InputBase);
-
-
-
 const useStyles = makeStyles((theme) => ({
   cssOutlinedInput: {
     whiteSpace: "initial",
@@ -151,6 +112,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "13px",
     lineHeight: "28px",
     letterSpacing: "0.1px",
+  },
+  mobileBox: {
+    padding: '30px',
+    [theme.breakpoints.down('sm')]: {
+      padding: '15px',
+    }
   },
 }))
 
@@ -259,7 +226,7 @@ export default function Stepper5() {
 
   return (
     <>
-      <Box display="flex" style={{ padding: '30px' }}>
+      <Box display="flex" className={classes.mobileBox}>
         <form
           className={classes.form}
           noValidate

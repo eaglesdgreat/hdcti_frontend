@@ -491,13 +491,13 @@ export default function Groups() {
   };
 
   const handleEditClick = (id) => {
+    localStorage.removeItem("group_id");
     localStorage.removeItem("last_url");
 
     const url = "/group_management/edit_group/" + id;
-    localStorage.setItem(
-      "last_url",
-      JSON.stringify("/group_management/groups")
-    );
+    
+    localStorage.setItem("last_url", JSON.stringify("/group_management/groups"));
+    localStorage.setItem('group_id', JSON.stringify(id))
 
     router.push(url);
   };
@@ -783,7 +783,27 @@ export default function Groups() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {(search.length > 0 ? search : groups)
+                    {
+                      (state !== "" && search.length === 0)
+                        ? (
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            style={{
+                              margin: "auto",
+                              width: "188%",
+                              // borderRadius: "5px",
+                              height: "30px",
+                              padding: "100px",
+                            }}
+                          >
+                            <Typography className={classes.typography}>
+                              No result found for this search
+                            </Typography>
+                          </Box>
+                        )
+                        :
+                      (search.length > 0 ? search : groups)
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
